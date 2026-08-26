@@ -4,18 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#234b2a">
-
-<title>Farm Rush V2 Alpha</title>
+<title>Farm Rush V2 Alpha 2</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body{
+html,body{
 margin:0;
 width:100%;
 height:100%;
@@ -24,8 +21,7 @@ font-family:Arial,sans-serif;
 background:#18391f;
 }
 
-button,
-select{
+button,select{
 font:inherit;
 }
 
@@ -33,9 +29,7 @@ font:inherit;
 display:none!important;
 }
 
-/* =========================================
-ROTATION
-========================================= */
+/* ROTATION */
 
 #rotate{
 display:none;
@@ -65,25 +59,16 @@ animation:rot 1.7s ease-in-out infinite;
 }
 
 @keyframes rot{
-50%{
-transform:rotate(90deg);
-}
+50%{transform:rotate(90deg)}
 }
 
 @media(orientation:portrait) and (max-width:900px){
-
-#rotate{
-display:flex;
+#rotate{display:flex}
 }
 
-}
+/* ACCUEIL */
 
-/* =========================================
-ACCUEIL
-========================================= */
-
-#home,
-#game{
+#home,#game{
 position:fixed;
 inset:0;
 }
@@ -91,10 +76,7 @@ inset:0;
 .sky{
 position:absolute;
 inset:0;
-background:linear-gradient(
-#79cfff 0 47%,
-#78c45c 47%
-);
+background:linear-gradient(#79cfff 0 47%,#78c45c 47%);
 }
 
 .sun{
@@ -127,11 +109,7 @@ animation-delay:-8s;
 }
 
 @keyframes cloud{
-
-to{
-transform:translateX(115vw);
-}
-
+to{transform:translateX(115vw)}
 }
 
 .homeFarm{
@@ -140,18 +118,12 @@ left:50%;
 bottom:-48%;
 width:1050px;
 height:720px;
-transform:
-translateX(-50%)
-rotateX(62deg)
-rotateZ(45deg);
-
-background:
-repeating-linear-gradient(
+transform:translateX(-50%) rotateX(62deg) rotateZ(45deg);
+background:repeating-linear-gradient(
 0deg,
 #67b84e 0 55px,
 #72c257 55px 110px
 );
-
 border-radius:100px;
 }
 
@@ -162,11 +134,7 @@ animation:bob 2.5s ease-in-out infinite;
 }
 
 @keyframes bob{
-
-50%{
-transform:translateY(-5px);
-}
-
+50%{transform:translateY(-5px)}
 }
 
 .dHouse{
@@ -210,7 +178,6 @@ text-shadow:
 0 5px #397439,
 0 9px #235526,
 0 13px 20px #0005;
-
 transform:rotate(-2deg);
 }
 
@@ -230,10 +197,7 @@ margin:8px 0 18px;
 .play{
 border:3px solid #fff0aa;
 border-radius:20px;
-background:linear-gradient(
-#76d052,
-#3e9635
-);
+background:linear-gradient(#76d052,#3e9635);
 color:#fff;
 padding:14px 48px;
 font-size:22px;
@@ -268,9 +232,7 @@ color:#fff;
 font-size:20px;
 }
 
-/* =========================================
-JEU
-========================================= */
+/* JEU */
 
 #game{
 display:none;
@@ -281,33 +243,17 @@ background:#70bd56;
 position:absolute;
 inset:0;
 overflow:hidden;
-
-background:
-linear-gradient(
-#7acdfa 0 13%,
-#74be56 13%
-);
+background:linear-gradient(#7acdfa 0 13%,#74be56 13%);
 }
 
 #world{
 position:absolute;
 width:960px;
 height:540px;
-
 transform-origin:0 0;
-
-background:
-linear-gradient(
-#7ccff9 0 13%,
-#73bc54 13%
-);
-
+background:linear-gradient(#7ccff9 0 13%,#73bc54 13%);
 overflow:hidden;
 }
-
-/* =========================================
-DECOR CARTE
-========================================= */
 
 .hill{
 position:absolute;
@@ -315,15 +261,9 @@ left:-80px;
 right:-80px;
 bottom:-245px;
 height:640px;
-
-border-radius:
-50% 50% 0 0 /
-15% 15% 0 0;
-
+border-radius:50% 50% 0 0 / 15% 15% 0 0;
 background:#76bd55;
-
-box-shadow:
-inset 0 -20px #66ac4c;
+box-shadow:inset 0 -20px #66ac4c;
 }
 
 .road{
@@ -332,11 +272,8 @@ left:130px;
 top:355px;
 width:700px;
 height:65px;
-
 border-radius:50%;
-
 background:#d5b77f;
-
 transform:rotate(-7deg);
 }
 
@@ -344,14 +281,10 @@ transform:rotate(-7deg);
 position:absolute;
 right:70px;
 top:300px;
-
 width:145px;
 height:76px;
-
 border-radius:50%;
-
 background:#5fc0db;
-
 border:8px solid #ddcc8c;
 }
 
@@ -376,56 +309,44 @@ right:175px;
 top:95px;
 }
 
-/* =========================================
-CHAMPS ISOMETRIQUES
-========================================= */
+/* CHAMPS */
 
 #fieldLayer{
 position:absolute;
 inset:0;
 z-index:5;
+touch-action:auto;
+}
+
+#fieldLayer.paint-mode{
+touch-action:none;
 }
 
 .plot{
 position:absolute;
-
 width:78px;
 height:40px;
-
 border:0;
-
-clip-path:
-polygon(
+clip-path:polygon(
 50% 0,
 100% 50%,
 50% 100%,
 0 50%
 );
-
 background:#87532f;
-
 color:#fff;
-
 display:grid;
 place-items:center;
-
-touch-action:none;
-
-filter:
-drop-shadow(
-0 3px 1px #4a2d1b
-);
+filter:drop-shadow(0 3px 1px #4a2d1b);
+user-select:none;
+-webkit-user-select:none;
 }
 
 .plot:before{
 content:"";
-
 position:absolute;
-
 inset:4px;
-
 clip-path:inherit;
-
 background:#9f673b;
 }
 
@@ -440,55 +361,34 @@ background:#b17a37;
 .crop{
 position:relative;
 z-index:2;
-
 font-size:24px;
-
 transform:translateY(-4px);
-
 pointer-events:none;
 }
 
 .timer{
 position:absolute;
-
 z-index:3;
-
 bottom:2px;
-
 background:#fff;
-
 color:#30422e;
-
 border-radius:8px;
-
 padding:1px 5px;
-
 font-size:8px;
-
 font-weight:900;
+pointer-events:none;
 }
 
-/* =========================================
-BATIMENTS
-========================================= */
+/* BATIMENTS */
 
 .building{
 position:absolute;
-
 z-index:8;
-
 border:0;
-
 background:none;
-
 color:#fff;
-
 text-align:center;
-
-filter:
-drop-shadow(
-0 12px 4px #0003
-);
+filter:drop-shadow(0 12px 4px #0003);
 }
 
 .building .icon{
@@ -498,50 +398,31 @@ font-size:62px;
 
 .building .label{
 background:#264e2dda;
-
 border:2px solid #fff3bf;
-
 border-radius:12px;
-
 padding:3px 7px;
-
 font-size:9px;
-
 font-weight:1000;
 }
 
 .building.locked{
-filter:
-grayscale(.8)
-drop-shadow(
-0 12px 4px #0003
-);
-
+filter:grayscale(.8) drop-shadow(0 12px 4px #0003);
 opacity:.65;
 }
 
 .badge{
 position:absolute;
-
 right:-4px;
 top:-4px;
-
 background:#ffd24d;
-
 color:#4d3700;
-
 border:2px solid #fff;
-
 border-radius:15px;
-
 min-width:24px;
 height:24px;
-
 display:grid;
 place-items:center;
-
 font-size:10px;
-
 font-weight:1000;
 }
 
@@ -590,9 +471,7 @@ left:825px;
 top:385px;
 }
 
-/* =========================================
-HUD
-========================================= */
+/* HUD */
 
 .hud{
 position:absolute;
@@ -602,37 +481,24 @@ z-index:30;
 .topHud{
 left:12px;
 right:12px;
-
-top:calc(
-8px + env(safe-area-inset-top)
-);
-
+top:calc(8px + env(safe-area-inset-top));
 display:flex;
-
 justify-content:space-between;
-
 align-items:flex-start;
 }
 
 .chip{
 background:#244e2de8;
-
 border:2px solid #f4e5a8;
-
 border-radius:18px;
-
 box-shadow:0 5px #17371f;
-
 color:#fff;
 }
 
 .profile{
 padding:6px 10px;
-
 display:flex;
-
 gap:8px;
-
 align-items:center;
 }
 
@@ -648,53 +514,39 @@ font-weight:1000;
 .xpbar{
 width:135px;
 height:8px;
-
 border-radius:8px;
-
 background:#17361c;
-
 overflow:hidden;
+display:block;
 }
 
 .xpfill{
 height:100%;
-
 background:#b6ed61;
+display:block;
 }
 
 .money{
 padding:10px 13px;
-
 font-weight:1000;
 }
 
 .zone{
 position:absolute;
-
 left:50%;
-
 transform:translateX(-50%);
-
 display:flex;
-
 gap:4px;
-
 padding:4px;
 }
 
 .zone button{
 border:0;
-
 border-radius:11px;
-
 padding:7px 10px;
-
 background:#427146;
-
 color:#fff;
-
 font-size:9px;
-
 font-weight:1000;
 }
 
@@ -705,108 +557,66 @@ color:#4b3a12;
 
 .rightHud{
 right:12px;
-
 top:100px;
-
 display:flex;
-
 flex-direction:column;
-
 gap:8px;
 }
 
-.hbtn,
-.bbtn{
+.hbtn,.bbtn{
 border:2px solid #fff0b8;
-
 background:#356d40;
-
 color:#fff;
-
 border-radius:15px;
-
-box-shadow:
-0 4px #1e4929;
-
+box-shadow:0 4px #1e4929;
 font-weight:1000;
 }
 
 .hbtn{
 width:52px;
 height:52px;
-
 font-size:21px;
 }
 
-.hbtn small,
-.bbtn small{
+.hbtn small,.bbtn small{
 display:block;
-
 font-size:7px;
 }
 
 .bottomHud{
 left:50%;
-
-bottom:
-calc(
-10px + env(safe-area-inset-bottom)
-);
-
-transform:
-translateX(-50%);
-
+bottom:calc(10px + env(safe-area-inset-bottom));
+transform:translateX(-50%);
 display:flex;
-
 gap:7px;
 }
 
 .bbtn{
 min-width:67px;
-
 height:47px;
-
 font-size:18px;
 }
 
 .soundGame{
 left:12px;
-
-bottom:
-calc(
-10px + env(safe-area-inset-bottom)
-);
-
+bottom:calc(10px + env(safe-area-inset-bottom));
 width:44px;
 height:44px;
 }
 
 .paintHint{
 position:absolute;
-
 z-index:35;
-
 left:50%;
-
 bottom:72px;
-
-transform:
-translateX(-50%);
-
+transform:translateX(-50%);
 display:none;
-
 background:#fff1ae;
-
 color:#483a14;
-
 border:2px solid #b18c28;
-
 border-radius:20px;
-
 padding:8px 13px;
-
 font-size:10px;
-
 font-weight:1000;
 }
 
@@ -814,25 +624,20 @@ font-weight:1000;
 display:block;
 }
 
-/* =========================================
-MODALES
-========================================= */
+.paintHint b{
+font-size:12px;
+}
+
+/* MODALES */
 
 .modal{
 display:none;
-
 position:fixed;
-
 inset:0;
-
 z-index:100;
-
 background:#0008;
-
 align-items:center;
-
 justify-content:center;
-
 padding:18px;
 }
 
@@ -841,31 +646,18 @@ display:flex;
 }
 
 .sheet{
-width:min(
-680px,
-90vw
-);
-
+width:min(680px,90vw);
 max-height:82vh;
-
 overflow:auto;
-
 background:#fff8dd;
-
 color:#423b25;
-
 border:4px solid #795b32;
-
 border-radius:24px;
-
 box-shadow:
 0 13px #523a20,
 0 22px 45px #0007;
-
 padding:14px;
-
-transition:
-transform .18s;
+transition:transform .18s;
 }
 
 .sheet.drag{
@@ -874,19 +666,12 @@ transition:none;
 
 .sheetHead{
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 position:sticky;
-
 top:0;
-
 background:#fff8dd;
-
 padding-bottom:8px;
-
 z-index:2;
 }
 
@@ -898,37 +683,23 @@ font-size:20px;
 .close{
 width:38px;
 height:38px;
-
 border:0;
-
 border-radius:50%;
-
 background:#b84d40;
-
 color:#fff;
-
 font-weight:1000;
 }
 
 .grid{
 display:grid;
-
-grid-template-columns:
-repeat(
-2,
-minmax(0,1fr)
-);
-
+grid-template-columns:repeat(2,minmax(0,1fr));
 gap:8px;
 }
 
 .card{
 background:#fff;
-
 border:2px solid #ddca94;
-
 border-radius:15px;
-
 padding:10px;
 }
 
@@ -938,35 +709,24 @@ font-weight:1000;
 
 .small{
 font-size:10px;
-
 color:#72684d;
-
 line-height:1.4;
 }
 
 .stat{
 background:#f3ebcf;
-
 border-radius:10px;
-
 padding:8px;
-
 margin:6px 0;
-
 font-size:11px;
 }
 
 .btn{
 border:0;
-
 border-radius:12px;
-
 padding:10px;
-
 background:#5da840;
-
 color:#fff;
-
 font-weight:1000;
 }
 
@@ -976,7 +736,6 @@ background:#5d99c5;
 
 .btn.gold{
 background:#efc344;
-
 color:#543d0c;
 }
 
@@ -998,11 +757,8 @@ width:100%;
 
 .row{
 display:flex;
-
 gap:7px;
-
 align-items:center;
-
 flex-wrap:wrap;
 }
 
@@ -1014,76 +770,47 @@ flex:1;
 .stockGrid,
 .marketGrid{
 display:grid;
-
-grid-template-columns:
-repeat(
-3,
-minmax(0,1fr)
-);
-
+grid-template-columns:repeat(3,minmax(0,1fr));
 gap:8px;
 }
 
 .cropBtn{
 border:0;
-
 border-radius:13px;
-
 background:#65ad46;
-
 color:#fff;
-
 padding:10px 5px;
-
 font-weight:1000;
+min-height:62px;
 }
 
 .cropBtn:disabled{
 background:#777;
-
 opacity:.5;
 }
 
 .cropBtn small{
 display:block;
-
 font-size:8px;
-
 font-weight:400;
-
 margin-top:3px;
 }
 
-/* =========================================
-TOAST / ANIMATION
-========================================= */
+/* UI */
 
 .toast{
 display:none;
-
 position:fixed;
-
 z-index:200;
-
 top:70px;
-
 left:50%;
-
-transform:
-translateX(-50%);
-
+transform:translateX(-50%);
 background:#1d4025;
-
 color:#fff;
-
 border:2px solid #f3e4aa;
-
 border-radius:13px;
-
 padding:9px 14px;
-
 font-size:11px;
-
 font-weight:1000;
 }
 
@@ -1093,43 +820,23 @@ display:block;
 
 .float{
 position:fixed;
-
 z-index:210;
-
 left:50%;
-
 top:45%;
-
-transform:
-translate(-50%,-50%);
-
+transform:translate(-50%,-50%);
 font-size:24px;
-
 font-weight:1000;
-
 color:#fff;
-
-text-shadow:
-0 3px #315b31;
-
-animation:
-float 1s forwards;
+text-shadow:0 3px #315b31;
+animation:float 1s forwards;
 }
 
 @keyframes float{
-
 to{
 opacity:0;
-
-transform:
-translate(-50%,-65px);
+transform:translate(-50%,-65px);
 }
-
 }
-
-/* =========================================
-PETITS ECRANS
-========================================= */
 
 @media(max-width:700px){
 
@@ -1158,18 +865,14 @@ grid-template-columns:1fr;
 .cropGrid,
 .stockGrid,
 .marketGrid{
-grid-template-columns:
-repeat(2,1fr);
+grid-template-columns:repeat(2,1fr);
 }
 
 }
-
 </style>
 </head>
 
 <body>
-
-<!-- ROTATION -->
 
 <div id="rotate">
 
@@ -1184,14 +887,12 @@ Tourne ton téléphone
 </h2>
 
 <p>
-La V2 Alpha de Farm Rush se joue maintenant en <b>paysage</b>.
+Farm Rush V2 Alpha se joue en <b>paysage</b>.
 </p>
 
 </div>
 
 </div>
-
-<!-- ACCUEIL -->
 
 <section id="home">
 
@@ -1238,9 +939,7 @@ FARM <span>RUSH</span>
 <button
 class="play"
 onclick="startGame()">
-
 ▶ JOUER
-
 </button>
 
 </div>
@@ -1248,23 +947,19 @@ onclick="startGame()">
 <div class="homeBottom">
 
 <span>
-V2.0 ALPHA • Isométrique
+V2.0 ALPHA 2 • Gestes corrigés
 </span>
 
 <button
 id="soundHome"
 class="sound"
 onclick="toggleSound()">
-
 🔊
-
 </button>
 
 </div>
 
 </section>
-
-<!-- JEU -->
 
 <section id="game">
 
@@ -1294,36 +989,23 @@ class="viewport">
 
 <div id="fieldLayer"></div>
 
-<!-- MAISON -->
-
 <button
 class="building house"
 onclick="openProgress()">
 
-<span class="icon">
-🏡
-</span>
+<span class="icon">🏡</span>
 
-<span class="label">
-Ferme
-</span>
+<span class="label">Ferme</span>
 
 </button>
-
-<!-- POULAILLER -->
 
 <button
 id="bCoop"
 class="building coop"
 onclick="openBuilding('coop')">
 
-<span class="icon">
-🐔
-</span>
-
-<span class="label">
-Poulailler
-</span>
+<span class="icon">🐔</span>
+<span class="label">Poulailler</span>
 
 <span
 id="eggBadge"
@@ -1333,20 +1015,13 @@ class="badge hidden">
 
 </button>
 
-<!-- ETABLE -->
-
 <button
 id="bBarn"
 class="building barn"
 onclick="openBuilding('barn')">
 
-<span class="icon">
-🐄
-</span>
-
-<span class="label">
-Étable
-</span>
+<span class="icon">🐄</span>
+<span class="label">Étable</span>
 
 <span
 id="barnBadge"
@@ -1356,113 +1031,69 @@ class="badge hidden">
 
 </button>
 
-<!-- MOULIN -->
-
 <button
 id="bMill"
 class="building mill"
 onclick="openBuilding('mill')">
 
-<span class="icon">
-⚙️
-</span>
-
-<span class="label">
-Moulin
-</span>
+<span class="icon">⚙️</span>
+<span class="label">Moulin</span>
 
 </button>
-
-<!-- BOULANGERIE -->
 
 <button
 id="bBakery"
 class="building bakery"
 onclick="openBuilding('bakery')">
 
-<span class="icon">
-🥖
-</span>
-
-<span class="label">
-Boulangerie
-</span>
+<span class="icon">🥖</span>
+<span class="label">Boulangerie</span>
 
 </button>
-
-<!-- FROMAGERIE -->
 
 <button
 id="bDairy"
 class="building dairy"
 onclick="openBuilding('dairy')">
 
-<span class="icon">
-🧀
-</span>
-
-<span class="label">
-Fromagerie
-</span>
+<span class="icon">🧀</span>
+<span class="label">Fromagerie</span>
 
 </button>
-
-<!-- OUVRIER -->
 
 <button
 id="bWorker"
 class="building worker"
 onclick="openWorker()">
 
-<span class="icon">
-🤖
-</span>
-
-<span class="label">
-Ouvrier
-</span>
+<span class="icon">🤖</span>
+<span class="label">Ouvrier</span>
 
 </button>
-
-<!-- TRACTEUR -->
 
 <button
 id="bTractor"
 class="building tractor"
 onclick="harvestAll()">
 
-<span class="icon">
-🚜
-</span>
-
-<span class="label">
-Tracteur
-</span>
+<span class="icon">🚜</span>
+<span class="label">Tracteur</span>
 
 </button>
-
-<!-- VERGER -->
 
 <button
 id="bOrchard"
 class="building orchard"
 onclick="switchZone('orchard')">
 
-<span class="icon">
-🍎
-</span>
-
-<span class="label">
-Verger
-</span>
+<span class="icon">🍎</span>
+<span class="label">Verger</span>
 
 </button>
 
 </div>
 
 </div>
-
-<!-- HUD HAUT -->
 
 <div class="hud topHud">
 
@@ -1477,36 +1108,22 @@ onclick="openProgress()">
 <span>
 
 <span class="lvl">
-
-NIVEAU
-<span id="level">
-1
-</span>
-
+NIVEAU <span id="level">1</span>
 </span>
 
 <span class="xpbar">
-
 <span
 id="xpfill"
 class="xpfill">
 </span>
-
 </span>
 
 <span style="font-size:8px">
 
 XP
-
-<span id="xp">
-0
-</span>
-
+<span id="xp">0</span>
 /
-
-<span id="xpNeed">
-100
-</span>
+<span id="xpNeed">100</span>
 
 </span>
 
@@ -1519,17 +1136,13 @@ XP
 <button
 id="farmBtn"
 onclick="switchZone('farm')">
-
 🏡 FERME
-
 </button>
 
 <button
 id="orchardBtn"
 onclick="switchZone('orchard')">
-
 🍎 VERGER
-
 </button>
 
 </div>
@@ -1545,8 +1158,6 @@ onclick="switchZone('orchard')">
 
 </div>
 
-<!-- HUD DROITE -->
-
 <div class="hud rightHud">
 
 <button
@@ -1554,9 +1165,7 @@ class="hbtn"
 onclick="openOrders()">
 
 📋
-<small>
-COMMANDES
-</small>
+<small>COMMANDES</small>
 
 </button>
 
@@ -1565,15 +1174,11 @@ class="hbtn"
 onclick="openProgress()">
 
 ⭐
-<small>
-PROGRÈS
-</small>
+<small>PROGRÈS</small>
 
 </button>
 
 </div>
-
-<!-- SON -->
 
 <button
 id="soundGame"
@@ -1584,8 +1189,6 @@ onclick="toggleSound()">
 
 </button>
 
-<!-- HUD BAS -->
-
 <div class="hud bottomHud">
 
 <button
@@ -1593,9 +1196,7 @@ class="bbtn"
 onclick="openShop()">
 
 🛒
-<small>
-SHOP
-</small>
+<small>SHOP</small>
 
 </button>
 
@@ -1604,9 +1205,7 @@ class="bbtn"
 onclick="openStock()">
 
 📦
-<small>
-STOCK
-</small>
+<small>STOCK</small>
 
 </button>
 
@@ -1615,9 +1214,7 @@ class="bbtn"
 onclick="openMarket()">
 
 💰
-<small>
-MARCHÉ
-</small>
+<small>MARCHÉ</small>
 
 </button>
 
@@ -1626,9 +1223,7 @@ class="bbtn"
 onclick="harvestAll()">
 
 🌾
-<small>
-RÉCOLTER
-</small>
+<small>RÉCOLTER</small>
 
 </button>
 
@@ -1640,8 +1235,6 @@ class="paintHint">
 </div>
 
 </section>
-
-<!-- MODALE -->
 
 <div
 id="modal"
@@ -1658,9 +1251,7 @@ class="sheet">
 <button
 class="close"
 onclick="closeModal()">
-
 ✕
-
 </button>
 
 </div>
@@ -1678,9 +1269,9 @@ class="toast">
 
 <script>
 
-/* =========================================
+/* ================================
 CULTURES
-========================================= */
+================================ */
 
 const CROPS={
 
@@ -1829,9 +1420,10 @@ z:"orchard"
 
 };
 
-/* =========================================
+
+/* ================================
 PRODUITS
-========================================= */
+================================ */
 
 const PRODUCTS={
 
@@ -1873,9 +1465,10 @@ s:480
 
 };
 
-/* =========================================
+
+/* ================================
 ETAT
-========================================= */
+================================ */
 
 const DEF={
 
@@ -1967,39 +1560,74 @@ lastSeen:Date.now()
 
 };
 
+
 let S={
 ...DEF
 };
 
-let pending=null;
 
-let paint=null;
+let pending=
+null;
 
-let painting=false;
 
-let seen=new Set();
+let paint=
+null;
 
-let audio=null;
+
+let painting=
+false;
+
+
+let seen=
+new Set();
+
+
+let audio=
+null;
+
 
 let sound=
+
 localStorage.getItem(
 "farmRushSound"
 )!=="0";
 
+
 let toastTimer;
 
-/* =========================================
+
+let suppressClickUntil=
+0;
+
+
+let lastTouchPoint=
+null;
+
+
+let paintOutOfMoney=
+false;
+
+
+const fieldLayer=
+
+document.getElementById(
+"fieldLayer"
+);
+
+
+/* ================================
 SAVE
-========================================= */
+================================ */
 
 function save(){
 
 S.lastSeen=
 Date.now();
 
+
 localStorage.setItem(
 
-"farmRushV20Alpha",
+"farmRushV20Alpha2",
 
 JSON.stringify(
 S
@@ -2009,13 +1637,16 @@ S
 
 }
 
-/* =========================================
-LOAD + MIGRATION V1
-========================================= */
+
+/* ================================
+LOAD + MIGRATION
+================================ */
 
 function load(){
 
 const keys=[
+
+"farmRushV20Alpha2",
 
 "farmRushV20Alpha",
 
@@ -2035,16 +1666,21 @@ const keys=[
 
 ];
 
+
 for(
 const key of keys
 ){
 
 const raw=
+
 localStorage.getItem(
 key
 );
 
-if(raw){
+
+if(
+raw
+){
 
 try{
 
@@ -2061,11 +1697,13 @@ raw
 }
 catch(error){}
 
+
 break;
 
 }
 
 }
+
 
 S.plots=
 
@@ -2087,6 +1725,7 @@ S.plots
 
 );
 
+
 S.orchardPlots=
 
 Math.max(
@@ -2107,6 +1746,7 @@ S.orchardPlots
 
 );
 
+
 if(
 !Array.isArray(
 S.fields
@@ -2116,6 +1756,7 @@ S.fields
 S.fields=[];
 
 }
+
 
 while(
 S.fields.length<40
@@ -2127,11 +1768,14 @@ null
 
 }
 
+
 S.fields=
+
 S.fields.slice(
 0,
 40
 );
+
 
 if(
 !Array.isArray(
@@ -2143,6 +1787,7 @@ S.orchardFields=[];
 
 }
 
+
 while(
 S.orchardFields.length<20
 ){
@@ -2153,19 +1798,29 @@ null
 
 }
 
+
 S.orchardFields=
+
 S.orchardFields.slice(
 0,
 20
 );
 
+
 if(
+
 !S.stock
+
+||
+
+typeof S.stock!=="object"
+
 ){
 
 S.stock={};
 
 }
+
 
 if(
 
@@ -2193,21 +1848,69 @@ S.currentZone=
 
 }
 
+
+S.hens=
+
+Math.max(
+1,
+Number(S.hens)||1
+);
+
+
+S.cows=
+
+Math.max(
+1,
+Number(S.cows)||1
+);
+
+
+S.pigs=
+
+Math.max(
+1,
+Number(S.pigs)||1
+);
+
+
+S.workerLevel=
+
+Math.max(
+
+0,
+
+Math.min(
+
+4,
+
+Number(S.workerLevel)||0
+
+)
+
+);
+
+
 if(
 
-!Array.isArray(
-S.orders
-)
+!CROPS[
+S.workerCrop
+]
 
 ||
 
-S.orders.length!==3
+CROPS[
+S.workerCrop
+].z!=="farm"
 
 ){
 
-makeOrders();
+S.workerCrop=
+"wheat";
 
 }
+
+
+normalizeOrders();
 
 offline();
 
@@ -2217,9 +1920,10 @@ save();
 
 }
 
-/* =========================================
+
+/* ================================
 XP
-========================================= */
+================================ */
 
 function xpNeed(){
 
@@ -2239,10 +1943,12 @@ S.level-1
 
 }
 
+
 function addXP(amount){
 
 S.xp+=
 amount;
+
 
 while(
 
@@ -2250,25 +1956,33 @@ S.level<20
 
 &&
 
-S.xp>=
-xpNeed()
+S.xp>=xpNeed()
 
 ){
 
 S.xp-=
 xpNeed();
 
+
 S.level++;
 
+
 S.money+=
+
 100+
 S.level*
 40;
 
+
 float(
-"⭐ NIVEAU "+
+
+"⭐ NIVEAU "
+
++
 S.level
+
 );
+
 
 tone(
 1100,
@@ -2277,20 +1991,26 @@ tone(
 
 }
 
+
 save();
 
 }
 
-/* =========================================
+
+/* ================================
 UTILS
-========================================= */
+================================ */
 
 function unlocked(key){
 
 const crop=
-CROPS[key];
 
-return(
+CROPS[
+key
+];
+
+
+return !!(
 
 crop
 
@@ -2313,6 +2033,7 @@ S.orchardBought
 
 }
 
+
 function fmt(seconds){
 
 seconds=
@@ -2327,6 +2048,7 @@ seconds
 
 );
 
+
 if(
 seconds<60
 ){
@@ -2335,6 +2057,7 @@ return seconds+
 "s";
 
 }
+
 
 return(
 
@@ -2361,6 +2084,7 @@ seconds%60
 
 }
 
+
 function fields(zone){
 
 return(
@@ -2378,6 +2102,7 @@ S.orchardFields
 );
 
 }
+
 
 function plots(zone){
 
@@ -2397,9 +2122,10 @@ S.orchardPlots
 
 }
 
-/* =========================================
+
+/* ================================
 START
-========================================= */
+================================ */
 
 function startGame(){
 
@@ -2410,15 +2136,18 @@ tone(
 .12
 );
 
+
 document.getElementById(
 "home"
 ).style.display=
 "none";
 
+
 document.getElementById(
 "game"
 ).style.display=
 "block";
+
 
 fit();
 
@@ -2426,21 +2155,26 @@ render();
 
 }
 
-/* =========================================
-RESPONSIVE MAP
-========================================= */
+
+/* ================================
+RESPONSIVE
+================================ */
 
 function fit(){
 
 const viewport=
+
 document.getElementById(
 "viewport"
 );
 
+
 const world=
+
 document.getElementById(
 "world"
 );
+
 
 const scale=
 
@@ -2454,42 +2188,57 @@ viewport.clientHeight/
 
 );
 
+
 world.style.transform=
 
 `scale(${scale})`;
 
+
 world.style.left=
 
 (
-viewport.clientWidth-
+viewport.clientWidth
+
+-
+
 960*
 scale
+
 )
 /2
+
 +
 "px";
+
 
 world.style.top=
 
 (
-viewport.clientHeight-
+viewport.clientHeight
+
+-
+
 540*
 scale
+
 )
 /2
+
 +
 "px";
 
 }
+
 
 addEventListener(
 "resize",
 fit
 );
 
-/* =========================================
-SONS
-========================================= */
+
+/* ================================
+SON
+================================ */
 
 function initAudio(){
 
@@ -2507,11 +2256,13 @@ window.AudioContext
 
 window.webkitAudioContext;
 
+
 if(
 AudioClass
 ){
 
 audio=
+
 new AudioClass();
 
 }
@@ -2520,6 +2271,7 @@ new AudioClass();
 catch(error){}
 
 }
+
 
 if(
 audio?.state==="suspended"
@@ -2530,6 +2282,7 @@ audio.resume();
 }
 
 }
+
 
 function tone(
 frequency=520,
@@ -2544,7 +2297,9 @@ return;
 
 }
 
+
 initAudio();
+
 
 if(
 !audio
@@ -2554,16 +2309,20 @@ return;
 
 }
 
+
 const oscillator=
 
 audio.createOscillator();
+
 
 const gain=
 
 audio.createGain();
 
+
 oscillator.frequency.value=
 frequency;
+
 
 gain.gain.setValueAtTime(
 
@@ -2572,6 +2331,7 @@ gain.gain.setValueAtTime(
 audio.currentTime
 
 );
+
 
 gain.gain.exponentialRampToValueAtTime(
 
@@ -2582,6 +2342,7 @@ audio.currentTime+
 
 );
 
+
 gain.gain.exponentialRampToValueAtTime(
 
 .001,
@@ -2591,42 +2352,59 @@ duration
 
 );
 
+
 oscillator.connect(
 gain
 );
+
 
 gain.connect(
 audio.destination
 );
 
+
 oscillator.start();
+
 
 oscillator.stop(
 
-audio.currentTime+
-duration+
+audio.currentTime
+
++
+
+duration
+
++
+
 .02
 
 );
 
 }
 
+
 function toggleSound(){
 
 sound=
 !sound;
+
 
 localStorage.setItem(
 
 "farmRushSound",
 
 sound
+
 ?
+
 "1"
+
 :
+
 "0"
 
 );
+
 
 document.getElementById(
 "soundHome"
@@ -2638,6 +2416,7 @@ sound
 :
 "🔇";
 
+
 document.getElementById(
 "soundGame"
 ).textContent=
@@ -2647,6 +2426,7 @@ sound
 "🔊"
 :
 "🔇";
+
 
 if(
 sound
@@ -2658,15 +2438,10 @@ tone();
 
 }
 
-/* =========================================
+
+/* ================================
 RENDER
-========================================= */
-
-const xpNeedEl=
-
-document.getElementById(
-"xpNeed"
-);
+================================ */
 
 function render(){
 
@@ -2675,13 +2450,18 @@ document.getElementById(
 ).textContent=
 S.level;
 
+
 document.getElementById(
 "xp"
 ).textContent=
 S.xp;
 
-xpNeedEl.textContent=
+
+document.getElementById(
+"xpNeed"
+).textContent=
 xpNeed();
+
 
 document.getElementById(
 "xpfill"
@@ -2700,6 +2480,7 @@ xpNeed()*
 +
 "%";
 
+
 document.getElementById(
 "money"
 ).textContent=
@@ -2711,6 +2492,7 @@ S.money
 "fr-FR"
 );
 
+
 document.getElementById(
 "farmBtn"
 ).classList.toggle(
@@ -2721,6 +2503,7 @@ S.currentZone==="farm"
 
 );
 
+
 document.getElementById(
 "orchardBtn"
 ).classList.toggle(
@@ -2730,6 +2513,7 @@ document.getElementById(
 S.currentZone==="orchard"
 
 );
+
 
 document.getElementById(
 "orchardBtn"
@@ -2745,6 +2529,7 @@ S.orchardBought
 
 "🔒 VERGER";
 
+
 renderFields();
 
 renderBuildings();
@@ -2755,17 +2540,50 @@ save();
 
 }
 
-/* =========================================
-CHANGEMENT ZONE
-========================================= */
 
-function switchZone(zone){
+/* ================================
+ANNULER PLANTATION
+================================ */
+
+function cancelPaint(){
 
 paint=
 null;
 
+
 painting=
 false;
+
+
+seen.clear();
+
+
+lastTouchPoint=
+null;
+
+
+paintOutOfMoney=
+false;
+
+
+fieldLayer.classList.remove(
+"paint-mode"
+);
+
+
+renderPaint();
+
+}
+
+
+/* ================================
+ZONES
+================================ */
+
+function switchZone(zone){
+
+cancelPaint();
+
 
 if(
 
@@ -2783,8 +2601,10 @@ return;
 
 }
 
+
 S.currentZone=
 zone;
+
 
 tone();
 
@@ -2792,32 +2612,34 @@ render();
 
 }
 
-/* =========================================
-CHAMPS ISOMETRIQUES
-========================================= */
+
+/* ================================
+RENDER CHAMPS
+================================ */
 
 function renderFields(){
 
 const layer=
+fieldLayer;
 
-document.getElementById(
-"fieldLayer"
-);
 
 layer.innerHTML=
 "";
 
-const currentFields=
+
+const arr=
 
 fields(
 S.currentZone
 );
+
 
 const unlockedPlots=
 
 plots(
 S.currentZone
 );
+
 
 const maximum=
 
@@ -2830,6 +2652,7 @@ S.currentZone==="farm"
 :
 
 20;
+
 
 for(
 
@@ -2847,9 +2670,11 @@ Math.floor(
 index/5
 );
 
+
 const column=
 
 index%5;
+
 
 const button=
 
@@ -2857,14 +2682,18 @@ document.createElement(
 "button"
 );
 
+
 button.className=
 "plot";
+
 
 button.dataset.i=
 index;
 
+
 button.dataset.z=
 S.currentZone;
+
 
 button.style.left=
 
@@ -2881,6 +2710,7 @@ row
 +
 "px";
 
+
 button.style.top=
 
 188
@@ -2896,6 +2726,7 @@ row
 +
 "px";
 
+
 if(
 index>=unlockedPlots
 ){
@@ -2904,6 +2735,7 @@ button.classList.add(
 "locked"
 );
 
+
 button.innerHTML=
 
 '<span class="crop">🔒</span>';
@@ -2911,7 +2743,7 @@ button.innerHTML=
 }
 
 else if(
-!currentFields[index]
+!arr[index]
 ){
 
 button.innerHTML=
@@ -2924,7 +2756,8 @@ else{
 
 const field=
 
-currentFields[index];
+arr[index];
+
 
 const crop=
 
@@ -2932,12 +2765,14 @@ CROPS[
 field.crop
 ];
 
+
 if(
 !crop
 ){
 
-currentFields[index]=
+arr[index]=
 null;
+
 
 button.innerHTML=
 
@@ -2950,10 +2785,15 @@ else{
 const remaining=
 
 (
-field.ready-
+field.ready
+
+-
+
 Date.now()
+
 )
 /1000;
+
 
 if(
 remaining<=0
@@ -2962,6 +2802,7 @@ remaining<=0
 button.classList.add(
 "ready"
 );
+
 
 button.innerHTML=
 
@@ -2974,9 +2815,13 @@ else{
 
 const progress=
 
-1-
+1
+
+-
+
 remaining/
 crop.t;
+
 
 const stage=
 
@@ -2998,6 +2843,7 @@ progress>.28
 
 "🌱";
 
+
 button.innerHTML=
 
 `<span class="crop">${stage}</span>
@@ -3009,6 +2855,7 @@ button.innerHTML=
 
 }
 
+
 layer.appendChild(
 button
 );
@@ -3017,9 +2864,10 @@ button
 
 }
 
-/* =========================================
+
+/* ================================
 BATIMENTS
-========================================= */
+================================ */
 
 function renderBuildings(){
 
@@ -3067,6 +2915,7 @@ S.orchardBought
 
 ];
 
+
 for(
 const [
 id,
@@ -3087,14 +2936,17 @@ id
 
 }
 
+
 const eggBadge=
 
 document.getElementById(
 "eggBadge"
 );
 
+
 eggBadge.textContent=
 S.eggWaiting;
+
 
 eggBadge.classList.toggle(
 
@@ -3104,10 +2956,15 @@ eggBadge.classList.toggle(
 
 );
 
+
 const animalReady=
 
-S.milkWaiting+
+S.milkWaiting
+
++
+
 S.baconWaiting;
+
 
 const barnBadge=
 
@@ -3115,8 +2972,10 @@ document.getElementById(
 "barnBadge"
 );
 
+
 barnBadge.textContent=
 animalReady;
+
 
 barnBadge.classList.toggle(
 
@@ -3128,9 +2987,10 @@ barnBadge.classList.toggle(
 
 }
 
-/* =========================================
-MODE PLANTATION
-========================================= */
+
+/* ================================
+AFFICHAGE MODE PLANTATION
+================================ */
 
 function renderPaint(){
 
@@ -3140,30 +3000,31 @@ document.getElementById(
 "paintHint"
 );
 
+
 if(
 paint
 ){
+
+const crop=
+
+CROPS[
+paint.crop
+];
+
 
 hint.classList.add(
 "show"
 );
 
-hint.textContent=
 
-CROPS[
-paint.crop
-].i
+hint.innerHTML=
 
-+
-" "
+`<b>${crop.i} ${crop.n}</b> — pose ton doigt sur une parcelle et glisse • relâche = fin`;
 
-+
-CROPS[
-paint.crop
-].n
 
-+
-" — glisse puis relâche";
+fieldLayer.classList.add(
+"paint-mode"
+);
 
 }
 
@@ -3173,21 +3034,46 @@ hint.classList.remove(
 "show"
 );
 
-}
+
+hint.textContent=
+"";
+
+
+fieldLayer.classList.remove(
+"paint-mode"
+);
 
 }
 
-/* =========================================
-CLICK CHAMP
-========================================= */
+}
 
-document.getElementById(
-"fieldLayer"
-).addEventListener(
+
+/* ================================
+CLIC NORMAL SUR UNE CASE
+================================ */
+
+fieldLayer.addEventListener(
 
 "click",
 
 event=>{
+
+
+if(
+
+Date.now()<
+suppressClickUntil
+
+||
+
+paint
+
+){
+
+return;
+
+}
+
 
 const plot=
 
@@ -3195,15 +3081,15 @@ event.target.closest(
 ".plot"
 );
 
+
 if(
 !plot
-||
-paint
 ){
 
 return;
 
 }
+
 
 const index=
 
@@ -3211,9 +3097,11 @@ Number(
 plot.dataset.i
 );
 
+
 const zone=
 
 plot.dataset.z;
+
 
 if(
 index>=plots(zone)
@@ -3223,9 +3111,11 @@ return;
 
 }
 
+
 const field=
 
 fields(zone)[index];
+
 
 if(
 
@@ -3260,14 +3150,18 @@ zone
 
 );
 
-/* =========================================
+
+/* ================================
 CHOIX CULTURE
-========================================= */
+================================ */
 
 function cropPicker(
 index,
 zone
 ){
+
+cancelPaint();
+
 
 pending={
 
@@ -3277,20 +3171,32 @@ z:zone
 
 };
 
+
 let html=
 
-'<div class="small" style="margin-bottom:8px">Choisis la culture : la première case est plantée, puis tu peux glisser sur les autres et relâcher pour terminer.</div>';
+'<div class="small" style="margin-bottom:8px">'
 
-html+=
++
+
+'Choisis une culture. La première case est plantée tout de suite. Ensuite <b>pose ton doigt sur une autre case et glisse</b>. Dès que tu relâches, le mode plantation s’arrête.'
+
++
+
+'</div>'
+
++
 
 '<div class="cropGrid">';
+
 
 for(
 const key in CROPS
 ){
 
 const crop=
+
 CROPS[key];
+
 
 if(
 crop.z!==zone
@@ -3300,20 +3206,26 @@ continue;
 
 }
 
+
 const available=
 
 unlocked(
 key
 );
 
+
 html+=
 
 `<button
 class="cropBtn"
 ${available
+
 ?
+
 `onclick="chooseCrop('${key}')"`
+
 :
+
 "disabled"
 }>
 
@@ -3327,10 +3239,15 @@ ${fmt(crop.t)}
 ${crop.c} 🪙
 
 ${available
+
 ?
+
 ""
+
 :
-" • Niv."+crop.l
+
+" • Niv."+
+crop.l
 }
 
 </small>
@@ -3339,8 +3256,10 @@ ${available
 
 }
 
+
 html+=
 "</div>";
+
 
 openModal(
 
@@ -3352,24 +3271,57 @@ html
 
 }
 
+
+/* ================================
+CHOIX EFFECTIF
+================================ */
+
 function chooseCrop(key){
 
 if(
+
 !pending
+
+||
+
+!CROPS[key]
+
 ){
 
 return;
 
 }
 
+
 const index=
 pending.i;
+
 
 const zone=
 pending.z;
 
+
 const crop=
+
 CROPS[key];
+
+
+if(
+
+crop.z!==zone
+
+||
+
+!unlocked(
+key
+)
+
+){
+
+return;
+
+}
+
 
 if(
 S.money<
@@ -3381,6 +3333,7 @@ return fail(
 );
 
 }
+
 
 if(
 !plant(
@@ -3394,6 +3347,12 @@ return;
 
 }
 
+
+/*
+IMPORTANT :
+le mode est actif après la première plantation.
+*/
+
 paint={
 
 crop:key,
@@ -3402,25 +3361,63 @@ zone:zone
 
 };
 
+
 pending=
 null;
+
+
+/*
+Ferme la fenêtre sans supprimer le mode plantation.
+*/
 
 closeModal(
 true
 );
+
+
+/*
+Bloque le faux clic envoyé par iOS.
+*/
+
+suppressClickUntil=
+
+Date.now()
+
++
+
+450;
+
 
 tone(
 690,
 .07
 );
 
+
 render();
+
+
+toastMsg(
+
+crop.i
+
++
+" "
+
++
+crop.n
+
++
+" : glisse sur les parcelles puis relâche"
+
+);
 
 }
 
-/* =========================================
-PLANTER
-========================================= */
+
+/* ================================
+PLANTER UNE CASE
+================================ */
 
 function plant(
 index,
@@ -3428,15 +3425,19 @@ key,
 zone
 ){
 
-const currentFields=
+const arr=
 
 fields(
 zone
 );
 
+
 const crop=
 
-CROPS[key];
+CROPS[
+key
+];
+
 
 if(
 
@@ -3449,7 +3450,21 @@ plots(zone)
 
 ||
 
-currentFields[index]
+arr[index]
+
+||
+
+!crop
+
+||
+
+crop.z!==zone
+
+||
+
+!unlocked(
+key
+)
 
 ||
 
@@ -3462,10 +3477,12 @@ return false;
 
 }
 
+
 S.money-=
 crop.c;
 
-currentFields[index]={
+
+arr[index]={
 
 crop:key,
 
@@ -3480,25 +3497,67 @@ crop.t*
 
 };
 
+
 return true;
 
 }
 
-/* =========================================
-GLISSER POUR PLANTER
-========================================= */
 
-const fieldLayer=
+/* =====================================
+DÉTECTION DU LOSANGE SOUS LE DOIGT
+===================================== */
 
-document.getElementById(
-"fieldLayer"
+function plotAtPoint(
+x,
+y
+){
+
+const element=
+
+document.elementFromPoint(
+x,
+y
 );
 
-fieldLayer.addEventListener(
 
-"pointerdown",
+const plot=
 
-event=>{
+element?.closest?.(
+".plot"
+);
+
+
+return(
+
+plot
+
+&&
+
+fieldLayer.contains(
+plot
+)
+
+?
+
+plot
+
+:
+
+null
+
+);
+
+}
+
+
+/* =====================================
+PLANTER À UNE POSITION
+===================================== */
+
+function paintAtPoint(
+x,
+y
+){
 
 if(
 !paint
@@ -3508,11 +3567,14 @@ return;
 
 }
 
+
 const plot=
 
-event.target.closest(
-".plot"
+plotAtPoint(
+x,
+y
 );
+
 
 if(
 
@@ -3529,16 +3591,6 @@ return;
 
 }
 
-event.preventDefault();
-
-painting=
-true;
-
-seen.clear();
-
-fieldLayer.setPointerCapture?.(
-event.pointerId
-);
 
 paintOne(
 
@@ -3546,7 +3598,415 @@ Number(
 plot.dataset.i
 ),
 
-plot.dataset.z
+paint.zone
+
+);
+
+}
+
+
+/* =====================================
+CORRECTION GLISSEMENT RAPIDE
+
+On analyse aussi tous les points situés
+entre l'ancienne position et la nouvelle.
+===================================== */
+
+function paintAlong(
+x1,
+y1,
+x2,
+y2
+){
+
+const dx=
+
+x2-
+x1;
+
+
+const dy=
+
+y2-
+y1;
+
+
+const distance=
+
+Math.hypot(
+dx,
+dy
+);
+
+
+/*
+Un point tous les 10 pixels environ.
+Ça permet de ne pas sauter une parcelle
+quand le doigt va rapidement.
+*/
+
+const steps=
+
+Math.max(
+
+1,
+
+Math.ceil(
+distance/
+10
+)
+
+);
+
+
+for(
+
+let step=0;
+
+step<=steps;
+
+step++
+
+){
+
+const ratio=
+
+step/
+steps;
+
+
+paintAtPoint(
+
+x1+
+dx*
+ratio,
+
+y1+
+dy*
+ratio
+
+);
+
+}
+
+}
+
+
+/* =====================================
+IPHONE : TOUCH START
+===================================== */
+
+fieldLayer.addEventListener(
+
+"touchstart",
+
+event=>{
+
+
+if(
+
+!paint
+
+||
+
+event.touches.length!==1
+
+){
+
+return;
+
+}
+
+
+const touch=
+
+event.touches[0];
+
+
+/*
+On bloque Safari uniquement lorsque
+le joueur a déjà choisi une culture.
+*/
+
+event.preventDefault();
+
+
+painting=
+true;
+
+
+seen.clear();
+
+
+paintOutOfMoney=
+false;
+
+
+lastTouchPoint={
+
+x:
+touch.clientX,
+
+y:
+touch.clientY
+
+};
+
+
+suppressClickUntil=
+
+Date.now()
+
++
+
+700;
+
+
+/*
+La parcelle touchée est prise en compte.
+*/
+
+paintAtPoint(
+
+touch.clientX,
+
+touch.clientY
+
+);
+
+},
+
+{
+passive:false
+}
+
+);
+
+
+/* =====================================
+IPHONE : TOUCH MOVE
+===================================== */
+
+fieldLayer.addEventListener(
+
+"touchmove",
+
+event=>{
+
+
+if(
+
+!paint
+
+||
+
+!painting
+
+||
+
+event.touches.length!==1
+
+){
+
+return;
+
+}
+
+
+const touch=
+
+event.touches[0];
+
+
+event.preventDefault();
+
+
+if(
+lastTouchPoint
+){
+
+paintAlong(
+
+lastTouchPoint.x,
+
+lastTouchPoint.y,
+
+touch.clientX,
+
+touch.clientY
+
+);
+
+}
+
+else{
+
+paintAtPoint(
+
+touch.clientX,
+
+touch.clientY
+
+);
+
+}
+
+
+lastTouchPoint={
+
+x:
+touch.clientX,
+
+y:
+touch.clientY
+
+};
+
+},
+
+{
+passive:false
+}
+
+);
+
+
+/* =====================================
+IPHONE : RELÂCHEMENT
+===================================== */
+
+function finishTouchPaint(){
+
+if(
+!painting
+){
+
+return;
+
+}
+
+
+painting=
+false;
+
+
+seen.clear();
+
+
+lastTouchPoint=
+null;
+
+
+suppressClickUntil=
+
+Date.now()
+
++
+
+700;
+
+
+/*
+RELÂCHER = LE MODE DISPARAÎT.
+*/
+
+paint=
+null;
+
+
+paintOutOfMoney=
+false;
+
+
+renderPaint();
+
+save();
+
+}
+
+
+fieldLayer.addEventListener(
+
+"touchend",
+
+finishTouchPaint,
+
+{
+passive:true
+}
+
+);
+
+
+fieldLayer.addEventListener(
+
+"touchcancel",
+
+finishTouchPaint,
+
+{
+passive:true
+}
+
+);
+
+
+/* =====================================
+SOURIS / PC
+===================================== */
+
+fieldLayer.addEventListener(
+
+"mousedown",
+
+event=>{
+
+
+if(
+
+!paint
+
+||
+
+event.button!==0
+
+){
+
+return;
+
+}
+
+
+event.preventDefault();
+
+
+painting=
+true;
+
+
+seen.clear();
+
+
+paintOutOfMoney=
+false;
+
+
+lastTouchPoint={
+
+x:
+event.clientX,
+
+y:
+event.clientY
+
+};
+
+
+paintAtPoint(
+
+event.clientX,
+
+event.clientY
 
 );
 
@@ -3554,11 +4014,69 @@ plot.dataset.z
 
 );
 
-fieldLayer.addEventListener(
 
-"pointermove",
+addEventListener(
+
+"mousemove",
 
 event=>{
+
+
+if(
+
+!paint
+
+||
+
+!painting
+
+){
+
+return;
+
+}
+
+
+if(
+lastTouchPoint
+){
+
+paintAlong(
+
+lastTouchPoint.x,
+
+lastTouchPoint.y,
+
+event.clientX,
+
+event.clientY
+
+);
+
+}
+
+
+lastTouchPoint={
+
+x:
+event.clientX,
+
+y:
+event.clientY
+
+};
+
+}
+
+);
+
+
+addEventListener(
+
+"mouseup",
+
+()=>{
+
 
 if(
 
@@ -3574,66 +4092,38 @@ return;
 
 }
 
-event.preventDefault();
 
-const element=
+painting=
+false;
 
-document.elementFromPoint(
 
-event.clientX,
+seen.clear();
 
-event.clientY
 
-);
+lastTouchPoint=
+null;
 
-const plot=
 
-element?.closest(
-".plot"
-);
+paint=
+null;
 
-if(
 
-plot
+paintOutOfMoney=
+false;
 
-&&
 
-plot.dataset.z===
-paint.zone
+renderPaint();
 
-){
-
-paintOne(
-
-Number(
-plot.dataset.i
-),
-
-plot.dataset.z
-
-);
-
-}
+save();
 
 }
 
 );
 
-fieldLayer.addEventListener(
 
-"pointerup",
-
-finishPaint
-
-);
-
-fieldLayer.addEventListener(
-
-"pointercancel",
-
-finishPaint
-
-);
+/* =====================================
+PLANTER UNE CASE DURANT LE GLISSEMENT
+===================================== */
 
 function paintOne(
 index,
@@ -3641,38 +4131,57 @@ zone
 ){
 
 if(
+
+!paint
+
+||
+
+paint.zone!==zone
+
+||
+
 seen.has(
 index
 )
+
 ){
 
 return;
 
 }
+
 
 seen.add(
 index
 );
 
-const currentFields=
+
+const arr=
 
 fields(
 zone
 );
 
+
 if(
 
-index>=plots(zone)
+index<0
 
 ||
 
-currentFields[index]
+index>=
+plots(zone)
+
+||
+
+arr[index]
 
 ){
 
 return;
 
 }
+
 
 const crop=
 
@@ -3680,14 +4189,31 @@ CROPS[
 paint.crop
 ];
 
+
 if(
 S.money<
 crop.c
 ){
 
+if(
+!paintOutOfMoney
+){
+
+paintOutOfMoney=
+true;
+
+
+toastMsg(
+"Pas assez d’argent"
+);
+
+}
+
+
 return;
 
 }
+
 
 if(
 plant(
@@ -3699,10 +4225,18 @@ zone
 
 tone(
 690,
-.05
+.04
 );
 
+
+/*
+On actualise seulement les champs,
+pas tout le jeu, sinon Safari perd
+la cible tactile pendant le geste.
+*/
+
 renderFields();
+
 
 document.getElementById(
 "money"
@@ -3719,48 +4253,27 @@ S.money
 
 }
 
-function finishPaint(){
 
-if(
-!painting
-){
-
-return;
-
-}
-
-painting=
-false;
-
-seen.clear();
-
-paint=
-null;
-
-renderPaint();
-
-save();
-
-}
-
-/* =========================================
+/* ================================
 RECOLTE
-========================================= */
+================================ */
 
 function harvest(
 index,
 zone=S.currentZone
 ){
 
-const currentFields=
+const arr=
 
 fields(
 zone
 );
 
+
 const field=
 
-currentFields[index];
+arr[index];
+
 
 if(
 
@@ -3777,11 +4290,13 @@ return;
 
 }
 
+
 const crop=
 
 CROPS[
 field.crop
 ];
+
 
 S.stock[
 field.crop
@@ -3799,42 +4314,60 @@ field.crop
 +
 1;
 
-currentFields[index]=
+
+arr[index]=
 null;
+
 
 addXP(
 crop.x
 );
+
 
 tone(
 900,
 .08
 );
 
+
 float(
 
-crop.i+
+crop.i
+
++
 " +1"
 
 );
+
 
 render();
 
 }
 
+
+/* ================================
+RECOLTER TOUT
+================================ */
+
 function harvestAll(){
 
-const currentFields=
+cancelPaint();
+
+
+const arr=
 
 fields(
 S.currentZone
 );
 
+
 const ready=[];
 
-currentFields.forEach(
+
+arr.forEach(
 
 (field,index)=>{
+
 
 if(
 
@@ -3860,9 +4393,8 @@ index
 
 }
 
-}
+});
 
-);
 
 if(
 !ready.length
@@ -3876,6 +4408,7 @@ return;
 
 }
 
+
 if(
 !S.tractor
 ){
@@ -3888,26 +4421,30 @@ return;
 
 }
 
+
 let totalXP=
 0;
+
 
 ready.forEach(
 
 index=>{
 
+
 const crop=
 
 CROPS[
-currentFields[index].crop
+arr[index].crop
 ];
 
+
 S.stock[
-currentFields[index].crop
+arr[index].crop
 ]=
 
 (
 S.stock[
-currentFields[index].crop
+arr[index].crop
 ]
 
 ||
@@ -3917,24 +4454,27 @@ currentFields[index].crop
 +
 1;
 
-currentFields[index]=
+
+arr[index]=
 null;
+
 
 totalXP+=
 crop.x;
 
-}
+});
 
-);
 
 addXP(
 totalXP
 );
 
+
 tone(
 900,
 .1
 );
+
 
 float(
 
@@ -3948,15 +4488,20 @@ ready.length
 
 );
 
+
 render();
 
 }
 
-/* =========================================
-BÂTIMENTS
-========================================= */
+
+/* ================================
+BATIMENTS
+================================ */
 
 function openBuilding(type){
+
+cancelPaint();
+
 
 const owned=
 
@@ -3994,6 +4539,7 @@ S.bakeryBought
 
 S.dairyBought;
 
+
 if(
 !owned
 ){
@@ -4003,6 +4549,7 @@ openShop();
 return;
 
 }
+
 
 /* POULAILLER */
 
@@ -4015,6 +4562,7 @@ openModal(
 "🐔 Poulailler",
 
 `
+
 <div class="card">
 
 <div class="title">
@@ -4054,11 +4602,13 @@ Récupérer
 </div>
 
 </div>
+
 `
 
 );
 
 }
+
 
 /* ETABLE */
 
@@ -4071,26 +4621,22 @@ openModal(
 "🐄 Étable",
 
 `
+
 <div class="grid">
 
 <div class="card">
 
 <div class="title">
-
-🐄
-${S.cows}
-
+🐄 ${S.cows}
 </div>
 
 <div class="stat">
 
-🌾
-${S.cowFeed}
+🌾 ${S.cowFeed}
 
 •
 
-🥛
-${S.milkWaiting}/12
+🥛 ${S.milkWaiting}/12
 
 </div>
 
@@ -4116,24 +4662,20 @@ Récupérer
 
 </div>
 
+
 <div class="card">
 
 <div class="title">
-
-🐖
-${S.pigs}
-
+🐖 ${S.pigs}
 </div>
 
 <div class="stat">
 
-🥕
-${S.pigFeed}
+🥕 ${S.pigFeed}
 
 •
 
-🥓
-${S.baconWaiting}/12
+🥓 ${S.baconWaiting}/12
 
 </div>
 
@@ -4160,11 +4702,13 @@ Récupérer
 </div>
 
 </div>
+
 `
 
 );
 
 }
+
 
 /* MOULIN */
 
@@ -4198,6 +4742,7 @@ S.flourWaiting,
 
 }
 
+
 /* BOULANGERIE */
 
 if(
@@ -4229,6 +4774,7 @@ S.breadWaiting,
 );
 
 }
+
 
 /* FROMAGERIE */
 
@@ -4264,6 +4810,11 @@ S.cheeseWaiting,
 
 }
 
+
+/* ================================
+MENU PRODUCTION
+================================ */
+
 function queueModal(
 title,
 recipe,
@@ -4282,6 +4833,7 @@ openModal(
 title,
 
 `
+
 <div class="card">
 
 <div class="small">
@@ -4321,15 +4873,17 @@ Récupérer
 </div>
 
 </div>
+
 `
 
 );
 
 }
 
-/* =========================================
+
+/* ================================
 NOURRIR
-========================================= */
+================================ */
 
 function feedCoop(){
 
@@ -4343,7 +4897,9 @@ return fail(
 
 }
 
+
 S.stock.wheat--;
+
 
 if(
 S.coopFeed<=0
@@ -4354,8 +4910,10 @@ Date.now();
 
 }
 
+
 S.coopFeed+=
 5;
+
 
 render();
 
@@ -4364,6 +4922,7 @@ openBuilding(
 );
 
 }
+
 
 function feedCow(){
 
@@ -4377,8 +4936,10 @@ return fail(
 
 }
 
+
 S.stock.wheat-=
 2;
+
 
 if(
 S.cowFeed<=0
@@ -4389,8 +4950,10 @@ Date.now();
 
 }
 
+
 S.cowFeed+=
 3;
+
 
 render();
 
@@ -4399,6 +4962,7 @@ openBuilding(
 );
 
 }
+
 
 function feedPig(){
 
@@ -4412,8 +4976,10 @@ return fail(
 
 }
 
+
 S.stock.carrot-=
 2;
+
 
 if(
 S.pigFeed<=0
@@ -4424,8 +4990,10 @@ Date.now();
 
 }
 
+
 S.pigFeed+=
 3;
+
 
 render();
 
@@ -4435,9 +5003,10 @@ openBuilding(
 
 }
 
-/* =========================================
-COLLECTER
-========================================= */
+
+/* ================================
+COLLECTE
+================================ */
 
 function collect(
 waitingKey,
@@ -4455,6 +5024,7 @@ waitingKey
 ||
 0;
 
+
 if(
 !quantity
 ){
@@ -4464,6 +5034,7 @@ return fail(
 );
 
 }
+
 
 S.stock[
 stockKey
@@ -4481,15 +5052,18 @@ stockKey
 +
 quantity;
 
+
 S[
 waitingKey
 ]=
 0;
 
+
 tone(
 900,
 .08
 );
+
 
 float(
 
@@ -4503,6 +5077,7 @@ quantity
 
 );
 
+
 render();
 
 openBuilding(
@@ -4511,9 +5086,10 @@ back
 
 }
 
-/* =========================================
+
+/* ================================
 FILES PRODUCTION
-========================================= */
+================================ */
 
 function loadMill(){
 
@@ -4533,6 +5109,7 @@ loadQueue(
 
 }
 
+
 function loadBakery(){
 
 loadQueue(
@@ -4551,6 +5128,7 @@ loadQueue(
 
 }
 
+
 function loadDairy(){
 
 loadQueue(
@@ -4568,6 +5146,7 @@ loadQueue(
 );
 
 }
+
 
 function loadQueue(
 stockKey,
@@ -4599,10 +5178,12 @@ return fail(
 
 }
 
+
 S.stock[
 stockKey
 ]-=
 quantity;
+
 
 if(
 S[
@@ -4617,9 +5198,11 @@ Date.now();
 
 }
 
+
 S[
 queueKey
 ]++;
+
 
 render();
 
@@ -4629,15 +5212,16 @@ back
 
 }
 
-/* =========================================
-PRODUCTION
-========================================= */
+
+/* ================================
+PRODUCTION ANIMAUX
+================================ */
 
 function prodFeed(
-ownedKey,
-feedKey,
-waitingKey,
-lastKey,
+owned,
+feed,
+waiting,
+last,
 capacity,
 interval
 ){
@@ -4645,9 +5229,10 @@ interval
 const now=
 Date.now();
 
+
 if(
 !S[
-ownedKey
+owned
 ]
 ){
 
@@ -4655,45 +5240,55 @@ return;
 
 }
 
+
 if(
 
 S[
-feedKey
+feed
 ]<=0
 
 ||
 
 S[
-waitingKey
+waiting
 ]>=
 capacity
 
 ){
 
 S[
-lastKey
+last
 ]=
 now;
+
 
 return;
 
 }
+
 
 const cycles=
 
 Math.floor(
 
 (
-now-
+now
+
+-
+
 S[
-lastKey
+last
 ]
+
 )
+
 /1000/
+
 interval()
 
 );
 
+
 if(
 cycles>0
 ){
@@ -4705,41 +5300,81 @@ Math.min(
 cycles,
 
 S[
-feedKey
+feed
 ],
 
-capacity-
+capacity
+
+-
+
 S[
-waitingKey
+waiting
 ]
 
 );
 
+
 S[
-waitingKey
+waiting
 ]+=actual;
 
+
 S[
-feedKey
+feed
 ]-=actual;
 
+
 S[
-lastKey
+last
 ]+=
 
-actual*
-interval()*
+actual
+
+*
+
+interval()
+
+*
+
 1000;
 
+
+if(
+
+S[
+feed
+]<=0
+
+||
+
+S[
+waiting
+]>=
+capacity
+
+){
+
+S[
+last
+]=
+now;
+
 }
 
 }
+
+}
+
+
+/* ================================
+PRODUCTION MACHINES
+================================ */
 
 function prodQueue(
-ownedKey,
-queueKey,
-waitingKey,
-lastKey,
+owned,
+queue,
+waiting,
+last,
 capacity,
 interval
 ){
@@ -4747,9 +5382,10 @@ interval
 const now=
 Date.now();
 
+
 if(
 !S[
-ownedKey
+owned
 ]
 ){
 
@@ -4757,44 +5393,54 @@ return;
 
 }
 
+
 if(
 
 S[
-queueKey
+queue
 ]<=0
 
 ||
 
 S[
-waitingKey
+waiting
 ]>=
 capacity
 
 ){
 
 S[
-lastKey
+last
 ]=
 now;
+
 
 return;
 
 }
+
 
 const cycles=
 
 Math.floor(
 
 (
-now-
+now
+
+-
+
 S[
-lastKey
+last
 ]
+
 )
+
 /1000/
+
 interval
 
 );
+
 
 if(
 cycles>0
@@ -4807,35 +5453,75 @@ Math.min(
 cycles,
 
 S[
-queueKey
+queue
 ],
 
-capacity-
+capacity
+
+-
+
 S[
-waitingKey
+waiting
 ]
 
 );
 
+
 S[
-waitingKey
+waiting
 ]+=actual;
 
+
 S[
-queueKey
+queue
 ]-=actual;
 
+
 S[
-lastKey
+last
 ]+=
 
-actual*
-interval*
+actual
+
+*
+
+interval
+
+*
+
 1000;
 
+
+if(
+
+S[
+queue
+]<=0
+
+||
+
+S[
+waiting
+]>=
+capacity
+
+){
+
+S[
+last
+]=
+now;
+
 }
 
 }
+
+}
+
+
+/* ================================
+MISE À JOUR PRODUCTIONS
+================================ */
 
 function updateProd(){
 
@@ -4858,6 +5544,7 @@ prodFeed(
 
 );
 
+
 prodFeed(
 
 "barnBought",
@@ -4876,6 +5563,7 @@ prodFeed(
 )
 
 );
+
 
 prodFeed(
 
@@ -4896,6 +5584,7 @@ prodFeed(
 
 );
 
+
 prodQueue(
 
 "millBought",
@@ -4912,6 +5601,7 @@ prodQueue(
 
 );
 
+
 prodQueue(
 
 "bakeryBought",
@@ -4927,6 +5617,7 @@ prodQueue(
 90
 
 );
+
 
 prodQueue(
 
@@ -4946,15 +5637,97 @@ prodQueue(
 
 }
 
+
+/* ================================
+PRODUCTION HORS LIGNE
+================================ */
+
 function offline(){
+
+const now=
+Date.now();
+
+
+const last=
+
+Number(
+S.lastSeen
+)
+
+||
+now;
+
+
+const effective=
+
+Math.min(
+
+now,
+
+last+
+7200000
+
+);
+
+
+/*
+On simule le temps écoulé,
+limité à 2 heures.
+*/
+
+const normalDateNow=
+
+Date.now;
+
+
+try{
+
+Date.now=
+
+()=>effective;
+
 
 updateProd();
 
 }
 
-/* =========================================
-OUVRIER AUTO
-========================================= */
+finally{
+
+Date.now=
+normalDateNow;
+
+}
+
+
+S.coopLastProduction=
+now;
+
+
+S.cowLastProduction=
+now;
+
+
+S.pigLastProduction=
+now;
+
+
+S.millLastProduction=
+now;
+
+
+S.bakeryLastProduction=
+now;
+
+
+S.dairyLastProduction=
+now;
+
+}
+
+
+/* ================================
+OUVRIER
+================================ */
 
 function runWorker(){
 
@@ -4972,6 +5745,7 @@ return;
 
 }
 
+
 const capacity=
 
 [
@@ -4987,17 +5761,23 @@ S.workerLevel
 ||
 0;
 
+
 const maximum=
 
 Math.min(
 
-S.workerPlots||capacity,
+S.workerPlots
+
+||
+
+capacity,
 
 capacity,
 
 S.plots
 
 );
+
 
 const crop=
 
@@ -5009,25 +5789,31 @@ S.workerCrop
 
 CROPS.wheat;
 
+
 let gainedXP=
 0;
+
 
 let changed=
 false;
 
+
 for(
 
-let i=0;
+let index=0;
 
-i<maximum;
+index<maximum;
 
-i++
+index++
 
 ){
 
 const field=
 
-S.fields[i];
+S.fields[
+index
+];
+
 
 if(
 
@@ -5040,11 +5826,12 @@ Date.now()
 
 ){
 
-const cropDone=
+const harvestedCrop=
 
 CROPS[
 field.crop
 ];
+
 
 S.stock[
 field.crop
@@ -5062,20 +5849,28 @@ field.crop
 +
 1;
 
-S.fields[i]=
+
+S.fields[
+index
+]=
 null;
 
+
 gainedXP+=
-cropDone.x;
+harvestedCrop.x;
+
 
 changed=
 true;
 
 }
 
+
 if(
 
-!S.fields[i]
+!S.fields[
+index
+]
 
 &&
 
@@ -5087,10 +5882,17 @@ crop.c
 S.money-=
 crop.c;
 
-S.fields[i]={
+
+S.fields[
+index
+]={
 
 crop:
-S.workerCrop||
+
+S.workerCrop
+
+||
+
 "wheat",
 
 ready:
@@ -5104,12 +5906,14 @@ crop.t*
 
 };
 
+
 changed=
 true;
 
 }
 
 }
+
 
 if(
 gainedXP
@@ -5121,11 +5925,19 @@ gainedXP
 
 }
 
+
 if(
 changed
 ){
 
+if(
+!painting
+){
+
 renderFields();
+
+}
+
 
 document.getElementById(
 "money"
@@ -5138,19 +5950,22 @@ S.money
 "fr-FR"
 );
 
+
 save();
 
 }
 
 }
 
-/* =========================================
-COMMANDES
-========================================= */
+
+/* ================================
+PRODUITS ACCESSIBLES
+================================ */
 
 function accessible(){
 
 const list=[];
+
 
 for(
 const key in CROPS
@@ -5170,6 +5985,7 @@ key
 
 }
 
+
 if(
 S.coopBought
 ){
@@ -5179,6 +5995,7 @@ list.push(
 );
 
 }
+
 
 if(
 S.barnBought
@@ -5194,6 +6011,7 @@ list.push(
 
 }
 
+
 if(
 S.millBought
 ){
@@ -5203,6 +6021,7 @@ list.push(
 );
 
 }
+
 
 if(
 S.bakeryBought
@@ -5214,6 +6033,7 @@ list.push(
 
 }
 
+
 if(
 S.dairyBought
 ){
@@ -5224,9 +6044,11 @@ list.push(
 
 }
 
+
 return list;
 
 }
+
 
 function info(key){
 
@@ -5249,40 +6071,116 @@ CROPS[key].s
 
 }
 
-return PRODUCTS[key];
+
+return PRODUCTS[
+key
+];
 
 }
 
-function makeOrders(){
+
+/* ================================
+COMMANDES
+================================ */
+
+function randomOrder(){
 
 const available=
 
 accessible();
 
-S.orders=
+
+if(
+!available.length
+){
+
+return{
+
+items:[
+{
+
+key:"wheat",
+
+qty:5
+
+}
+],
+
+reward:70,
+
+xp:10
+
+};
+
+}
+
+
+let count=
+
+S.level>=4
+
+?
+
+2
+
+:
+
+1;
+
+
+if(
+
+S.level>=9
+
+&&
+
+Math.random()<.5
+
+){
+
+count=
+3;
+
+}
+
+
+count=
+
+Math.min(
+
+count,
+
+available.length
+
+);
+
+
+const selected=
 
 [
-0,
-1,
-2
+...available
 ]
 
-.map(
-
-()=>{
-
-const key=
-
-available[
-Math.floor(
-Math.random()*
-available.length
+.sort(
+()=>Math.random()-.5
 )
-]
 
-||
+.slice(
+0,
+count
+);
 
-"wheat";
+
+let value=
+0;
+
+
+const items=
+
+selected.map(
+
+key=>{
+
 
 const product=
 
@@ -5290,38 +6188,68 @@ info(
 key
 );
 
+
 const quantity=
 
 product.s<=30
 
 ?
 
-5
+4+
+Math.floor(
+Math.random()*7
+)
 
 :
 
-2;
+product.s<=150
+
+?
+
+2+
+Math.floor(
+Math.random()*4
+)
+
+:
+
+1+
+Math.floor(
+Math.random()*3
+);
+
+
+value+=
+
+product.s*
+quantity;
+
 
 return{
-
-items:[
-{
 
 key:key,
 
 qty:
 quantity
 
-}
-],
+};
+
+});
+
+
+return{
+
+items:items,
 
 reward:
 
-Math.floor(
+Math.max(
 
-product.s*
-quantity*
-1.4
+25,
+
+Math.floor(
+value*1.4
+)
 
 ),
 
@@ -5332,11 +6260,7 @@ Math.max(
 10,
 
 Math.floor(
-
-product.s*
-quantity/
-12
-
+value/12
 )
 
 )
@@ -5345,19 +6269,117 @@ quantity/
 
 }
 
-);
+
+function makeOrders(){
+
+S.orders=[
+
+randomOrder(),
+
+randomOrder(),
+
+randomOrder()
+
+];
 
 }
 
+
+function normalizeOrders(){
+
+if(
+
+!Array.isArray(
+S.orders
+)
+
+||
+
+S.orders.length!==3
+
+){
+
+makeOrders();
+
+return;
+
+}
+
+
+const available=
+
+new Set(
+accessible()
+);
+
+
+for(
+const order of S.orders
+){
+
+if(
+
+!order
+
+||
+
+!Array.isArray(
+order.items
+)
+
+||
+
+!order.items.length
+
+||
+
+order.items.some(
+
+item=>
+
+!item
+
+||
+
+!available.has(
+item.key
+)
+
+||
+
+!Number(
+item.qty
+)
+
+)
+
+){
+
+makeOrders();
+
+return;
+
+}
+
+}
+
+}
+
+
 function openOrders(){
+
+cancelPaint();
+
 
 let html=
 
 '<div class="grid">';
 
+
 S.orders.forEach(
 
 (order,index)=>{
+
 
 const possible=
 
@@ -5379,9 +6401,12 @@ item.qty
 
 );
 
+
 html+=
 
-`<div class="card">
+`
+
+<div class="card">
 
 <div class="title">
 
@@ -5395,11 +6420,13 @@ order.items.map(
 
 item=>{
 
+
 const product=
 
 info(
 item.key
 );
+
 
 return`
 
@@ -5436,10 +6463,15 @@ ${item.qty}
 
 <button
 class="btn full"
+
 ${possible
+
 ?
+
 `onclick="deliver(${index})"`
+
 :
+
 "disabled"
 }>
 
@@ -5447,14 +6479,16 @@ Livrer
 
 </button>
 
-</div>`;
+</div>
 
-}
+`;
 
-);
+});
+
 
 html+=
 "</div>";
+
 
 openModal(
 
@@ -5466,15 +6500,19 @@ html
 
 }
 
+
 function deliver(index){
 
 const order=
 
-S.orders[index];
+S.orders[
+index
+];
 
-const possible=
 
-order.items.every(
+if(
+
+!order.items.every(
 
 item=>
 
@@ -5490,15 +6528,14 @@ item.key
 >=
 item.qty
 
-);
+)
 
-if(
-!possible
 ){
 
 return;
 
 }
+
 
 order.items.forEach(
 
@@ -5511,93 +6548,27 @@ item.qty
 
 );
 
+
 S.money+=
 order.reward;
+
 
 addXP(
 order.xp
 );
 
-const available=
 
-accessible();
+S.orders[
+index
+]=
+randomOrder();
 
-const key=
-
-available[
-Math.floor(
-Math.random()*
-available.length
-)
-]
-
-||
-
-"wheat";
-
-const product=
-
-info(
-key
-);
-
-const quantity=
-
-product.s<=30
-
-?
-
-5
-
-:
-
-2;
-
-S.orders[index]={
-
-items:[
-{
-
-key:key,
-
-qty:
-quantity
-
-}
-],
-
-reward:
-
-Math.floor(
-
-product.s*
-quantity*
-1.4
-
-),
-
-xp:
-
-Math.max(
-
-10,
-
-Math.floor(
-
-product.s*
-quantity/
-12
-
-)
-
-)
-
-};
 
 tone(
 1000,
 .09
 );
+
 
 render();
 
@@ -5605,15 +6576,20 @@ openOrders();
 
 }
 
-/* =========================================
+
+/* ================================
 STOCK
-========================================= */
+================================ */
 
 function openStock(){
+
+cancelPaint();
+
 
 let html=
 
 '<div class="stockGrid">';
+
 
 for(
 const key of accessible()
@@ -5625,9 +6601,12 @@ info(
 key
 );
 
+
 html+=
 
-`<div class="card">
+`
+
+<div class="card">
 
 <div class="title">
 
@@ -5643,12 +6622,16 @@ ${S.stock[key]||0}
 
 </div>
 
-</div>`;
+</div>
+
+`;
 
 }
 
+
 html+=
 "</div>";
+
 
 openModal(
 
@@ -5660,15 +6643,20 @@ html
 
 }
 
-/* =========================================
+
+/* ================================
 MARCHE
-========================================= */
+================================ */
 
 function openMarket(){
+
+cancelPaint();
+
 
 let html=
 
 '<div class="marketGrid">';
+
 
 for(
 const key of accessible()
@@ -5680,16 +6668,22 @@ info(
 key
 );
 
+
 const quantity=
 
-S.stock[key]
+S.stock[
+key
+]
 
 ||
 0;
 
+
 html+=
 
-`<div class="card">
+`
+
+<div class="card">
 
 <div class="title">
 
@@ -5715,10 +6709,15 @@ ${product.s}
 
 <button
 class="btn grow"
+
 ${quantity
+
 ?
+
 `onclick="sell('${key}',1)"`
+
 :
+
 "disabled"
 }>
 
@@ -5728,10 +6727,15 @@ x1
 
 <button
 class="btn gold grow"
+
 ${quantity
+
 ?
+
 `onclick="sell('${key}',${quantity})"`
+
 :
+
 "disabled"
 }>
 
@@ -5741,12 +6745,16 @@ Tout
 
 </div>
 
-</div>`;
+</div>
+
+`;
 
 }
 
+
 html+=
 "</div>";
+
 
 openModal(
 
@@ -5758,6 +6766,7 @@ html
 
 }
 
+
 function sell(
 key,
 quantity
@@ -5768,6 +6777,7 @@ const product=
 info(
 key
 );
+
 
 quantity=
 
@@ -5784,6 +6794,7 @@ key
 
 );
 
+
 if(
 quantity<=0
 ){
@@ -5792,23 +6803,28 @@ return;
 
 }
 
+
 S.stock[
 key
 ]-=
 quantity;
+
 
 const gain=
 
 quantity*
 product.s;
 
+
 S.money+=
 gain;
+
 
 tone(
 1000,
 .09
 );
+
 
 float(
 
@@ -5819,15 +6835,17 @@ gain
 
 );
 
+
 render();
 
 openMarket();
 
 }
 
-/* =========================================
-PRIX SHOP
-========================================= */
+
+/* ================================
+PRIX
+================================ */
 
 function plotCost(){
 
@@ -5853,6 +6871,7 @@ S.plots-4
 
 }
 
+
 function orchardCost(){
 
 return Math.floor(
@@ -5877,6 +6896,7 @@ S.orchardPlots-4
 
 }
 
+
 function henPrice(){
 
 return Math.floor(
@@ -5894,6 +6914,7 @@ S.hens-1
 );
 
 }
+
 
 function cowPrice(){
 
@@ -5913,6 +6934,7 @@ S.cows-1
 
 }
 
+
 function pigPrice(){
 
 return Math.floor(
@@ -5930,6 +6952,7 @@ S.pigs-1
 );
 
 }
+
 
 function workerCost(){
 
@@ -5952,17 +6975,89 @@ S.workerLevel
 
 }
 
-/* =========================================
+
+/* ================================
+SHOP CARD
+================================ */
+
+function shopCard(
+icon,
+name,
+description,
+price,
+action,
+available
+){
+
+return`
+
+<div class="card">
+
+<div class="title">
+
+${icon}
+${name}
+
+</div>
+
+<div class="small">
+
+${description}
+
+</div>
+
+<button
+class="btn gold full"
+
+${available
+
+?
+
+`onclick="${action}"`
+
+:
+
+"disabled"
+}>
+
+${available
+
+?
+
+price.toLocaleString(
+"fr-FR"
+)
+
++
+" 🪙"
+
+:
+
+"🔒 / déjà acheté"
+}
+
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* ================================
 SHOP
-========================================= */
+================================ */
 
 function openShop(){
+
+cancelPaint();
+
 
 let html=
 
 '<div class="grid">';
 
-/* PARCELLE */
 
 if(
 S.plots<40
@@ -5975,7 +7070,6 @@ shopCard(
 "🌱",
 
 "Parcelle "+
-
 (S.plots+1),
 
 "Agrandit la ferme",
@@ -5990,7 +7084,6 @@ true
 
 }
 
-/* PARCELLE VERGER */
 
 if(
 
@@ -6009,7 +7102,6 @@ shopCard(
 "🍎",
 
 "Parcelle verger "+
-
 (S.orchardPlots+1),
 
 "Agrandit le verger",
@@ -6024,7 +7116,6 @@ true
 
 }
 
-/* BATIMENTS */
 
 html+=
 
@@ -6048,6 +7139,7 @@ S.level>=5
 
 );
 
+
 html+=
 
 shopCard(
@@ -6070,6 +7162,7 @@ S.level>=9
 
 );
 
+
 html+=
 
 shopCard(
@@ -6091,6 +7184,7 @@ S.level>=12
 !S.millBought
 
 );
+
 
 html+=
 
@@ -6118,6 +7212,7 @@ S.millBought
 
 );
 
+
 html+=
 
 shopCard(
@@ -6144,7 +7239,6 @@ S.barnBought
 
 );
 
-/* ANIMAUX */
 
 if(
 S.coopBought
@@ -6170,6 +7264,7 @@ true
 
 }
 
+
 if(
 S.barnBought
 ){
@@ -6192,6 +7287,7 @@ true
 
 );
 
+
 html+=
 
 shopCard(
@@ -6212,7 +7308,6 @@ true
 
 }
 
-/* TRACTEUR */
 
 html+=
 
@@ -6236,7 +7331,6 @@ S.level>=8
 
 );
 
-/* VERGER */
 
 html+=
 
@@ -6260,7 +7354,6 @@ S.level>=14
 
 );
 
-/* OUVRIER */
 
 if(
 
@@ -6308,8 +7401,10 @@ true
 
 }
 
+
 html+=
 "</div>";
+
 
 openModal(
 
@@ -6321,75 +7416,17 @@ html
 
 }
 
-function shopCard(
-icon,
-name,
-description,
-price,
-action,
-available
-){
 
-return`
-
-<div class="card">
-
-<div class="title">
-
-${icon}
-
-${name}
-
-</div>
-
-<div class="small">
-
-${description}
-
-</div>
-
-<button
-class="btn gold full"
-
-${available
-?
-`onclick="${action}"`
-:
-"disabled"
-}>
-
-${available
-
-?
-
-price.toLocaleString(
-"fr-FR"
-)
-+
-" 🪙"
-
-:
-
-"🔒 / déjà acheté"
-
-}
-
-</button>
-
-</div>
-
-`;
-
-}
-
-/* =========================================
-ACHATS
-========================================= */
+/* ================================
+ACHAT PARCELLE
+================================ */
 
 function buyPlot(){
 
 const cost=
+
 plotCost();
+
 
 if(
 S.money<
@@ -6402,26 +7439,37 @@ return fail(
 
 }
 
+
 S.money-=
 cost;
 
+
 S.plots++;
+
 
 tone(
 450,
 .1
 );
 
+
 render();
 
 openShop();
 
 }
+
+
+/* ================================
+ACHAT PARCELLE VERGER
+================================ */
 
 function buyOrchardPlot(){
 
 const cost=
+
 orchardCost();
+
 
 if(
 S.money<
@@ -6434,21 +7482,30 @@ return fail(
 
 }
 
+
 S.money-=
 cost;
 
+
 S.orchardPlots++;
+
 
 tone(
 450,
 .1
 );
 
+
 render();
 
 openShop();
 
 }
+
+
+/* ================================
+ACHAT ANIMAL
+================================ */
 
 function buyAnimal(type){
 
@@ -6472,6 +7529,7 @@ cowPrice()
 
 pigPrice();
 
+
 if(
 S.money<
 cost
@@ -6483,8 +7541,10 @@ return fail(
 
 }
 
+
 S.money-=
 cost;
+
 
 if(
 type==="hen"
@@ -6494,6 +7554,7 @@ S.hens++;
 
 }
 
+
 if(
 type==="cow"
 ){
@@ -6501,6 +7562,7 @@ type==="cow"
 S.cows++;
 
 }
+
 
 if(
 type==="pig"
@@ -6510,10 +7572,12 @@ S.pigs++;
 
 }
 
+
 tone(
 450,
 .1
 );
+
 
 render();
 
@@ -6521,38 +7585,49 @@ openShop();
 
 }
 
+
+/* ================================
+ACHAT BATIMENT
+================================ */
+
 function buyBuilding(type){
 
 const config={
 
 coop:[
 1000,
+5,
 "coopBought"
 ],
 
 barn:[
 4000,
+9,
 "barnBought"
 ],
 
 mill:[
 10000,
+12,
 "millBought"
 ],
 
 bakery:[
 15000,
+13,
 "bakeryBought"
 ],
 
 dairy:[
 18000,
+15,
 "dairyBought"
 ]
 
 }[
 type
 ];
+
 
 if(
 
@@ -6561,13 +7636,13 @@ if(
 ||
 
 S[
-config[1]
+config[2]
 ]
 
 ||
 
-S.money<
-config[0]
+S.level<
+config[1]
 
 ){
 
@@ -6577,16 +7652,66 @@ return fail(
 
 }
 
+
+if(
+
+type==="bakery"
+
+&&
+
+!S.millBought
+
+){
+
+return fail(
+"Moulin requis"
+);
+
+}
+
+
+if(
+
+type==="dairy"
+
+&&
+
+!S.barnBought
+
+){
+
+return fail(
+"Étable requise"
+);
+
+}
+
+
+if(
+S.money<
+config[0]
+){
+
+return fail(
+"Pas assez d’argent"
+);
+
+}
+
+
 S.money-=
 config[0];
 
+
 S[
-config[1]
+config[2]
 ]=
 true;
 
+
 const now=
 Date.now();
+
 
 if(
 type==="coop"
@@ -6597,6 +7722,7 @@ now;
 
 }
 
+
 if(
 type==="barn"
 ){
@@ -6604,10 +7730,12 @@ type==="barn"
 S.cowLastProduction=
 now;
 
+
 S.pigLastProduction=
 now;
 
 }
+
 
 if(
 type==="mill"
@@ -6618,6 +7746,7 @@ now;
 
 }
 
+
 if(
 type==="bakery"
 ){
@@ -6626,6 +7755,7 @@ S.bakeryLastProduction=
 now;
 
 }
+
 
 if(
 type==="dairy"
@@ -6636,16 +7766,23 @@ now;
 
 }
 
+
 tone(
 450,
 .1
 );
+
 
 render();
 
 openShop();
 
 }
+
+
+/* ================================
+TRACTEUR
+================================ */
 
 function buyTractor(){
 
@@ -6659,22 +7796,31 @@ return fail(
 
 }
 
+
 S.money-=
 5000;
 
+
 S.tractor=
 true;
+
 
 tone(
 450,
 .1
 );
 
+
 render();
 
 openShop();
 
 }
+
+
+/* ================================
+VERGER
+================================ */
 
 function buyOrchard(){
 
@@ -6688,19 +7834,24 @@ return fail(
 
 }
 
+
 S.money-=
 20000;
+
 
 S.orchardBought=
 true;
 
+
 S.currentZone=
 "orchard";
+
 
 tone(
 450,
 .1
 );
+
 
 render();
 
@@ -6708,11 +7859,17 @@ openShop();
 
 }
 
+
+/* ================================
+OUVRIER
+================================ */
+
 function buyWorker(){
 
 const cost=
 
 workerCost();
+
 
 if(
 S.money<
@@ -6725,10 +7882,13 @@ return fail(
 
 }
 
+
 S.money-=
 cost;
 
+
 S.workerLevel++;
+
 
 S.workerPlots=
 
@@ -6742,10 +7902,12 @@ S.workerPlots=
 S.workerLevel
 ];
 
+
 tone(
 450,
 .1
 );
+
 
 render();
 
@@ -6753,11 +7915,15 @@ openShop();
 
 }
 
-/* =========================================
-OUVRIER MENU
-========================================= */
+
+/* ================================
+MENU OUVRIER
+================================ */
 
 function openWorker(){
+
+cancelPaint();
+
 
 if(
 S.workerLevel<=0
@@ -6771,11 +7937,13 @@ openModal(
 
 );
 
+
 return;
 
 }
 
-const max=
+
+const maximum=
 
 [
 0,
@@ -6787,11 +7955,47 @@ const max=
 S.workerLevel
 ];
 
+
+let options=
+"";
+
+
+for(
+const key in CROPS
+){
+
+const crop=
+
+CROPS[key];
+
+
+if(
+
+crop.z==="farm"
+
+&&
+
+unlocked(
+key
+)
+
+){
+
+options+=
+
+`<option value="${key}" ${S.workerCrop===key?"selected":""}>${crop.i} ${crop.n}</option>`;
+
+}
+
+}
+
+
 openModal(
 
 "🤖 Ouvrier",
 
 `
+
 <div class="card">
 
 <div class="stat">
@@ -6800,9 +8004,24 @@ Niveau ${S.workerLevel}
 
 •
 
-${max} parcelles max
+${maximum} parcelles max
 
 </div>
+
+<div class="small">
+
+Culture automatique
+
+</div>
+
+<select
+class="full"
+style="padding:10px;margin:5px 0 10px"
+onchange="changeWorkerCrop(this.value)">
+
+${options}
+
+</select>
 
 <button
 class="btn full"
@@ -6817,22 +8036,53 @@ ${S.workerEnabled
 :
 
 "▶ Activer"
-
 }
 
 </button>
 
 </div>
+
 `
 
 );
 
 }
 
+
+function changeWorkerCrop(value){
+
+if(
+
+CROPS[value]
+
+&&
+
+CROPS[value].z==="farm"
+
+&&
+
+unlocked(
+value
+)
+
+){
+
+S.workerCrop=
+value;
+
+
+save();
+
+}
+
+}
+
+
 function toggleWorker(){
 
 S.workerEnabled=
 !S.workerEnabled;
+
 
 save();
 
@@ -6840,17 +8090,22 @@ openWorker();
 
 }
 
-/* =========================================
+
+/* ================================
 PROGRESSION
-========================================= */
+================================ */
 
 function openProgress(){
+
+cancelPaint();
+
 
 openModal(
 
 "⭐ Progression",
 
 `
+
 <div class="card">
 
 <div class="title">
@@ -6862,36 +8117,21 @@ Niveau ${S.level}
 <div class="stat">
 
 XP :
-
-${S.xp}
-
-/
-
-${xpNeed()}
+${S.xp}/${xpNeed()}
 
 <br>
 
 🪙
-
-${Math.floor(
-S.money
-)
-.toLocaleString(
-"fr-FR"
-)}
+${Math.floor(S.money).toLocaleString("fr-FR")}
 
 <br>
 
 🌱
-
-${S.plots}
-
-/40 parcelles
+${S.plots}/40 parcelles
 
 <br>
 
 🍎
-
 ${S.orchardBought
 
 ?
@@ -6902,29 +8142,28 @@ S.orchardPlots+
 :
 
 "Verger verrouillé"
-
 }
 
 <br>
 
 🤖
-
 Ouvrier niv.
-
 ${S.workerLevel}
 
 </div>
 
 </div>
+
 `
 
 );
 
 }
 
-/* =========================================
-MODALE + SWIPE DOWN
-========================================= */
+
+/* ================================
+MODAL
+================================ */
 
 function openModal(
 title,
@@ -6936,10 +8175,12 @@ document.getElementById(
 ).textContent=
 title;
 
+
 document.getElementById(
 "modalBody"
 ).innerHTML=
 body;
+
 
 document.getElementById(
 "modal"
@@ -6947,12 +8188,19 @@ document.getElementById(
 "show"
 );
 
+
 tone();
 
 }
 
+
+/*
+keepPending = true est utilisé après le choix
+de culture pour conserver le mode plantation.
+*/
+
 function closeModal(
-keep=false
+keepPending=false
 ){
 
 const modal=
@@ -6961,25 +8209,30 @@ document.getElementById(
 "modal"
 );
 
+
 const sheet=
 
 document.getElementById(
 "sheet"
 );
 
+
 modal.classList.remove(
 "show"
 );
+
 
 sheet.classList.remove(
 "drag"
 );
 
+
 sheet.style.transform=
 "";
 
+
 if(
-!keep
+!keepPending
 ){
 
 pending=
@@ -6989,6 +8242,9 @@ null;
 
 }
 
+
+/* FERMETURE FOND */
+
 document.getElementById(
 "modal"
 ).addEventListener(
@@ -6996,6 +8252,7 @@ document.getElementById(
 "click",
 
 event=>{
+
 
 if(
 event.target.id==="modal"
@@ -7009,26 +8266,36 @@ closeModal();
 
 );
 
+
+/* ================================
+SWIPE DOWN MODAL
+================================ */
+
 const sheet=
 
 document.getElementById(
 "sheet"
 );
 
+
 let swipeStartY=
 0;
+
 
 let swipeDistance=
 0;
 
+
 let canSwipe=
 false;
+
 
 sheet.addEventListener(
 
 "touchstart",
 
 event=>{
+
 
 if(
 event.touches.length===1
@@ -7038,8 +8305,10 @@ swipeStartY=
 
 event.touches[0].clientY;
 
+
 swipeDistance=
 0;
+
 
 canSwipe=
 
@@ -7055,11 +8324,13 @@ passive:true
 
 );
 
+
 sheet.addEventListener(
 
 "touchmove",
 
 event=>{
+
 
 if(
 
@@ -7075,6 +8346,7 @@ return;
 
 }
 
+
 const distance=
 
 event.touches[0].clientY
@@ -7082,6 +8354,7 @@ event.touches[0].clientY
 -
 
 swipeStartY;
+
 
 if(
 distance<8
@@ -7091,14 +8364,18 @@ return;
 
 }
 
+
 event.preventDefault();
+
 
 swipeDistance=
 distance;
 
+
 sheet.classList.add(
 "drag"
 );
+
 
 sheet.style.transform=
 
@@ -7112,11 +8389,13 @@ passive:false
 
 );
 
+
 sheet.addEventListener(
 
 "touchend",
 
 ()=>{
+
 
 if(
 
@@ -7132,9 +8411,10 @@ sheet.style.transform=
 
 "translateY(120%)";
 
+
 setTimeout(
 
-closeModal,
+()=>closeModal(),
 
 180
 
@@ -7149,12 +8429,15 @@ sheet.style.transform=
 
 }
 
+
 sheet.classList.remove(
 "drag"
 );
 
+
 canSwipe=
 false;
+
 
 swipeDistance=
 0;
@@ -7163,9 +8446,10 @@ swipeDistance=
 
 );
 
-/* =========================================
-UI
-========================================= */
+
+/* ================================
+ERREUR
+================================ */
 
 function fail(message){
 
@@ -7173,14 +8457,21 @@ toastMsg(
 message
 );
 
+
 tone(
 180,
 .1
 );
 
+
 return false;
 
 }
+
+
+/* ================================
+TOAST
+================================ */
 
 function toastMsg(message){
 
@@ -7190,16 +8481,20 @@ document.getElementById(
 "toast"
 );
 
+
 toast.textContent=
 message;
+
 
 toast.classList.add(
 "show"
 );
 
+
 clearTimeout(
 toastTimer
 );
+
 
 toastTimer=
 
@@ -7219,6 +8514,11 @@ toast.classList.remove(
 
 }
 
+
+/* ================================
+TEXTE ANIME
+================================ */
+
 function float(text){
 
 const element=
@@ -7227,15 +8527,19 @@ document.createElement(
 "div"
 );
 
+
 element.className=
 "float";
+
 
 element.textContent=
 text;
 
+
 document.body.appendChild(
 element
 );
+
 
 setTimeout(
 
@@ -7251,17 +8555,21 @@ element.remove();
 
 }
 
-/* =========================================
-BOUCLE
-========================================= */
+
+/* ================================
+BOUCLE DU JEU
+================================ */
 
 setInterval(
 
 ()=>{
 
+
 updateProd();
 
+
 runWorker();
+
 
 if(
 
@@ -7271,7 +8579,20 @@ document.getElementById(
 
 ){
 
+/*
+CRUCIAL :
+on ne reconstruit pas les champs pendant
+que le joueur est en train de glisser.
+*/
+
+if(
+!painting
+){
+
 renderFields();
+
+}
+
 
 renderBuildings();
 
@@ -7283,9 +8604,10 @@ renderBuildings();
 
 );
 
-/* =========================================
-SAVE EVENTS
-========================================= */
+
+/* ================================
+SAUVEGARDE
+================================ */
 
 addEventListener(
 
@@ -7295,11 +8617,13 @@ save
 
 );
 
+
 document.addEventListener(
 
 "visibilitychange",
 
 ()=>{
+
 
 if(
 document.visibilityState==="hidden"
@@ -7313,29 +8637,40 @@ save();
 
 );
 
-/* =========================================
-START
-========================================= */
+
+/* ================================
+INITIALISATION
+================================ */
 
 document.getElementById(
 "soundHome"
 ).textContent=
 
 sound
+
 ?
+
 "🔊"
+
 :
+
 "🔇";
+
 
 document.getElementById(
 "soundGame"
 ).textContent=
 
 sound
+
 ?
+
 "🔊"
+
 :
+
 "🔇";
+
 
 load();
 
