@@ -784,7 +784,15 @@ state.orders=[];
 }
 
 
-if(state.orders.length!==3){
+if(
+!Array.isArray(state.orders) ||
+state.orders.length !== 3 ||
+state.orders.some(
+order =>
+!order ||
+!Array.isArray(order.items)
+)
+){
 
 generateOrders();
 
