@@ -4,38 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-
-<title>Farm Rush V1.2.1</title>
+<title>Farm Rush V1.3</title>
 
 <style>
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
-
-html{
-scroll-behavior:smooth;
-}
-
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#dff0c9;
-color:#26351e;
-overscroll-behavior:none;
-}
-
-button{
-font:inherit;
-cursor:pointer;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}
+button{font:inherit;cursor:pointer}
 
 .app{
 max-width:500px;
 margin:auto;
 min-height:100vh;
 background:linear-gradient(#9ed875,#eef6dc);
-padding-bottom:88px;
+padding-bottom:90px;
 }
 
 /* ACCUEIL */
@@ -100,9 +82,7 @@ margin-top:18px;
 
 /* JEU */
 
-#game{
-display:none;
-}
+#game{display:none}
 
 header{
 position:sticky;
@@ -131,10 +111,7 @@ font-size:29px;
 border:2px solid #f8df8e;
 }
 
-.player{
-flex:1;
-min-width:0;
-}
+.player{flex:1;min-width:0}
 
 .playerName{
 font-size:12px;
@@ -159,7 +136,7 @@ border:1px solid #578558;
 .xpfill{
 height:100%;
 background:linear-gradient(90deg,#70d447,#d5f462);
-width:0%;
+width:0;
 transition:width .4s ease;
 }
 
@@ -173,9 +150,7 @@ white-space:nowrap;
 font-size:13px;
 }
 
-main{
-padding:10px;
-}
+main{padding:10px}
 
 .panel{
 background:#fff7e5;
@@ -219,23 +194,10 @@ gap:10px;
 align-items:center;
 }
 
-.goalIcon{
-font-size:40px;
-}
-
-.goalBody{
-flex:1;
-}
-
-.goalTitle{
-font-weight:1000;
-font-size:13px;
-}
-
-.goalText{
-font-size:10px;
-margin:3px 0;
-}
+.goalIcon{font-size:40px}
+.goalBody{flex:1}
+.goalTitle{font-weight:1000;font-size:13px}
+.goalText{font-size:10px;margin:3px 0}
 
 .goalBar{
 height:9px;
@@ -311,56 +273,19 @@ opacity:.85;
 animation:cloudMove 20s linear infinite;
 }
 
-.cloud.one{
-top:20px;
-left:-40px;
-}
-
-.cloud.two{
-top:73px;
-left:-90px;
-animation-duration:28s;
-}
+.cloud.one{top:20px;left:-40px}
+.cloud.two{top:73px;left:-90px;animation-duration:28s}
 
 @keyframes cloudMove{
 from{transform:translateX(0)}
 to{transform:translateX(600px)}
 }
 
-.sun{
-position:absolute;
-right:22px;
-top:15px;
-font-size:38px;
-}
-
-.house{
-position:absolute;
-top:40px;
-left:22%;
-font-size:76px;
-}
-
-.barn{
-position:absolute;
-top:108px;
-right:6%;
-font-size:54px;
-}
-
-.tree1{
-position:absolute;
-top:150px;
-right:12px;
-font-size:39px;
-}
-
-.tree2{
-position:absolute;
-top:160px;
-left:15px;
-font-size:35px;
-}
+.sun{position:absolute;right:22px;top:15px;font-size:38px}
+.house{position:absolute;top:40px;left:22%;font-size:76px}
+.barn{position:absolute;top:108px;right:6%;font-size:54px}
+.tree1{position:absolute;top:150px;right:12px;font-size:39px}
+.tree2{position:absolute;top:160px;left:15px;font-size:35px}
 
 .sign{
 position:absolute;
@@ -403,9 +328,7 @@ border-color:#555;
 font-size:20px;
 }
 
-.plot.empty{
-background:#915d34;
-}
+.plot.empty{background:#915d34}
 
 .cropStage{
 font-size:28px;
@@ -466,9 +389,7 @@ font-weight:1000;
 box-shadow:inset 0 -3px #4d902b;
 }
 
-.btn:active{
-transform:scale(.97);
-}
+.btn:active{transform:scale(.97)}
 
 .btn.orange{
 background:#f29b27;
@@ -491,14 +412,8 @@ background:#5f98c7;
 box-shadow:inset 0 -3px #3e739e;
 }
 
-.btn.full{
-width:100%;
-}
-
-.btn.small{
-font-size:10px;
-padding:8px 6px;
-}
+.btn.full{width:100%}
+.btn.small{font-size:10px;padding:8px 6px}
 
 .btn:disabled{
 opacity:.4;
@@ -525,6 +440,65 @@ justify-content:space-between;
 align-items:center;
 }
 
+/* POULAILLER */
+
+.passivePanel{
+background:linear-gradient(135deg,#fff9d8,#ffe8a7);
+border-color:#c99b44;
+}
+
+.coopRow{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.coopIcon{
+font-size:54px;
+}
+
+.coopBody{
+flex:1;
+}
+
+.coopName{
+font-size:14px;
+font-weight:1000;
+}
+
+.coopStats{
+font-size:10px;
+color:#6f6042;
+line-height:1.5;
+margin-top:3px;
+}
+
+.passiveBar{
+height:10px;
+background:#d7bc73;
+border-radius:20px;
+overflow:hidden;
+margin-top:7px;
+}
+
+.passiveFill{
+height:100%;
+width:0;
+background:#f4b52f;
+transition:width .3s;
+}
+
+.eggStorage{
+margin-top:8px;
+background:white;
+border:1px solid #dbc58f;
+border-radius:10px;
+padding:8px;
+font-size:12px;
+display:flex;
+justify-content:space-between;
+}
+
 /* TRACTEUR */
 
 .tractor{
@@ -533,13 +507,8 @@ align-items:center;
 gap:10px;
 }
 
-.tractorIcon{
-font-size:48px;
-}
-
-.tractorInfo{
-flex:1;
-}
+.tractorIcon{font-size:48px}
+.tractorInfo{flex:1}
 
 .tag{
 display:inline-block;
@@ -552,9 +521,7 @@ background:#666;
 margin-top:3px;
 }
 
-.tag.ok{
-background:#4e9a42;
-}
+.tag.ok{background:#4e9a42}
 
 /* NAV */
 
@@ -598,9 +565,7 @@ z-index:50;
 align-items:flex-end;
 }
 
-.modal.show{
-display:flex;
-}
+.modal.show{display:flex}
 
 .sheet{
 width:100%;
@@ -642,7 +607,7 @@ font-weight:normal;
 margin-top:4px;
 }
 
-/* MARCHÉ */
+/* MARCHE */
 
 .marketRow{
 background:white;
@@ -678,9 +643,7 @@ justify-content:center;
 padding:20px;
 }
 
-.levelUp.show{
-display:flex;
-}
+.levelUp.show{display:flex}
 
 .levelCard{
 background:linear-gradient(#fff4be,#ffe177);
@@ -692,9 +655,34 @@ width:100%;
 max-width:390px;
 }
 
-.levelStar{
-font-size:62px;
+.levelStar{font-size:62px}
+
+/* RETOUR */
+
+.offline{
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:80;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
+
+.offline.show{display:flex}
+
+.offlineCard{
+width:100%;
+max-width:390px;
+background:#fff7df;
+border:3px solid #d7a646;
+border-radius:24px;
+padding:22px;
+text-align:center;
+}
+
+.offlineIcon{font-size:60px}
 
 /* FLOAT */
 
@@ -708,22 +696,14 @@ font-weight:1000;
 color:white;
 text-shadow:0 2px 3px black;
 pointer-events:none;
-z-index:80;
+z-index:90;
 animation:floatGain 1.2s forwards;
 }
 
 @keyframes floatGain{
-0%{
-opacity:0;
-transform:translate(-50%,10px) scale(.8);
-}
-20%{
-opacity:1;
-}
-100%{
-opacity:0;
-transform:translate(-50%,-70px) scale(1.1);
-}
+0%{opacity:0;transform:translate(-50%,10px) scale(.8)}
+20%{opacity:1}
+100%{opacity:0;transform:translate(-50%,-70px) scale(1.1)}
 }
 
 /* TOAST */
@@ -738,15 +718,13 @@ background:#203a20;
 color:white;
 padding:10px 15px;
 border-radius:12px;
-z-index:90;
+z-index:100;
 font-weight:1000;
 font-size:12px;
 white-space:nowrap;
 }
 
-.toast.show{
-display:block;
-}
+.toast.show{display:block}
 </style>
 </head>
 
@@ -775,7 +753,7 @@ onclick="startGame()">
 </button>
 
 <div class="version">
-V1.2.1
+V1.3 — Récoltes passives
 </div>
 
 </section>
@@ -823,6 +801,7 @@ class="xpfill">
 
 </header>
 
+
 <main>
 
 <div
@@ -831,8 +810,10 @@ class="panel goalPanel">
 
 <div class="goalRow">
 
-<div class="goalIcon">
-🚜
+<div
+id="goalIcon"
+class="goalIcon">
+🐔
 </div>
 
 <div class="goalBody">
@@ -840,13 +821,13 @@ class="panel goalPanel">
 <div
 id="goalTitle"
 class="goalTitle">
-OBJECTIF : TRACTEUR
+OBJECTIF : POULAILLER
 </div>
 
 <div
 id="goalText"
 class="goalText">
-Atteins le niveau 8
+Atteins le niveau 5
 </div>
 
 <div class="goalBar">
@@ -887,33 +868,18 @@ class="orders">
 
 <div class="farm">
 
-<div class="cloud one">
-☁️
-</div>
+<div class="cloud one">☁️</div>
+<div class="cloud two">☁️</div>
 
-<div class="cloud two">
-☁️
-</div>
+<div class="sun">☀️</div>
 
-<div class="sun">
-☀️
-</div>
+<div class="house">🏡</div>
 
-<div class="house">
-🏡
-</div>
+<div class="barn">🏠</div>
 
-<div class="barn">
-🏠
-</div>
+<div class="tree1">🌳</div>
 
-<div class="tree1">
-🌳
-</div>
-
-<div class="tree2">
-🌳
-</div>
+<div class="tree2">🌳</div>
 
 <div class="sign">
 Ma ferme
@@ -977,6 +943,72 @@ onclick="buyPlot()">
 </div>
 
 
+<!-- POULAILLER -->
+
+<div
+id="coopPanel"
+class="panel passivePanel">
+
+<div class="coopRow">
+
+<div class="coopIcon">
+🐔
+</div>
+
+<div class="coopBody">
+
+<div class="coopName">
+POULAILLER
+</div>
+
+<div
+id="coopStatus"
+class="coopStats">
+Débloqué au niveau 5
+</div>
+
+<div class="passiveBar">
+<div
+id="coopFill"
+class="passiveFill">
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div
+id="coopStorage"
+class="eggStorage"
+style="display:none">
+
+<span>
+🥚 Œufs en attente
+</span>
+
+<b>
+<span id="eggWaiting">0</span>
+/
+<span id="eggCapacity">20</span>
+</b>
+
+</div>
+
+<button
+id="coopButton"
+class="btn dark full"
+style="margin-top:8px"
+onclick="coopAction()"
+disabled>
+
+🔒 Débloqué au niveau 5
+
+</button>
+
+</div>
+
+
 <div class="panel">
 
 <div class="panelTitle">
@@ -988,9 +1020,7 @@ onclick="buyPlot()">
 <button
 class="btn gold small"
 onclick="showMarket()">
-
 🛒 VENDRE
-
 </button>
 
 </div>
@@ -1013,7 +1043,9 @@ class="stockGrid">
 
 <div class="tractorInfo">
 
-<b>TRACTEUR</b>
+<b>
+TRACTEUR
+</b>
 
 <br>
 
@@ -1127,6 +1159,34 @@ CONTINUER
 
 
 <div
+id="offline"
+class="offline">
+
+<div class="offlineCard">
+
+<div class="offlineIcon">
+🐔
+</div>
+
+<h2>
+Pendant ton absence
+</h2>
+
+<p id="offlineText">
+</p>
+
+<button
+class="btn gold full"
+onclick="closeOffline()">
+RÉCUPÉRER
+</button>
+
+</div>
+
+</div>
+
+
+<div
 id="toast"
 class="toast">
 </div>
@@ -1134,7 +1194,9 @@ class="toast">
 
 <script>
 
-/* CULTURES */
+/* =========================
+CULTURES
+========================= */
 
 const CROPS={
 
@@ -1237,7 +1299,9 @@ level:20
 };
 
 
-/* LEVEL REWARDS */
+/* =========================
+NIVEAUX
+========================= */
 
 const LEVEL_REWARDS={
 
@@ -1257,8 +1321,8 @@ text:"🍅 Tomate débloquée<br>+200 🪙"
 },
 
 5:{
-money:250,
-text:"+250 🪙"
+money:300,
+text:"🐔 Poulailler débloqué<br>+300 🪙"
 },
 
 6:{
@@ -1339,7 +1403,30 @@ text:"🌻 Tournesol débloqué<br>+2 000 🪙"
 };
 
 
-/* ETAT INITIAL */
+/* =========================
+POULAILLER
+========================= */
+
+const COOP={
+
+unlockLevel:5,
+
+buyCost:1000,
+
+productionTime:30,
+
+capacity:20,
+
+eggSell:35,
+
+offlineLimit:7200
+
+};
+
+
+/* =========================
+ETAT
+========================= */
 
 let state={
 
@@ -1348,8 +1435,6 @@ money:100,
 level:1,
 
 xp:0,
-
-/* IMPORTANT : 4 GRATUITES */
 
 plots:4,
 
@@ -1361,31 +1446,55 @@ orders:[],
 
 tractor:false,
 
-totalHarvests:0
+totalHarvests:0,
+
+coopBought:false,
+
+coopWaiting:0,
+
+coopLastProduction:Date.now(),
+
+lastSeen:Date.now()
 
 };
 
 
-/* SAUVEGARDE */
+/* =========================
+SAVE
+========================= */
 
 function saveGame(){
 
+state.lastSeen=
+Date.now();
+
 localStorage.setItem(
-"farmRushV121",
+"farmRushV13",
 JSON.stringify(state)
 );
 
 }
 
 
-/* CHARGEMENT + MIGRATION */
+/* =========================
+LOAD
+========================= */
 
 function loadGame(){
 
 let saved=
 localStorage.getItem(
+"farmRushV13"
+);
+
+if(!saved){
+
+saved=
+localStorage.getItem(
 "farmRushV121"
 );
+
+}
 
 if(!saved){
 
@@ -1423,103 +1532,10 @@ const old=
 JSON.parse(saved);
 
 
-if(
-typeof old.money==="number"
-){
-
-state.money=
-old.money;
-
-}
-
-
-if(
-typeof old.level==="number"
-){
-
-state.level=
-old.level;
-
-}
-
-
-if(
-typeof old.xp==="number"
-){
-
-state.xp=
-old.xp;
-
-}
-
-
-/*
-LES 4 PREMIERES SONT
-TOUJOURS GRATUITES
-*/
-
-if(
-typeof old.plots==="number"
-){
-
-state.plots=
-Math.max(
-4,
-old.plots
-);
-
-}
-
-
-if(
-Array.isArray(old.fields)
-){
-
-state.fields=
-old.fields;
-
-}
-
-
-if(
-old.stock &&
-typeof old.stock==="object"
-){
-
-state.stock=
-old.stock;
-
-}
-
-
-if(
-typeof old.tractor==="boolean"
-){
-
-state.tractor=
-old.tractor;
-
-}
-
-
-if(
-typeof old.totalHarvests==="number"
-){
-
-state.totalHarvests=
-old.totalHarvests;
-
-}
-
-
-if(
-Array.isArray(old.orders)
-){
-
-state.orders=
-old.orders;
-
-}
+state={
+...state,
+...old
+};
 
 
 }catch(error){
@@ -1534,26 +1550,24 @@ error
 }
 
 
-/*
-SECURITE :
-MINIMUM 4 PARCELLES
-MAXIMUM 20
-*/
+/* minimum 4 parcelles */
 
 state.plots=
 Math.max(
 4,
 Math.min(
 20,
-state.plots
+state.plots||4
 )
 );
 
 
-/* FIELDS */
+/* fields */
 
 if(
-!Array.isArray(state.fields)
+!Array.isArray(
+state.fields
+)
 ){
 
 state.fields=
@@ -1576,10 +1590,11 @@ state.fields.slice(
 );
 
 
-/* STOCK */
+/* stock */
 
 if(
-!state.stock ||
+!state.stock
+||
 typeof state.stock!=="object"
 ){
 
@@ -1588,11 +1603,52 @@ state.stock={};
 }
 
 
-/* COMMANDES */
+/* données poulailler */
+
+if(
+typeof state.coopBought!=="boolean"
+){
+
+state.coopBought=
+false;
+
+}
+
+if(
+typeof state.coopWaiting!=="number"
+){
+
+state.coopWaiting=
+0;
+
+}
+
+if(
+typeof state.coopLastProduction!=="number"
+){
+
+state.coopLastProduction=
+Date.now();
+
+}
+
+if(
+typeof state.lastSeen!=="number"
+){
+
+state.lastSeen=
+Date.now();
+
+}
+
+
+/* commandes anciennes */
 
 const invalidOrders=
 
-!Array.isArray(state.orders)
+!Array.isArray(
+state.orders
+)
 
 ||
 
@@ -1623,14 +1679,138 @@ generateOrders();
 }
 
 
-saveGame();
+/* production hors ligne */
+
+processOfflineProduction();
+
 
 render();
 
 }
 
 
-/* XP */
+/* =========================
+OFFLINE PRODUCTION
+========================= */
+
+function processOfflineProduction(){
+
+if(
+!state.coopBought
+){
+
+return;
+
+}
+
+
+const now=
+Date.now();
+
+
+const offlineSeconds=
+
+Math.min(
+
+COOP.offlineLimit,
+
+Math.max(
+0,
+(now-state.lastSeen)/1000
+)
+
+);
+
+
+const produced=
+
+Math.floor(
+offlineSeconds/
+COOP.productionTime
+);
+
+
+const availableSpace=
+
+COOP.capacity-
+state.coopWaiting;
+
+
+const actualProduced=
+
+Math.max(
+0,
+Math.min(
+produced,
+availableSpace
+)
+);
+
+
+if(
+actualProduced>0
+){
+
+state.coopWaiting+=
+actualProduced;
+
+
+state.coopLastProduction=
+now;
+
+
+document.getElementById(
+"offlineText"
+).innerHTML=
+
+"Ton poulailler a produit "
++
+"<b>"
++
+actualProduced
++
+" 🥚</b> pendant ton absence.";
+
+
+setTimeout(
+()=>{
+
+document.getElementById(
+"offline"
+).classList.add(
+"show"
+);
+
+},
+300
+);
+
+}
+
+}
+
+
+/* =========================
+OFFLINE CLOSE
+========================= */
+
+function closeOffline(){
+
+document.getElementById(
+"offline"
+).classList.remove(
+"show"
+);
+
+
+render();
+
+}
+
+
+/* =========================
+XP
+========================= */
 
 function xpRequired(){
 
@@ -1684,11 +1864,14 @@ saveGame();
 }
 
 
-/* LEVEL UP */
+/* =========================
+LEVEL UP
+========================= */
 
 function applyLevelReward(level){
 
 const reward=
+
 LEVEL_REWARDS[level]
 
 ||
@@ -1729,6 +1912,10 @@ vibrate(
 }
 
 
+/* =========================
+LEVEL CLOSE
+========================= */
+
 function closeLevelUp(){
 
 document.getElementById(
@@ -1743,7 +1930,9 @@ render();
 }
 
 
-/* OUTILS */
+/* =========================
+UTILS
+========================= */
 
 function unlocked(key){
 
@@ -1784,13 +1973,16 @@ seconds%60;
 return minutes+
 "m "+
 String(secondsLeft)
-.padStart(2,"0")+
+.padStart(2,"0")
++
 "s";
 
 }
 
 
-/* START */
+/* =========================
+START
+========================= */
 
 function startGame(){
 
@@ -1811,7 +2003,9 @@ render();
 }
 
 
-/* HOME */
+/* =========================
+HOME
+========================= */
 
 function goHome(){
 
@@ -1832,7 +2026,9 @@ document.getElementById(
 }
 
 
-/* RENDER */
+/* =========================
+RENDER
+========================= */
 
 function render(){
 
@@ -1902,6 +2098,8 @@ renderOrders();
 
 renderStock();
 
+renderCoop();
+
 renderTractor();
 
 renderGoal();
@@ -1912,9 +2110,16 @@ saveGame();
 }
 
 
-/* OBJECTIF */
+/* =========================
+OBJECTIF
+========================= */
 
 function renderGoal(){
+
+const icon=
+document.getElementById(
+"goalIcon"
+);
 
 const title=
 document.getElementById(
@@ -1932,6 +2137,95 @@ document.getElementById(
 );
 
 
+/* poulailler pas encore */
+
+if(
+!state.coopBought
+){
+
+icon.textContent=
+"🐔";
+
+
+if(
+state.level<5
+){
+
+title.textContent=
+"OBJECTIF : POULAILLER";
+
+
+text.textContent=
+
+"Niveau "
++
+state.level
++
+"/5";
+
+
+fill.style.width=
+
+Math.min(
+100,
+state.level/5*100
+)
++
+"%";
+
+}
+
+else{
+
+title.textContent=
+"OBJECTIF : ACHETER LE POULAILLER";
+
+
+text.textContent=
+
+Math.floor(
+state.money
+)
+.toLocaleString(
+"fr-FR"
+)
+
++
+" / "
++
+COOP.buyCost
+.toLocaleString(
+"fr-FR"
+)
++
+" 🪙";
+
+
+fill.style.width=
+
+Math.min(
+100,
+state.money/
+COOP.buyCost*
+100
+)
++
+"%";
+
+}
+
+
+return;
+
+}
+
+
+/* ensuite tracteur */
+
+icon.textContent=
+"🚜";
+
+
 if(
 state.tractor
 ){
@@ -1940,7 +2234,7 @@ title.textContent=
 "🚜 TRACTEUR ACQUIS";
 
 text.textContent=
-"Ta ferme est automatisée.";
+"Ta ferme devient automatisée.";
 
 fill.style.width=
 "100%";
@@ -1992,6 +2286,7 @@ state.money
 .toLocaleString(
 "fr-FR"
 )
+
 +
 " / 5 000 🪙";
 
@@ -2008,7 +2303,9 @@ state.money/5000*100
 }
 
 
-/* CHAMPS */
+/* =========================
+FIELDS
+========================= */
 
 function renderFields(){
 
@@ -2040,12 +2337,6 @@ plot.className=
 "plot";
 
 
-/*
-SEULEMENT A PARTIR DE
-LA PARCELLE state.plots
-ON VERROUILLE
-*/
-
 if(
 index>=state.plots
 ){
@@ -2065,12 +2356,6 @@ return;
 
 }
 
-
-/*
-LES 4 PREMIERES
-SONT DONC VIDES ET
-UTILISABLES AU DEPART
-*/
 
 if(
 !field
@@ -2119,16 +2404,6 @@ return;
 }
 
 
-if(
-typeof field.ready!=="number"
-){
-
-field.ready=
-Date.now();
-
-}
-
-
 const remaining=
 
 (
@@ -2158,8 +2433,6 @@ crop.time
 )
 );
 
-
-/* PRET */
 
 if(
 remaining<=0
@@ -2193,8 +2466,6 @@ return;
 
 }
 
-
-/* POUSSE */
 
 let stageIcon=
 crop.seed;
@@ -2259,11 +2530,14 @@ ready
 }
 
 
-/* PLANTER */
+/* =========================
+PLANT
+========================= */
 
 function plantFirstEmpty(){
 
 const index=
+
 state.fields.findIndex(
 (field,i)=>
 
@@ -2295,8 +2569,6 @@ index
 
 }
 
-
-/* MENU CULTURES */
 
 function openSeeds(index){
 
@@ -2382,8 +2654,7 @@ available
 ?
 ""
 :
-" • Niv. "
-+
+" • Niv. "+
 crop.level
 )
 
@@ -2409,8 +2680,6 @@ body
 
 }
 
-
-/* PLANTER CULTURE */
 
 function plant(
 index,
@@ -2462,11 +2731,8 @@ state.fields[index]={
 crop:key,
 
 ready:
-
 Date.now()
-
 +
-
 crop.time*
 1000
 
@@ -2494,7 +2760,9 @@ render();
 }
 
 
-/* RECOLTER */
+/* =========================
+HARVEST
+========================= */
 
 function harvest(index){
 
@@ -2568,7 +2836,9 @@ render();
 }
 
 
-/* RECOLTER BOUTON */
+/* =========================
+HARVEST ALL
+========================= */
 
 function harvestAll(){
 
@@ -2681,7 +2951,6 @@ render();
 
 }
 
-
 else{
 
 harvest(
@@ -2706,17 +2975,11 @@ toast(
 }
 
 
-/* PRIX PARCELLES */
+/* =========================
+PLOTS
+========================= */
 
 function plotCost(){
-
-/*
-PARCELLES 1 A 4 :
-GRATUITES
-
-PREMIER ACHAT :
-PARCELLE 5 = 100
-*/
 
 return Math.floor(
 
@@ -2737,8 +3000,6 @@ state.plots-4
 
 }
 
-
-/* ACHAT PARCELLE */
 
 function buyPlot(){
 
@@ -2798,8 +3059,443 @@ showFloatingText(
 );
 
 
+render();
+
+}
+
+
+/* =========================
+POULAILLER PRODUCTION
+========================= */
+
+function updateCoopProduction(){
+
+if(
+!state.coopBought
+){
+
+return;
+
+}
+
+
+if(
+state.coopWaiting>=
+COOP.capacity
+){
+
+return;
+
+}
+
+
+const now=
+Date.now();
+
+
+const elapsed=
+
+(
+now-
+state.coopLastProduction
+)
+/1000;
+
+
+if(
+elapsed<
+COOP.productionTime
+){
+
+return;
+
+}
+
+
+const produced=
+
+Math.floor(
+elapsed/
+COOP.productionTime
+);
+
+
+const space=
+
+COOP.capacity-
+state.coopWaiting;
+
+
+const actual=
+
+Math.min(
+produced,
+space
+);
+
+
+if(
+actual>0
+){
+
+state.coopWaiting+=
+actual;
+
+
+state.coopLastProduction+=
+
+actual*
+COOP.productionTime*
+1000;
+
+
+saveGame();
+
+}
+
+}
+
+
+/* =========================
+COOP RENDER
+========================= */
+
+function renderCoop(){
+
+const status=
+document.getElementById(
+"coopStatus"
+);
+
+const button=
+document.getElementById(
+"coopButton"
+);
+
+const storage=
+document.getElementById(
+"coopStorage"
+);
+
+const fill=
+document.getElementById(
+"coopFill"
+);
+
+
+if(
+state.level<
+COOP.unlockLevel
+){
+
+status.innerHTML=
+
+"🔒 Débloqué au niveau "
++
+COOP.unlockLevel;
+
+
+button.textContent=
+
+"🔒 Débloqué au niveau "
++
+COOP.unlockLevel;
+
+
+button.disabled=
+true;
+
+
+storage.style.display=
+"none";
+
+
+fill.style.width=
+
+Math.min(
+100,
+state.level/
+COOP.unlockLevel*
+100
+)
++
+"%";
+
+
+return;
+
+}
+
+
+if(
+!state.coopBought
+){
+
+status.innerHTML=
+
+"Produit 1 🥚 toutes les "
++
+COOP.productionTime
++
+"s";
+
+
+button.textContent=
+
+"🐔 Acheter — "
++
+COOP.buyCost
+.toLocaleString(
+"fr-FR"
+)
++
+" 🪙";
+
+
+button.disabled=
+false;
+
+
+button.className=
+"btn gold full";
+
+
+storage.style.display=
+"none";
+
+
+fill.style.width=
+"100%";
+
+
+return;
+
+}
+
+
+/* acheté */
+
+storage.style.display=
+"flex";
+
+
+document.getElementById(
+"eggWaiting"
+).textContent=
+state.coopWaiting;
+
+
+document.getElementById(
+"eggCapacity"
+).textContent=
+COOP.capacity;
+
+
+status.innerHTML=
+
+"🥚 1 œuf / "
++
+COOP.productionTime
++
+"s • capacité "
++
+COOP.capacity;
+
+
+button.className=
+"btn orange full";
+
+
+if(
+state.coopWaiting>0
+){
+
+button.disabled=
+false;
+
+
+button.textContent=
+
+"🥚 Récupérer "
++
+state.coopWaiting
++
+" œuf(s)";
+
+}
+
+else{
+
+button.disabled=
+true;
+
+
+button.textContent=
+"⏳ Production en cours...";
+
+}
+
+
+/* progression œuf suivant */
+
+if(
+state.coopWaiting>=
+COOP.capacity
+){
+
+fill.style.width=
+"100%";
+
+}
+
+else{
+
+const elapsed=
+
+(
+Date.now()-
+state.coopLastProduction
+)
+/1000;
+
+
+fill.style.width=
+
+Math.min(
+100,
+elapsed/
+COOP.productionTime*
+100
+)
++
+"%";
+
+}
+
+}
+
+
+/* =========================
+COOP ACTION
+========================= */
+
+function coopAction(){
+
+if(
+state.level<
+COOP.unlockLevel
+){
+
+return;
+
+}
+
+
+/* achat */
+
+if(
+!state.coopBought
+){
+
+if(
+state.money<
+COOP.buyCost
+){
+
+toast(
+"Il te manque "+
+Math.ceil(
+COOP.buyCost-
+state.money
+)
+.toLocaleString(
+"fr-FR"
+)
++
+" 🪙"
+);
+
+return;
+
+}
+
+
+state.money-=
+COOP.buyCost;
+
+
+state.coopBought=
+true;
+
+
+state.coopWaiting=
+0;
+
+
+state.coopLastProduction=
+Date.now();
+
+
+showFloatingText(
+"🐔 POULAILLER ACHETÉ !"
+);
+
+
 vibrate(
-[40,30,40]
+[70,40,90]
+);
+
+
+render();
+
+return;
+
+}
+
+
+/* récupération */
+
+if(
+state.coopWaiting<=0
+){
+
+return;
+
+}
+
+
+const amount=
+state.coopWaiting;
+
+
+state.stock.egg=
+
+(
+state.stock.egg
+||
+0
+)
+
++
+amount;
+
+
+state.coopWaiting=
+0;
+
+
+state.coopLastProduction=
+Date.now();
+
+
+showFloatingText(
+"🥚 +"+
+amount
+);
+
+
+vibrate(
+[30,20,40]
 );
 
 
@@ -2808,7 +3504,9 @@ render();
 }
 
 
-/* COMMANDES */
+/* =========================
+COMMANDES
+========================= */
 
 function availableCrops(){
 
@@ -2882,6 +3580,7 @@ key=>{
 
 const crop=
 CROPS[key];
+
 
 let qty;
 
@@ -2969,8 +3668,6 @@ randomOrder()
 
 }
 
-
-/* AFFICHAGE COMMANDES */
 
 function renderOrders(){
 
@@ -3162,23 +3859,12 @@ div
 }
 
 
-/* LIVRER */
-
 function deliver(index){
 
 const order=
 state.orders[
 index
 ];
-
-
-if(
-!order
-){
-
-return;
-
-}
 
 
 for(
@@ -3245,17 +3931,14 @@ order.reward
 );
 
 
-vibrate(
-[50,30,70]
-);
-
-
 render();
 
 }
 
 
-/* STOCK */
+/* =========================
+STOCK
+========================= */
 
 function renderStock(){
 
@@ -3319,10 +4002,48 @@ div
 
 }
 
+
+/* œufs */
+
+if(
+state.coopBought
+||
+(state.stock.egg||0)>0
+){
+
+const div=
+document.createElement(
+"div"
+);
+
+
+div.className=
+"stockItem";
+
+
+div.innerHTML=
+
+"<span>🥚 Œufs</span>"
++
+"<b>"
++
+(state.stock.egg||0)
++
+"</b>";
+
+
+container.appendChild(
+div
+);
+
+}
+
 }
 
 
-/* MARCHE */
+/* =========================
+MARKET
+========================= */
 
 function showMarket(){
 
@@ -3330,7 +4051,7 @@ let body=
 
 "<p>"
 +
-"Garde tes récoltes pour les commandes ou vends-les."
+"Garde tes produits pour plus tard ou vends-les maintenant."
 +
 "</p>";
 
@@ -3352,13 +4073,58 @@ const crop=
 CROPS[key];
 
 
+body+=
+marketHTML(
+key,
+crop.icon,
+crop.name,
+crop.sell
+);
+
+}
+
+
+/* eggs */
+
+if(
+state.coopBought
+||
+(state.stock.egg||0)>0
+){
+
+body+=
+marketHTML(
+"egg",
+"🥚",
+"Œufs",
+COOP.eggSell
+);
+
+}
+
+
+openModal(
+"🛒 Marché",
+body
+);
+
+}
+
+
+function marketHTML(
+key,
+icon,
+name,
+price
+){
+
 const qty=
 state.stock[key]
 ||
 0;
 
 
-body+=
+return (
 
 '<div class="marketRow">'
 
@@ -3372,9 +4138,9 @@ body+=
 
 +
 "<b>"+
-crop.icon+
+icon+
 " "+
-crop.name+
+name+
 "</b>"
 
 +
@@ -3387,7 +4153,7 @@ crop.name+
 "Stock : "+
 qty+
 " • "+
-crop.sell+
+price+
 " 🪙/u"
 
 +
@@ -3403,7 +4169,7 @@ crop.sell+
 +
 (
 qty*
-crop.sell
+price
 )
 .toLocaleString(
 "fr-FR"
@@ -3438,9 +4204,11 @@ qty<1
 
 +
 
-' onclick="sellCrop(\''+
+' onclick="sellProduct(\''+
 key+
-'\',1)">'
+'\',1,'+
+price+
+')">'
 
 +
 "VENDRE 1"
@@ -3463,9 +4231,11 @@ qty<5
 
 +
 
-' onclick="sellCrop(\''+
+' onclick="sellProduct(\''+
 key+
-'\',5)">'
+'\',5,'+
+price+
+')">'
 
 +
 "VENDRE 5"
@@ -3488,9 +4258,11 @@ qty<1
 
 +
 
-' onclick="sellAllCrop(\''+
+' onclick="sellAllProduct(\''+
 key+
-'\')">'
+'\','+
+price+
+')">'
 
 +
 "TOUT"
@@ -3504,29 +4276,22 @@ key+
 
 +
 
-"</div>";
+"</div>"
 
-}
-
-
-openModal(
-"🛒 Marché",
-body
 );
 
 }
 
 
-/* VENTE */
+/* =========================
+SELL
+========================= */
 
-function sellCrop(
+function sellProduct(
 key,
-quantity
+quantity,
+price
 ){
-
-const crop=
-CROPS[key];
-
 
 const available=
 state.stock[key]
@@ -3552,7 +4317,7 @@ return;
 
 const gain=
 quantity*
-crop.sell;
+price;
 
 
 state.stock[key]-=
@@ -3571,11 +4336,6 @@ gain.toLocaleString(
 );
 
 
-vibrate(
-25
-);
-
-
 render();
 
 
@@ -3584,17 +4344,23 @@ showMarket();
 }
 
 
-function sellAllCrop(key){
-
-sellCrop(
+function sellAllProduct(
 key,
-state.stock[key]||0
+price
+){
+
+sellProduct(
+key,
+state.stock[key]||0,
+price
 );
 
 }
 
 
-/* TRACTEUR */
+/* =========================
+TRACTOR
+========================= */
 
 function renderTractor(){
 
@@ -3677,8 +4443,6 @@ button.className=
 }
 
 
-/* ACHAT TRACTEUR */
-
 function buyTractor(){
 
 if(
@@ -3724,17 +4488,14 @@ showFloatingText(
 );
 
 
-vibrate(
-[80,50,100]
-);
-
-
 render();
 
 }
 
 
-/* PROGRESSION */
+/* =========================
+PROGRESSION
+========================= */
 
 function showProgress(){
 
@@ -3756,17 +4517,26 @@ body+=
 '<div class="marketRow">'
 
 +
-
-'<div class="marketTop" style="margin:0">'
-
-+
-
-"<span>"
-
-+
+"<b>"+
 crop.icon+
 " "+
-crop.name
+crop.name+
+"</b>"
+
++
+"<span style='float:right'>"
+
++
+(
+unlocked(key)
+?
+"✅"
+:
+"🔒"
+)
+
++
+"</span>"
 
 +
 "<br>"
@@ -3786,30 +4556,6 @@ crop.time
 "</small>"
 
 +
-"</span>"
-
-+
-
-"<b>"
-
-+
-(
-unlocked(key)
-?
-"✅"
-:
-"🔒"
-)
-
-+
-"</b>"
-
-+
-
-"</div>"
-
-+
-
 "</div>";
 
 }
@@ -3820,7 +4566,62 @@ body+=
 '<div class="marketRow">'
 
 +
+"<b>🐔 Poulailler</b>"
+
++
+"<span style='float:right'>"
+
++
+(
+state.coopBought
+?
+"✅"
+:
+state.level>=5
+?
+"🟡"
+:
+"🔒"
+)
+
++
+"</span>"
+
++
+"<br>"
+
++
+"<small>Niveau 5 • 1 000 🪙</small>"
+
++
+"</div>";
+
+
+body+=
+
+'<div class="marketRow">'
+
++
 "<b>🚜 Tracteur</b>"
+
++
+"<span style='float:right'>"
+
++
+(
+state.tractor
+?
+"✅"
+:
+state.level>=8
+?
+"🟡"
+:
+"🔒"
+)
+
++
+"</span>"
 
 +
 "<br>"
@@ -3840,7 +4641,9 @@ body
 }
 
 
-/* MODAL */
+/* =========================
+MODAL
+========================= */
 
 function openModal(
 title,
@@ -3879,9 +4682,7 @@ document.getElementById(
 }
 
 
-function modalBackgroundClose(
-event
-){
+function modalBackgroundClose(event){
 
 if(
 event.target.id==="modal"
@@ -3894,7 +4695,9 @@ closeModal();
 }
 
 
-/* TOAST */
+/* =========================
+TOAST
+========================= */
 
 let toastTimer;
 
@@ -3936,7 +4739,9 @@ element.classList.remove(
 }
 
 
-/* FLOAT */
+/* =========================
+FLOAT
+========================= */
 
 function showFloatingText(text){
 
@@ -3971,7 +4776,9 @@ element.remove();
 }
 
 
-/* VIBRATION */
+/* =========================
+VIBRATE
+========================= */
 
 function vibrate(pattern){
 
@@ -3988,10 +4795,15 @@ pattern
 }
 
 
-/* TIMERS */
+/* =========================
+GAME LOOP
+========================= */
 
 setInterval(
 ()=>{
+
+updateCoopProduction();
+
 
 if(
 document.getElementById(
@@ -4000,6 +4812,8 @@ document.getElementById(
 ){
 
 renderFields();
+
+renderCoop();
 
 renderGoal();
 
@@ -4010,7 +4824,9 @@ renderGoal();
 );
 
 
-/* SAUVEGARDE */
+/* =========================
+SAVE EVENTS
+========================= */
 
 window.addEventListener(
 "beforeunload",
@@ -4034,7 +4850,9 @@ saveGame();
 );
 
 
-/* START */
+/* =========================
+START
+========================= */
 
 loadGame();
 
