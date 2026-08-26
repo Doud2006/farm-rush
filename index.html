@@ -4,21 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V1.4</title>
+
+<title>Farm Rush V1.5</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}
-button{font:inherit;cursor:pointer}
+
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#dff0c9;
+color:#26351e;
+overscroll-behavior:none;
+}
+
+button{
+font:inherit;
+cursor:pointer;
+}
 
 .app{
 max-width:500px;
 margin:auto;
 min-height:100vh;
 background:linear-gradient(#9ed875,#eef6dc);
-padding-bottom:90px
+padding-bottom:90px;
 }
+
+/* ACCUEIL */
 
 #home{
 min-height:100vh;
@@ -28,23 +49,30 @@ align-items:center;
 justify-content:center;
 text-align:center;
 padding:28px;
-background:linear-gradient(#e4f8c5,#78bf59)
+background:linear-gradient(#e4f8c5,#78bf59);
 }
 
-.homeLogo{font-size:82px;animation:floatLogo 2.5s ease-in-out infinite}
-@keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.homeLogo{
+font-size:82px;
+animation:floatLogo 2.5s ease-in-out infinite;
+}
+
+@keyframes floatLogo{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-8px)}
+}
 
 .homeTitle{
 font-weight:1000;
 font-size:46px;
 color:#315e30;
-text-shadow:0 3px white
+text-shadow:0 3px white;
 }
 
 .homeSubtitle{
 color:#496e42;
 line-height:1.5;
-margin:10px 0 28px
+margin:10px 0 28px;
 }
 
 .playButton{
@@ -57,23 +85,20 @@ background:#69b63b;
 color:white;
 font-weight:1000;
 font-size:20px;
-box-shadow:0 6px #438026
-}
-
-.playButton:active{
-transform:translateY(3px);
-box-shadow:0 3px #438026
+box-shadow:0 6px #438026;
 }
 
 .version{
 font-size:11px;
 color:#4e6b48;
-margin-top:18px
+margin-top:18px;
 }
 
-/* JEU */
+/* HEADER */
 
-#game{display:none}
+#game{
+display:none;
+}
 
 header{
 position:sticky;
@@ -82,13 +107,13 @@ z-index:20;
 background:#294c29;
 color:white;
 padding:calc(10px + env(safe-area-inset-top)) 10px 10px;
-box-shadow:0 3px 10px #0003
+box-shadow:0 3px 10px #0003;
 }
 
 .top{
 display:flex;
 align-items:center;
-gap:8px
+gap:8px;
 }
 
 .avatar{
@@ -99,20 +124,21 @@ background:#f5bd56;
 display:grid;
 place-items:center;
 font-size:29px;
-border:2px solid #f8df8e
+border:2px solid #f8df8e;
 }
 
-.player{flex:1;min-width:0}
+.player{
+flex:1;
+min-width:0;
+}
 
 .playerName{
 font-size:12px;
 font-weight:1000;
-white-space:nowrap
 }
 
 .xpText{
 font-size:10px;
-margin-top:2px
 }
 
 .xpbar{
@@ -121,27 +147,28 @@ background:#173419;
 border-radius:20px;
 overflow:hidden;
 margin-top:4px;
-border:1px solid #578558
 }
 
 .xpfill{
 height:100%;
 background:linear-gradient(90deg,#70d447,#d5f462);
 width:0;
-transition:width .4s ease
+transition:.4s;
 }
 
 .money{
 background:#183b1e;
-border:1px solid #567c54;
 border-radius:10px;
-padding:9px 8px;
+padding:9px;
 font-weight:1000;
 white-space:nowrap;
-font-size:13px
 }
 
-main{padding:10px}
+/* GENERAL */
+
+main{
+padding:10px;
+}
 
 .panel{
 background:#fff7e5;
@@ -149,59 +176,114 @@ border:2px solid #b9955b;
 border-radius:16px;
 padding:11px;
 margin-bottom:10px;
-box-shadow:0 4px 12px #50703225
+box-shadow:0 4px 12px #50703225;
 }
 
 .panelTitle{
 display:flex;
 justify-content:space-between;
 align-items:center;
+font-weight:1000;
 gap:8px;
-font-weight:1000
 }
 
 .tiny{
 font-size:10px;
 color:#777;
-font-weight:normal
+font-weight:normal;
 }
 
-.sectionSub{
-font-size:11px;
-color:#756b58;
-margin-top:4px
+.btn{
+border:0;
+border-radius:13px;
+padding:13px 8px;
+background:#69b63b;
+color:white;
+font-weight:1000;
+box-shadow:inset 0 -3px #4d902b;
+}
+
+.btn:active{
+transform:scale(.97);
+}
+
+.btn.full{
+width:100%;
+}
+
+.btn.small{
+font-size:10px;
+padding:8px 6px;
+}
+
+.btn.orange{
+background:#f29b27;
+}
+
+.btn.gold{
+background:#f1bd35;
+color:#513600;
+}
+
+.btn.blue{
+background:#5f98c7;
+}
+
+.btn.dark{
+background:#53604e;
+}
+
+.btn.red{
+background:#c85845;
+}
+
+.btn:disabled{
+opacity:.4;
+box-shadow:none;
 }
 
 /* OBJECTIF */
 
 .goalPanel{
 background:linear-gradient(135deg,#fff3b1,#ffe078);
-border-color:#d3a83f
+border-color:#d3a83f;
 }
 
 .goalRow{
 display:flex;
 gap:10px;
-align-items:center
+align-items:center;
 }
 
-.goalIcon{font-size:40px}
-.goalBody{flex:1}
-.goalTitle{font-weight:1000;font-size:13px}
-.goalText{font-size:10px;margin:3px 0}
+.goalIcon{
+font-size:40px;
+}
+
+.goalBody{
+flex:1;
+}
+
+.goalTitle{
+font-weight:1000;
+font-size:13px;
+}
+
+.goalText{
+font-size:10px;
+margin:4px 0;
+}
 
 .goalBar{
 height:9px;
 background:#c9ad63;
 border-radius:20px;
-overflow:hidden
+overflow:hidden;
 }
 
 .goalFill{
 height:100%;
 background:#62a93c;
-width:0;
-transition:.4s
+transition:.4s;
 }
 
 /* COMMANDES */
@@ -210,7 +292,7 @@ transition:.4s
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:7px;
-margin-top:8px
+margin-top:8px;
 }
 
 .order{
@@ -218,31 +300,30 @@ background:white;
 border:1px solid #d8c79f;
 border-radius:11px;
 padding:8px;
-font-size:10px
+font-size:10px;
 }
 
 .orderComplete{
+background:#f2ffe8;
 border-color:#71ad50;
-background:#f2ffe8
 }
 
 .orderTitle{
 font-weight:1000;
 font-size:11px;
-margin-bottom:5px
 }
 
 .orderLine{
 margin:4px 0;
 padding:3px 4px;
 background:#f7f3e8;
-border-radius:5px
+border-radius:5px;
 }
 
 .reward{
 font-weight:1000;
 color:#a66a00;
-margin:7px 0
+margin:7px 0;
 }
 
 /* FERME */
@@ -253,40 +334,42 @@ position:relative;
 overflow:hidden;
 border:3px solid #66994d;
 border-radius:19px;
-background:linear-gradient(#90d46c 0 51%,#72b958 51%)
+background:linear-gradient(#90d46c 0 51%,#72b958 51%);
 }
 
-.cloud{
+.sun{
 position:absolute;
-font-size:29px;
-opacity:.85;
-animation:cloudMove 20s linear infinite
+right:22px;
+top:15px;
+font-size:38px;
 }
 
-.cloud.one{top:20px;left:-40px}
-.cloud.two{top:73px;left:-90px;animation-duration:28s}
-
-@keyframes cloudMove{
-from{transform:translateX(0)}
-to{transform:translateX(600px)}
-}
-
-.sun{position:absolute;right:22px;top:15px;font-size:38px}
-.house{position:absolute;top:40px;left:22%;font-size:76px}
-.barn{position:absolute;top:108px;right:6%;font-size:54px}
-.tree1{position:absolute;top:150px;right:12px;font-size:39px}
-.tree2{position:absolute;top:160px;left:15px;font-size:35px}
-
-.sign{
+.house{
 position:absolute;
-top:145px;
-left:6%;
-background:#f3dda8;
-border:2px solid #8b6333;
-border-radius:8px;
-padding:5px 8px;
-font-size:11px;
-font-weight:1000
+top:40px;
+left:22%;
+font-size:76px;
+}
+
+.barnEmoji{
+position:absolute;
+top:108px;
+right:6%;
+font-size:54px;
+}
+
+.tree1{
+position:absolute;
+top:150px;
+right:12px;
+font-size:39px;
+}
+
+.tree2{
+position:absolute;
+top:160px;
+left:15px;
+font-size:35px;
 }
 
 .fields{
@@ -296,7 +379,7 @@ right:11px;
 bottom:11px;
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:7px
+gap:7px;
 }
 
 .plot{
@@ -307,27 +390,22 @@ border-radius:11px;
 display:grid;
 place-items:center;
 position:relative;
-color:white;
 font-size:30px;
-overflow:hidden
+overflow:hidden;
 }
 
 .plot.locked{
 background:#777267;
 border-color:#555;
-font-size:20px
+font-size:20px;
 }
 
-.plot.empty{background:#915d34}
+.plot.empty{
+background:#915d34;
+}
 
 .cropStage{
 font-size:28px;
-animation:cropIdle 1.7s ease-in-out infinite
-}
-
-@keyframes cropIdle{
-0%,100%{transform:rotate(-2deg)}
-50%{transform:rotate(2deg)}
 }
 
 .timer{
@@ -338,10 +416,10 @@ right:3px;
 background:white;
 color:#333;
 border-radius:6px;
-text-align:center;
 font-size:9px;
 font-weight:1000;
-padding:3px
+padding:3px;
+text-align:center;
 }
 
 .ready{
@@ -352,67 +430,100 @@ border-radius:8px;
 padding:6px 4px;
 font-size:9px;
 font-weight:1000;
-animation:readyPulse .8s ease-in-out infinite alternate
 }
 
-@keyframes readyPulse{
-from{transform:scale(.96)}
-to{transform:scale(1.05)}
-}
-
-/* BOUTONS */
+/* ACTIONS */
 
 .actions{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:8px;
-margin:9px 0
+margin:9px 0;
 }
 
-.btn{
-border:0;
-border-radius:13px;
-padding:13px 8px;
-background:#69b63b;
-color:white;
+/* BATIMENTS */
+
+.buildingPanel{
+background:linear-gradient(135deg,#fff9d8,#ffe8a7);
+}
+
+.buildingHeader{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.buildingIcon{
+font-size:50px;
+}
+
+.buildingBody{
+flex:1;
+}
+
+.buildingName{
+font-size:14px;
 font-weight:1000;
-box-shadow:inset 0 -3px #4d902b
 }
 
-.btn:active{transform:scale(.97)}
-
-.btn.orange{
-background:#f29b27;
-box-shadow:inset 0 -3px #bc6e0d
+.buildingStats{
+font-size:10px;
+line-height:1.5;
+color:#6f6042;
 }
 
-.btn.dark{
-background:#53604e;
-box-shadow:inset 0 -3px #3e493a
+.productionBar{
+height:9px;
+background:#d7bc73;
+border-radius:20px;
+overflow:hidden;
+margin-top:6px;
 }
 
-.btn.gold{
-background:#f1bd35;
-color:#513600;
-box-shadow:inset 0 -3px #c99215
+.productionFill{
+height:100%;
+background:#f3b52f;
 }
 
-.btn.blue{
-background:#5f98c7;
-box-shadow:inset 0 -3px #3e739e
+.resourceBox{
+background:white;
+border:1px solid #dbc58f;
+border-radius:10px;
+padding:8px;
+font-size:11px;
+margin-top:8px;
 }
 
-.btn.red{
-background:#c75b4a;
-box-shadow:inset 0 -3px #963a2e
+.resourceRow{
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
-.btn.full{width:100%}
-.btn.small{font-size:10px;padding:8px 6px}
+.dual{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:9px;
+}
 
-.btn:disabled{
-opacity:.4;
-box-shadow:none
+.animalCard{
+background:white;
+border:1px solid #d5bf88;
+border-radius:12px;
+padding:9px;
+}
+
+.animalTitle{
+font-weight:1000;
+font-size:12px;
+}
+
+.animalStat{
+font-size:9px;
+color:#70644f;
+line-height:1.5;
+margin:5px 0;
 }
 
 /* STOCK */
@@ -421,7 +532,7 @@ box-shadow:none
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:7px;
-margin-top:8px
+margin-top:8px;
 }
 
 .stockItem{
@@ -432,114 +543,110 @@ padding:9px;
 font-size:11px;
 display:flex;
 justify-content:space-between;
-align-items:center
 }
 
-/* BATIMENTS */
+/* SHOP */
 
-.buildingPanel{
-background:linear-gradient(135deg,#fff9d8,#ffe8a7);
-border-color:#c99b44
-}
-
-.buildingHeader{
-display:flex;
-align-items:center;
-gap:10px
-}
-
-.buildingIcon{
-font-size:52px
-}
-
-.buildingBody{
-flex:1
-}
-
-.buildingName{
-font-size:14px;
-font-weight:1000
-}
-
-.buildingStats{
-font-size:10px;
-line-height:1.5;
-color:#6f6042;
-margin-top:3px
-}
-
-.productionBar{
-height:9px;
-background:#d7bc73;
-border-radius:20px;
-overflow:hidden;
-margin-top:6px
-}
-
-.productionFill{
-height:100%;
-width:0;
-background:#f3b52f;
-transition:width .3s
-}
-
-.resourceBox{
-background:white;
-border:1px solid #dbc58f;
-border-radius:10px;
-padding:8px;
-font-size:11px;
-margin-top:8px
-}
-
-.resourceRow{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:8px
-}
-
-.dual{
+.shopTabs{
 display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-margin-top:9px
+grid-template-columns:repeat(4,1fr);
+gap:5px;
+margin-bottom:12px;
 }
 
-.animalCard{
-background:#fff;
-border:1px solid #d5bf88;
-border-radius:12px;
-padding:9px
-}
-
-.animalTitle{
-font-weight:1000;
-font-size:12px
-}
-
-.animalStat{
+.shopTab{
+border:0;
+border-radius:10px;
+padding:9px 3px;
+background:#e2d6b5;
 font-size:9px;
-color:#70644f;
-line-height:1.5;
-margin:5px 0
+font-weight:1000;
 }
 
-/* TAG */
+.shopTab.active{
+background:#69b63b;
+color:white;
+}
+
+.shopCard{
+background:white;
+border:1px solid #d8c79f;
+border-radius:13px;
+padding:11px;
+margin-bottom:9px;
+}
+
+.shopHeader{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.shopIcon{
+font-size:39px;
+}
+
+.shopInfo{
+flex:1;
+}
+
+.shopName{
+font-weight:1000;
+font-size:13px;
+}
+
+.shopDescription{
+font-size:9px;
+color:#756a56;
+margin-top:3px;
+line-height:1.5;
+}
+
+.shopPrice{
+font-weight:1000;
+color:#9c6500;
+margin:7px 0;
+}
 
 .tag{
 display:inline-block;
-color:white;
 border-radius:20px;
 padding:4px 8px;
 font-size:9px;
 font-weight:1000;
 background:#666;
-margin-top:3px
+color:white;
 }
 
-.tag.ok{background:#4e9a42}
-.tag.warn{background:#d49424}
+.tag.ok{
+background:#4e9a42;
+}
+
+.tag.warn{
+background:#d49a24;
+}
+
+/* MARCHÉ */
+
+.marketRow{
+background:white;
+border:1px solid #d8c79f;
+border-radius:11px;
+padding:10px;
+margin-bottom:8px;
+}
+
+.marketTop{
+display:flex;
+justify-content:space-between;
+margin-bottom:8px;
+}
+
+.marketButtons{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:5px;
+}
 
 /* NAV */
 
@@ -555,7 +662,6 @@ display:grid;
 grid-template-columns:repeat(4,1fr);
 z-index:25;
 padding-bottom:env(safe-area-inset-bottom);
-box-shadow:0 -3px 10px #0004
 }
 
 .nav button{
@@ -564,15 +670,15 @@ background:none;
 color:white;
 padding:8px 3px;
 font-size:9px;
-font-weight:1000
+font-weight:1000;
 }
 
 .nav span{
 display:block;
-font-size:21px
+font-size:21px;
 }
 
-/* MODAL */
+/* MODALES */
 
 .modal{
 display:none;
@@ -580,10 +686,12 @@ position:fixed;
 inset:0;
 background:#0008;
 z-index:50;
-align-items:flex-end
+align-items:flex-end;
 }
 
-.modal.show{display:flex}
+.modal.show{
+display:flex;
+}
 
 .sheet{
 width:100%;
@@ -592,15 +700,15 @@ margin:auto 0 0;
 background:#fff7e5;
 border-radius:22px 22px 0 0;
 padding:17px;
-max-height:82vh;
+max-height:85vh;
 overflow:auto;
-padding-bottom:calc(20px + env(safe-area-inset-bottom))
+padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
 
 .crops{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:8px
+gap:8px;
 }
 
 .cropButton{
@@ -609,47 +717,22 @@ border-radius:12px;
 padding:12px 5px;
 background:#69b63b;
 color:white;
-font-weight:1000
+font-weight:1000;
 }
 
 .cropButton:disabled{
 background:#777;
-opacity:.55
+opacity:.5;
 }
 
 .cropInfo{
 font-size:9px;
 font-weight:normal;
-margin-top:4px
 }
 
-/* MARCHE */
+/* LEVEL */
 
-.marketRow{
-background:white;
-border:1px solid #d8c79f;
-border-radius:11px;
-padding:10px;
-margin-bottom:8px
-}
-
-.marketTop{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:8px
-}
-
-.marketButtons{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:5px
-}
-
-/* LEVEL UP */
-
-.levelUp,
-.offline{
+.levelUp{
 display:none;
 position:fixed;
 inset:0;
@@ -657,31 +740,28 @@ background:#0009;
 z-index:80;
 align-items:center;
 justify-content:center;
-padding:20px
+padding:20px;
 }
 
-.levelUp.show,
-.offline.show{
-display:flex
+.levelUp.show{
+display:flex;
 }
 
-.levelCard,
-.offlineCard{
+.levelCard{
 background:linear-gradient(#fff4be,#ffe177);
 border:4px solid #d5a52b;
 border-radius:24px;
 padding:22px;
 text-align:center;
 width:100%;
-max-width:390px
+max-width:390px;
 }
 
-.levelStar,
-.offlineIcon{
-font-size:62px
+.levelStar{
+font-size:62px;
 }
 
-/* FLOAT */
+/* UI */
 
 .floatText{
 position:fixed;
@@ -696,7 +776,7 @@ pointer-events:none;
 z-index:90;
 animation:floatGain 1.2s forwards;
 white-space:pre-line;
-text-align:center
+text-align:center;
 }
 
 @keyframes floatGain{
@@ -708,7 +788,7 @@ text-align:center
 .toast{
 display:none;
 position:fixed;
-top:calc(78px + env(safe-area-inset-top));
+top:80px;
 left:50%;
 transform:translateX(-50%);
 background:#203a20;
@@ -718,16 +798,20 @@ border-radius:12px;
 z-index:100;
 font-weight:1000;
 font-size:12px;
-white-space:nowrap
 }
 
-.toast.show{display:block}
+.toast.show{
+display:block;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="app">
+
+<!-- ACCUEIL -->
 
 <section id="home">
 
@@ -738,9 +822,9 @@ FARM RUSH
 </div>
 
 <div class="homeSubtitle">
-Plante. Nourris. Produis.
+Cultive. Élève. Produis.
 <br>
-<b>Construis ton empire agricole.</b>
+<b>Développe ta ferme.</b>
 </div>
 
 <button class="playButton" onclick="startGame()">
@@ -748,11 +832,13 @@ Plante. Nourris. Produis.
 </button>
 
 <div class="version">
-V1.4 — Élevage & transformation
+V1.5 — Shop
 </div>
 
 </section>
 
+
+<!-- JEU -->
 
 <section id="game">
 
@@ -796,6 +882,9 @@ XP
 
 <main>
 
+
+<!-- OBJECTIF -->
+
 <div class="panel goalPanel">
 
 <div class="goalRow">
@@ -823,14 +912,18 @@ OBJECTIF
 </div>
 
 
+<!-- COMMANDES -->
+
 <div class="panel">
 
 <div class="panelTitle">
 
-<span>📋 COMMANDES</span>
+<span>
+📋 COMMANDES
+</span>
 
 <span class="tiny">
-Récompenses bonus
+Livraisons premium
 </span>
 
 </div>
@@ -840,22 +933,19 @@ Récompenses bonus
 </div>
 
 
-<div class="farm">
+<!-- FERME -->
 
-<div class="cloud one">☁️</div>
-<div class="cloud two">☁️</div>
+<div class="farm">
 
 <div class="sun">☀️</div>
 
 <div class="house">🏡</div>
-<div class="barn">🏠</div>
+
+<div class="barnEmoji">🏠</div>
 
 <div class="tree1">🌳</div>
-<div class="tree2">🌳</div>
 
-<div class="sign">
-Ma ferme
-</div>
+<div class="tree2">🌳</div>
 
 <div id="fields" class="fields"></div>
 
@@ -876,33 +966,9 @@ Ma ferme
 </div>
 
 
-<div class="panel">
-
-<div class="panelTitle">
-
-<span>🏡 AGRANDIR</span>
-
-<span>
-<span id="plotCount">4</span>/20
-</span>
-
-</div>
-
-<div class="sectionSub">
-🎁 4 premières parcelles gratuites.
-</div>
-
-<button class="btn full" style="margin-top:8px" onclick="buyPlot()">
-➕ Parcelle suivante —
-<span id="plotCost">100</span> 🪙
-</button>
-
-</div>
-
-
 <!-- POULAILLER -->
 
-<div class="panel buildingPanel">
+<div id="coopPanel" class="panel buildingPanel" style="display:none">
 
 <div class="buildingHeader">
 
@@ -916,8 +982,8 @@ Ma ferme
 POULAILLER
 </div>
 
-<div id="coopStatus" class="buildingStats">
-Débloqué niveau 5
+<div class="buildingStats">
+🐔 <span id="henCount">1</span> poule(s)
 </div>
 
 <div class="productionBar">
@@ -928,13 +994,11 @@ Débloqué niveau 5
 
 </div>
 
-<div id="coopDetails" style="display:none">
-
 <div class="resourceBox">
 
 <div class="resourceRow">
 <span>🌾 Nourriture</span>
-<b><span id="coopFeed">0</span>/30</b>
+<b><span id="coopFeed">0</span></b>
 </div>
 
 </div>
@@ -942,10 +1006,8 @@ Débloqué niveau 5
 <div class="resourceBox">
 
 <div class="resourceRow">
-<span>🥚 Production</span>
-<b>
-<span id="eggWaiting">0</span>/20
-</b>
+<span>🥚 Œufs prêts</span>
+<b><span id="eggWaiting">0</span>/20</b>
 </div>
 
 </div>
@@ -956,7 +1018,7 @@ Débloqué niveau 5
 🌾 NOURRIR
 </button>
 
-<button id="coopCollect" class="btn orange" onclick="collectEggs()">
+<button class="btn orange" onclick="collectEggs()">
 🥚 RÉCUPÉRER
 </button>
 
@@ -964,21 +1026,10 @@ Débloqué niveau 5
 
 </div>
 
-<button
-id="coopBuy"
-class="btn dark full"
-style="margin-top:8px"
-onclick="buyCoop()"
-disabled>
-🔒 Niveau 5
-</button>
-
-</div>
-
 
 <!-- ETABLE -->
 
-<div class="panel buildingPanel">
+<div id="barnPanel" class="panel buildingPanel" style="display:none">
 
 <div class="buildingHeader">
 
@@ -992,20 +1043,18 @@ disabled>
 ÉTABLE
 </div>
 
-<div id="barnStatus" class="buildingStats">
-Débloquée niveau 9
+<div class="buildingStats">
+🐄 <span id="cowCount">1</span>
+•
+🐖 <span id="pigCount">1</span>
 </div>
 
 </div>
 
 </div>
 
-
-<div id="barnDetails" style="display:none">
 
 <div class="dual">
-
-<!-- VACHE -->
 
 <div class="animalCard">
 
@@ -1014,24 +1063,24 @@ Débloquée niveau 9
 </div>
 
 <div class="animalStat">
-🌾 2 blés → 3 productions
-<br>
-🥛 1 lait / 2 min
+🥛 production de lait
 </div>
 
 <div>
-🌾 <b id="cowFeed">0</b> repas
+🌾 Nourriture :
+<b id="cowFeed">0</b>
 </div>
 
 <div>
-🥛 <b id="milkWaiting">0</b>/12
+🥛
+<b id="milkWaiting">0</b>/12
 </div>
 
 <div class="productionBar">
 <div id="cowFill" class="productionFill"></div>
 </div>
 
-<button class="btn blue full small" style="margin-top:7px" onclick="feedCow()">
+<button class="btn blue full small" style="margin-top:6px" onclick="feedCow()">
 🌾 NOURRIR
 </button>
 
@@ -1042,8 +1091,6 @@ Débloquée niveau 9
 </div>
 
 
-<!-- COCHON -->
-
 <div class="animalCard">
 
 <div class="animalTitle">
@@ -1051,24 +1098,24 @@ Débloquée niveau 9
 </div>
 
 <div class="animalStat">
-🌽 2 maïs → 3 productions
-<br>
-🥓 1 bacon / 3 min
+🥓 production de bacon
 </div>
 
 <div>
-🌽 <b id="pigFeed">0</b> repas
+🌽 Nourriture :
+<b id="pigFeed">0</b>
 </div>
 
 <div>
-🥓 <b id="baconWaiting">0</b>/12
+🥓
+<b id="baconWaiting">0</b>/12
 </div>
 
 <div class="productionBar">
 <div id="pigFill" class="productionFill"></div>
 </div>
 
-<button class="btn blue full small" style="margin-top:7px" onclick="feedPig()">
+<button class="btn blue full small" style="margin-top:6px" onclick="feedPig()">
 🌽 NOURRIR
 </button>
 
@@ -1083,23 +1130,9 @@ Débloquée niveau 9
 </div>
 
 
-<button
-id="barnBuy"
-class="btn dark full"
-style="margin-top:8px"
-onclick="buyBarn()"
-disabled>
-
-🔒 Niveau 9
-
-</button>
-
-</div>
-
-
 <!-- MOULIN -->
 
-<div class="panel buildingPanel">
+<div id="millPanel" class="panel buildingPanel" style="display:none">
 
 <div class="buildingHeader">
 
@@ -1113,8 +1146,8 @@ disabled>
 MOULIN
 </div>
 
-<div id="millStatus" class="buildingStats">
-Débloqué niveau 12
+<div class="buildingStats">
+2 🌾 → 1 🥣
 </div>
 
 <div class="productionBar">
@@ -1125,16 +1158,11 @@ Débloqué niveau 12
 
 </div>
 
-
-<div id="millDetails" style="display:none">
-
 <div class="resourceBox">
 
 <div class="resourceRow">
-<span>🌾 Files de production</span>
-<b>
-<span id="millQueue">0</span>
-</b>
+<span>⚙️ File d'attente</span>
+<b id="millQueue">0</b>
 </div>
 
 </div>
@@ -1143,15 +1171,9 @@ Débloqué niveau 12
 
 <div class="resourceRow">
 <span>🥣 Farine prête</span>
-<b>
-<span id="flourWaiting">0</span>/15
-</b>
+<b><span id="flourWaiting">0</span>/15</b>
 </div>
 
-</div>
-
-<div class="sectionSub">
-2 🌾 → 1 🥣 en 1 minute.
 </div>
 
 <div class="actions">
@@ -1169,27 +1191,15 @@ Débloqué niveau 12
 </div>
 
 
-<button
-id="millBuy"
-class="btn dark full"
-style="margin-top:8px"
-onclick="buyMill()"
-disabled>
-
-🔒 Niveau 12
-
-</button>
-
-</div>
-
-
 <!-- STOCK -->
 
 <div class="panel">
 
 <div class="panelTitle">
 
-<span>📦 STOCK</span>
+<span>
+📦 STOCK
+</span>
 
 <button class="btn gold small" onclick="showMarket()">
 🛒 VENDRE
@@ -1202,50 +1212,10 @@ disabled>
 </div>
 
 
-<!-- TRACTEUR -->
-
-<div class="panel">
-
-<div class="buildingHeader">
-
-<div class="buildingIcon">
-🚜
-</div>
-
-<div class="buildingBody">
-
-<div class="buildingName">
-TRACTEUR
-</div>
-
-<span id="tractorStatus" class="tag">
-NIVEAU 8
-</span>
-
-<div class="buildingStats">
-Récolte toutes les cultures prêtes en un clic.
-</div>
-
-</div>
-
-</div>
-
-<button
-id="tractorButton"
-class="btn dark full"
-style="margin-top:8px"
-onclick="buyTractor()"
-disabled>
-
-🔒 Niveau 8
-
-</button>
-
-</div>
-
-
 </main>
 
+
+<!-- NAV -->
 
 <nav class="nav">
 
@@ -1254,8 +1224,13 @@ disabled>
 FERME
 </button>
 
-<button onclick="showMarket()">
+<button onclick="openShop()">
 <span>🛒</span>
+SHOP
+</button>
+
+<button onclick="showMarket()">
+<span>💰</span>
 MARCHÉ
 </button>
 
@@ -1264,17 +1239,14 @@ MARCHÉ
 PROGRESSION
 </button>
 
-<button onclick="goHome()">
-<span>🚪</span>
-QUITTER
-</button>
-
 </nav>
 
 </section>
 
 </div>
 
+
+<!-- MODAL -->
 
 <div id="modal" class="modal" onclick="modalBackgroundClose(event)">
 
@@ -1292,6 +1264,8 @@ FERMER
 
 </div>
 
+
+<!-- LEVEL -->
 
 <div id="levelUp" class="levelUp">
 
@@ -1318,45 +1292,22 @@ CONTINUER
 </div>
 
 
-<div id="offline" class="offline">
-
-<div class="offlineCard">
-
-<div class="offlineIcon">
-🌙
-</div>
-
-<h2>
-Pendant ton absence
-</h2>
-
-<p id="offlineText"></p>
-
-<button class="btn gold full" onclick="closeOffline()">
-CONTINUER
-</button>
-
-</div>
-
-</div>
-
-
 <div id="toast" class="toast"></div>
 
 
 <script>
 
-/* =========================
+/* =================================================
 CULTURES
-========================= */
+================================================= */
 
 const CROPS={
 
 wheat:{
 icon:"🌾",
+name:"Blé",
 seed:"🌱",
 sprout:"🌿",
-name:"Blé",
 time:5,
 cost:5,
 sell:10,
@@ -1366,9 +1317,9 @@ level:1
 
 carrot:{
 icon:"🥕",
+name:"Carotte",
 seed:"🌱",
 sprout:"🌿",
-name:"Carotte",
 time:15,
 cost:12,
 sell:27,
@@ -1378,9 +1329,9 @@ level:2
 
 tomato:{
 icon:"🍅",
+name:"Tomate",
 seed:"🌱",
 sprout:"🌿",
-name:"Tomate",
 time:30,
 cost:25,
 sell:60,
@@ -1390,9 +1341,9 @@ level:4
 
 corn:{
 icon:"🌽",
+name:"Maïs",
 seed:"🌱",
 sprout:"🌿",
-name:"Maïs",
 time:60,
 cost:50,
 sell:125,
@@ -1402,9 +1353,9 @@ level:7
 
 strawberry:{
 icon:"🍓",
+name:"Fraise",
 seed:"🌱",
 sprout:"🌿",
-name:"Fraise",
 time:120,
 cost:100,
 sell:270,
@@ -1414,9 +1365,9 @@ level:10
 
 potato:{
 icon:"🥔",
+name:"Pomme de terre",
 seed:"🌱",
 sprout:"🌿",
-name:"Pomme de terre",
 time:180,
 cost:160,
 sell:430,
@@ -1426,9 +1377,9 @@ level:13
 
 grape:{
 icon:"🍇",
+name:"Raisin",
 seed:"🌱",
 sprout:"🌿",
-name:"Raisin",
 time:300,
 cost:275,
 sell:750,
@@ -1438,9 +1389,9 @@ level:16
 
 sunflower:{
 icon:"🌻",
+name:"Tournesol",
 seed:"🌱",
 sprout:"🌿",
-name:"Tournesol",
 time:480,
 cost:450,
 sell:1250,
@@ -1451,7 +1402,9 @@ level:20
 };
 
 
-/* PRODUITS */
+/* =================================================
+PRODUITS
+================================================= */
 
 const PRODUCTS={
 
@@ -1482,83 +1435,9 @@ sell:120
 };
 
 
-/* BATIMENTS */
-
-const BUILDINGS={
-
-coop:{
-level:5,
-cost:1000,
-time:30,
-capacity:20
-},
-
-barn:{
-level:9,
-cost:4000,
-milkTime:120,
-baconTime:180,
-capacity:12
-},
-
-mill:{
-level:12,
-cost:10000,
-time:60,
-capacity:15
-}
-
-};
-
-const OFFLINE_LIMIT=7200;
-
-
-/* REWARDS */
-
-const LEVEL_REWARDS={
-
-2:{money:100,text:"🥕 Carotte débloquée<br>+100 🪙"},
-
-3:{money:150,text:"+150 🪙"},
-
-4:{money:200,text:"🍅 Tomate débloquée<br>+200 🪙"},
-
-5:{money:300,text:"🐔 Poulailler débloqué<br>+300 🪙"},
-
-6:{money:300,text:"+300 🪙"},
-
-7:{money:350,text:"🌽 Maïs débloqué<br>+350 🪙"},
-
-8:{money:500,text:"🚜 Tracteur disponible<br>+500 🪙"},
-
-9:{money:700,text:"🐄 Étable débloquée<br>+700 🪙"},
-
-10:{money:600,text:"🍓 Fraise débloquée<br>+600 🪙"},
-
-11:{money:650,text:"+650 🪙"},
-
-12:{money:900,text:"⚙️ Moulin débloqué<br>+900 🪙"},
-
-13:{money:800,text:"🥔 Pomme de terre débloquée<br>+800 🪙"},
-
-14:{money:900,text:"+900 🪙"},
-
-15:{money:1000,text:"+1 000 🪙"},
-
-16:{money:1200,text:"🍇 Raisin débloqué<br>+1 200 🪙"},
-
-17:{money:1300,text:"+1 300 🪙"},
-
-18:{money:1400,text:"+1 400 🪙"},
-
-19:{money:1600,text:"+1 600 🪙"},
-
-20:{money:2000,text:"🌻 Tournesol débloqué<br>+2 000 🪙"}
-
-};
-
-
-/* ETAT */
+/* =================================================
+ETAT
+================================================= */
 
 let state={
 
@@ -1576,41 +1455,53 @@ stock:{},
 
 orders:[],
 
-tractor:false,
-
-/* poules */
+/* bâtiments */
 
 coopBought:false,
 
-coopFeed:0,
-
-eggWaiting:0,
-
-coopLastProduction:Date.now(),
-
-/* etable */
-
 barnBought:false,
+
+millBought:false,
+
+tractor:false,
+
+/* animaux */
+
+hens:1,
+
+cows:1,
+
+pigs:1,
+
+/* nourriture */
+
+coopFeed:0,
 
 cowFeed:0,
 
 pigFeed:0,
 
+/* produits attente */
+
+eggWaiting:0,
+
 milkWaiting:0,
 
 baconWaiting:0,
 
-cowLastProduction:Date.now(),
-
-pigLastProduction:Date.now(),
+flourWaiting:0,
 
 /* moulin */
 
-millBought:false,
-
 millQueue:0,
 
-flourWaiting:0,
+/* timers */
+
+coopLastProduction:Date.now(),
+
+cowLastProduction:Date.now(),
+
+pigLastProduction:Date.now(),
 
 millLastProduction:Date.now(),
 
@@ -1619,43 +1510,67 @@ lastSeen:Date.now()
 };
 
 
-/* SAVE */
+/* =================================================
+SAVE
+================================================= */
 
 function saveGame(){
 
-state.lastSeen=Date.now();
+state.lastSeen=
+Date.now();
+
 
 localStorage.setItem(
-"farmRushV14",
+"farmRushV15",
 JSON.stringify(state)
 );
 
 }
 
 
-/* LOAD */
+/* =================================================
+LOAD + MIGRATION
+================================================= */
 
 function loadGame(){
 
-let keys=[
+const saves=[
+
+"farmRushV15",
 
 "farmRushV14",
+
 "farmRushV13",
+
 "farmRushV121",
+
 "farmRushV12",
+
 "farmRushV11",
+
 "farmRushV1"
 
 ];
 
+
 let saved=null;
 
-for(const key of keys){
+
+for(
+const name of saves
+){
 
 saved=
-localStorage.getItem(key);
+localStorage.getItem(
+name
+);
 
-if(saved)break;
+
+if(saved){
+
+break;
+
+}
 
 }
 
@@ -1664,23 +1579,31 @@ if(saved){
 
 try{
 
+const old=
+JSON.parse(saved);
+
+
 state={
 ...state,
-...JSON.parse(saved)
+...old
 };
+
 
 }catch(error){
 
-console.log(error);
+console.log(
+"Erreur sauvegarde"
+);
 
 }
 
 }
 
 
-/* sécurité */
+/* minimum 4 parcelles */
 
 state.plots=
+
 Math.max(
 4,
 Math.min(
@@ -1690,7 +1613,13 @@ state.plots||4
 );
 
 
-if(!Array.isArray(state.fields)){
+/* fields */
+
+if(
+!Array.isArray(
+state.fields
+)
+){
 
 state.fields=
 Array(20).fill(null);
@@ -1698,7 +1627,9 @@ Array(20).fill(null);
 }
 
 
-while(state.fields.length<20){
+while(
+state.fields.length<20
+){
 
 state.fields.push(null);
 
@@ -1706,78 +1637,98 @@ state.fields.push(null);
 
 
 state.fields=
-state.fields.slice(0,20);
+state.fields.slice(
+0,
+20
+);
 
 
-if(!state.stock){
+/* stock */
+
+if(
+!state.stock
+||
+typeof state.stock!=="object"
+){
 
 state.stock={};
 
 }
 
 
-/* nombres */
-
-const numericDefaults={
-
-coopFeed:0,
-eggWaiting:0,
-
-cowFeed:0,
-pigFeed:0,
-
-milkWaiting:0,
-baconWaiting:0,
-
-millQueue:0,
-flourWaiting:0
-
-};
-
-
-for(const key in numericDefaults){
+/* animaux */
 
 if(
-typeof state[key]!=="number"
+typeof state.hens!=="number"
 ){
 
-state[key]=
-numericDefaults[key];
+state.hens=
+1;
 
 }
 
-}
-
-
-/* timestamps */
-
-const now=Date.now();
-
-[
-"coopLastProduction",
-"cowLastProduction",
-"pigLastProduction",
-"millLastProduction",
-"lastSeen"
-]
-.forEach(key=>{
 
 if(
-typeof state[key]!=="number"
+typeof state.cows!=="number"
 ){
 
-state[key]=now;
+state.cows=
+1;
 
 }
 
-});
+
+if(
+typeof state.pigs!=="number"
+){
+
+state.pigs=
+1;
+
+}
 
 
-/* commandes */
+/*
+si bâtiment déjà acheté
+minimum 1 animal
+*/
+
+if(state.coopBought){
+
+state.hens=
+Math.max(
+1,
+state.hens
+);
+
+}
+
+
+if(state.barnBought){
+
+state.cows=
+Math.max(
+1,
+state.cows
+);
+
+
+state.pigs=
+Math.max(
+1,
+state.pigs
+);
+
+}
+
+
+/* COMMANDES : CORRECTION V1.4 */
 
 const invalidOrders=
 
-!Array.isArray(state.orders)
+!Array.isArray(
+state.orders
+)
 
 ||
 
@@ -1796,27 +1747,45 @@ order=>
 order.items
 )
 
+||
+
+order.items.some(
+item=>
+
+!item
+
+||
+
+typeof item.key!=="string"
+
+||
+
+typeof item.qty!=="number"
+
+)
+
 );
 
 
-if(invalidOrders){
+if(
+invalidOrders
+){
 
 generateOrders();
 
 }
 
 
-/* offline */
-
-processOfflineProduction();
-
-
 render();
+
+saveGame();
 
 }
 
 
-/* XP */
+/* =================================================
+XP
+================================================= */
 
 function xpRequired(){
 
@@ -1836,7 +1805,8 @@ state.level-1
 
 function addXP(amount){
 
-state.xp+=amount;
+state.xp+=
+amount;
 
 
 while(
@@ -1853,9 +1823,11 @@ xpRequired()
 state.xp-=
 xpRequired();
 
+
 state.level++;
 
-applyLevelReward(
+
+levelReward(
 state.level
 );
 
@@ -1867,22 +1839,82 @@ saveGame();
 }
 
 
-function applyLevelReward(level){
+/* =================================================
+LEVEL
+================================================= */
 
-const reward=
+function levelReward(level){
 
-LEVEL_REWARDS[level]
+let money=
 
-||
+100+
+level*40;
 
-{
-money:100+level*35,
-text:"+"+(100+level*35)+" 🪙"
-};
+
+let text=
+
+"+"+
+money+
+" 🪙";
+
+
+if(level===5){
+
+text=
+"🐔 Poulailler débloqué<br>+300 🪙";
+
+money=
+300;
+
+}
+
+
+if(level===7){
+
+text=
+"🌽 Maïs débloqué<br>+350 🪙";
+
+money=
+350;
+
+}
+
+
+if(level===8){
+
+text=
+"🚜 Tracteur débloqué<br>+500 🪙";
+
+money=
+500;
+
+}
+
+
+if(level===9){
+
+text=
+"🐄 Étable débloquée<br>+700 🪙";
+
+money=
+700;
+
+}
+
+
+if(level===12){
+
+text=
+"⚙️ Moulin débloqué<br>+900 🪙";
+
+money=
+900;
+
+}
 
 
 state.money+=
-reward.money;
+money;
 
 
 document.getElementById(
@@ -1894,7 +1926,7 @@ level;
 document.getElementById(
 "levelUpReward"
 ).innerHTML=
-reward.text;
+text;
 
 
 document.getElementById(
@@ -1914,12 +1946,15 @@ document.getElementById(
 "show"
 );
 
+
 render();
 
 }
 
 
-/* UTILS */
+/* =================================================
+OUTILS
+================================================= */
 
 function unlocked(key){
 
@@ -1945,27 +1980,32 @@ return seconds+"s";
 }
 
 
-const minutes=
+const min=
 Math.floor(
 seconds/60
 );
 
 
-const left=
+const sec=
 seconds%60;
 
 
-return minutes+
+return min+
 "m "+
-String(left)
-.padStart(2,"0")
+String(sec)
+.padStart(
+2,
+"0"
+)
 +
 "s";
 
 }
 
 
-/* START */
+/* =================================================
+START
+================================================= */
 
 function startGame(){
 
@@ -1986,28 +2026,9 @@ render();
 }
 
 
-/* HOME */
-
-function goHome(){
-
-saveGame();
-
-
-document.getElementById(
-"game"
-).style.display=
-"none";
-
-
-document.getElementById(
-"home"
-).style.display=
-"flex";
-
-}
-
-
-/* RENDER */
+/* =================================================
+RENDER
+================================================= */
 
 function render(){
 
@@ -2055,35 +2076,13 @@ xpRequired()*
 "%";
 
 
-document.getElementById(
-"plotCount"
-).textContent=
-state.plots;
-
-
-document.getElementById(
-"plotCost"
-).textContent=
-
-plotCost()
-.toLocaleString(
-"fr-FR"
-);
-
-
 renderFields();
 
 renderOrders();
 
 renderStock();
 
-renderCoop();
-
-renderBarn();
-
-renderMill();
-
-renderTractor();
+renderBuildings();
 
 renderGoal();
 
@@ -2093,11 +2092,14 @@ saveGame();
 }
 
 
-/* OBJECTIF */
+/* =================================================
+OBJECTIF
+================================================= */
 
 function renderGoal(){
 
-let icon="🐔";
+let icon=
+"🐔";
 
 let title=
 "OBJECTIF : POULAILLER";
@@ -2107,7 +2109,7 @@ let text="";
 let percent=0;
 
 
-/* coop */
+/* poulailler */
 
 if(!state.coopBought){
 
@@ -2117,6 +2119,7 @@ text=
 "Niveau "+
 state.level+
 "/5";
+
 
 percent=
 state.level/5*100;
@@ -2131,12 +2134,14 @@ state.money
 .toLocaleString(
 "fr-FR"
 )
-
 +
 " / 1 000 🪙";
 
+
 percent=
-state.money/1000*100;
+state.money/
+1000*
+100;
 
 }
 
@@ -2147,7 +2152,9 @@ state.money/1000*100;
 
 else if(!state.tractor){
 
-icon="🚜";
+icon=
+"🚜";
+
 
 title=
 "OBJECTIF : TRACTEUR";
@@ -2159,6 +2166,7 @@ text=
 "Niveau "+
 state.level+
 "/8";
+
 
 percent=
 state.level/8*100;
@@ -2173,23 +2181,27 @@ state.money
 .toLocaleString(
 "fr-FR"
 )
-
 +
 " / 5 000 🪙";
 
+
 percent=
-state.money/5000*100;
+state.money/
+5000*
+100;
 
 }
 
 }
 
 
-/* barn */
+/* etable */
 
 else if(!state.barnBought){
 
-icon="🐄";
+icon=
+"🐄";
+
 
 title=
 "OBJECTIF : ÉTABLE";
@@ -2201,6 +2213,7 @@ text=
 "Niveau "+
 state.level+
 "/9";
+
 
 percent=
 state.level/9*100;
@@ -2215,23 +2228,27 @@ state.money
 .toLocaleString(
 "fr-FR"
 )
-
 +
 " / 4 000 🪙";
 
+
 percent=
-state.money/4000*100;
+state.money/
+4000*
+100;
 
 }
 
 }
 
 
-/* mill */
+/* moulin */
 
 else if(!state.millBought){
 
-icon="⚙️";
+icon=
+"⚙️";
+
 
 title=
 "OBJECTIF : MOULIN";
@@ -2243,6 +2260,7 @@ text=
 "Niveau "+
 state.level+
 "/12";
+
 
 percent=
 state.level/12*100;
@@ -2257,29 +2275,32 @@ state.money
 .toLocaleString(
 "fr-FR"
 )
-
 +
 " / 10 000 🪙";
 
+
 percent=
-state.money/10000*100;
+state.money/
+10000*
+100;
 
 }
 
 }
 
 
-/* all */
+/* fini */
 
 else{
 
-icon="🌟";
+icon=
+"🌟";
 
 title=
-"FERME BIEN DÉVELOPPÉE";
+"FERME DÉVELOPPÉE";
 
 text=
-"Continue ton expansion !";
+"Continue à améliorer ta production.";
 
 percent=
 100;
@@ -2319,7 +2340,9 @@ percent
 }
 
 
-/* FIELDS */
+/* =================================================
+CHAMPS
+================================================= */
 
 function renderFields(){
 
@@ -2378,7 +2401,9 @@ plot.textContent=
 "🌱";
 
 plot.onclick=
-()=>openSeeds(index);
+()=>openSeeds(
+index
+);
 
 container.appendChild(
 plot
@@ -2390,14 +2415,19 @@ return;
 
 
 const crop=
-CROPS[field.crop];
+CROPS[
+field.crop
+];
 
 
 if(!crop){
 
-state.fields[index]=null;
+state.fields[index]=
+null;
 
-container.appendChild(plot);
+container.appendChild(
+plot
+);
 
 return;
 
@@ -2443,16 +2473,22 @@ plot.innerHTML=
 
 '<div class="ready">'
 +
-crop.icon+
+crop.icon
++
 " RÉCOLTER"
 +
 "</div>";
 
 
 plot.onclick=
-()=>harvest(index);
+()=>harvest(
+index
+);
 
-container.appendChild(plot);
+
+container.appendChild(
+plot
+);
 
 return;
 
@@ -2463,7 +2499,7 @@ let stage=
 crop.seed;
 
 
-if(progress>=.33){
+if(progress>.33){
 
 stage=
 crop.sprout;
@@ -2471,7 +2507,7 @@ crop.sprout;
 }
 
 
-if(progress>=.7){
+if(progress>.7){
 
 stage=
 crop.icon;
@@ -2483,7 +2519,8 @@ plot.innerHTML=
 
 '<div class="cropStage">'
 +
-stage+
+stage
++
 "</div>"
 
 +
@@ -2497,7 +2534,9 @@ remaining
 "</div>";
 
 
-container.appendChild(plot);
+container.appendChild(
+plot
+);
 
 });
 
@@ -2515,13 +2554,16 @@ ready
 }
 
 
-/* PLANT */
+/* =================================================
+PLANTER
+================================================= */
 
 function plantFirstEmpty(){
 
 const index=
 
-state.fields.findIndex(
+state.fields
+.findIndex(
 (field,i)=>
 
 i<state.plots
@@ -2536,7 +2578,7 @@ i<state.plots
 if(index<0){
 
 toast(
-"Toutes les parcelles sont occupées !"
+"Toutes les parcelles sont occupées."
 );
 
 return;
@@ -2544,45 +2586,55 @@ return;
 }
 
 
-openSeeds(index);
+openSeeds(
+index
+);
 
 }
 
 
 function openSeeds(index){
 
-let body=
+let html=
 
-"<p>Choisis une culture.</p>";
-
-body+=
+"<p>Choisis une culture.</p>"
++
 '<div class="crops">';
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
 const crop=
 CROPS[key];
 
-const available=
-unlocked(key);
+
+const ok=
+unlocked(
+key
+);
 
 
-body+=
+html+=
 
 '<button class="cropButton" '
 
 +
 
 (
-available
+ok
 
 ?
 
-'onclick="plant('+
-index+
-',\''+
-key+
+'onclick="plant('
++
+index
++
+',\''
++
+key
++
 '\')"'
 
 :
@@ -2601,23 +2653,21 @@ crop.icon+
 crop.name
 
 +
-
 '<div class="cropInfo">'
 
 +
 formatTime(
 crop.time
 )
-
 +
-" • "+
+" • "
++
 crop.cost+
 " 🪙"
 
 +
-
 (
-available
+ok
 ?
 ""
 :
@@ -2626,23 +2676,21 @@ crop.level
 )
 
 +
-
 "</div>"
 
 +
-
 "</button>";
 
 }
 
 
-body+=
+html+=
 "</div>";
 
 
 openModal(
 "🌱 Planter",
-body
+html
 );
 
 }
@@ -2675,7 +2723,9 @@ state.money-=
 crop.cost;
 
 
-state.fields[index]={
+state.fields[
+index
+]={
 
 crop:key,
 
@@ -2691,25 +2741,21 @@ crop.time*
 closeModal();
 
 
-toast(
-crop.icon+
-" "+
-crop.name+
-" planté !"
-);
-
-
 render();
 
 }
 
 
-/* HARVEST */
+/* =================================================
+RECOLTE
+================================================= */
 
 function harvest(index){
 
 const field=
-state.fields[index];
+state.fields[
+index
+];
 
 
 if(
@@ -2741,12 +2787,13 @@ field.crop
 ||
 0
 )
-
 +
 1;
 
 
-state.fields[index]=
+state.fields[
+index
+]=
 null;
 
 
@@ -2773,7 +2820,8 @@ function harvestAll(){
 const ready=[];
 
 
-state.fields.forEach(
+state.fields
+.forEach(
 (field,index)=>{
 
 if(
@@ -2783,14 +2831,18 @@ field.ready<=
 Date.now()
 ){
 
-ready.push(index);
+ready.push(
+index
+);
 
 }
 
 });
 
 
-if(!ready.length){
+if(
+!ready.length
+){
 
 toast(
 "Aucune culture prête."
@@ -2810,7 +2862,10 @@ ready.forEach(
 index=>{
 
 const field=
-state.fields[index];
+state.fields[
+index
+];
+
 
 const crop=
 CROPS[
@@ -2829,12 +2884,13 @@ field.crop
 ||
 0
 )
-
 +
 1;
 
 
-state.fields[index]=
+state.fields[
+index
+]=
 null;
 
 
@@ -2844,15 +2900,15 @@ crop.xp;
 });
 
 
-addXP(totalXP);
+addXP(
+totalXP
+);
 
 
 showFloatingText(
 "🚜 "+
 ready.length+
-" récoltes\n+"+
-totalXP+
-" XP"
+" récoltes"
 );
 
 
@@ -2871,7 +2927,9 @@ ready[0]
 }
 
 
-/* PLOTS */
+/* =================================================
+PARCELLES
+================================================= */
 
 function plotCost(){
 
@@ -2912,7 +2970,10 @@ const cost=
 plotCost();
 
 
-if(state.money<cost){
+if(
+state.money<
+cost
+){
 
 toast(
 "Pas assez d'argent."
@@ -2930,7 +2991,9 @@ cost;
 state.plots++;
 
 
-addXP(12);
+addXP(
+12
+);
 
 
 showFloatingText(
@@ -2940,50 +3003,258 @@ showFloatingText(
 
 render();
 
+
+openShop(
+"fields"
+);
+
 }
 
 
-/* =========================
+/* =================================================
+BATIMENTS
+================================================= */
+
+function renderBuildings(){
+
+/* POULAILLER */
+
+document.getElementById(
+"coopPanel"
+).style.display=
+
+state.coopBought
+?
+"block"
+:
+"none";
+
+
+/* ETABLE */
+
+document.getElementById(
+"barnPanel"
+).style.display=
+
+state.barnBought
+?
+"block"
+:
+"none";
+
+
+/* MOULIN */
+
+document.getElementById(
+"millPanel"
+).style.display=
+
+state.millBought
+?
+"block"
+:
+"none";
+
+
+if(state.coopBought){
+
+document.getElementById(
+"henCount"
+).textContent=
+state.hens;
+
+
+document.getElementById(
+"coopFeed"
+).textContent=
+state.coopFeed;
+
+
+document.getElementById(
+"eggWaiting"
+).textContent=
+state.eggWaiting;
+
+
+const interval=
+henInterval();
+
+
+document.getElementById(
+"coopFill"
+).style.width=
+
+state.coopFeed>0
+
+?
+
+Math.min(
+100,
+(
+Date.now()-
+state.coopLastProduction
+)
+/1000/
+interval*
+100
+)
++
+"%"
+
+:
+
+"0%";
+
+}
+
+
+if(state.barnBought){
+
+document.getElementById(
+"cowCount"
+).textContent=
+state.cows;
+
+
+document.getElementById(
+"pigCount"
+).textContent=
+state.pigs;
+
+
+document.getElementById(
+"cowFeed"
+).textContent=
+state.cowFeed;
+
+
+document.getElementById(
+"pigFeed"
+).textContent=
+state.pigFeed;
+
+
+document.getElementById(
+"milkWaiting"
+).textContent=
+state.milkWaiting;
+
+
+document.getElementById(
+"baconWaiting"
+).textContent=
+state.baconWaiting;
+
+
+document.getElementById(
+"cowFill"
+).style.width=
+
+state.cowFeed>0
+
+?
+
+Math.min(
+100,
+(
+Date.now()-
+state.cowLastProduction
+)
+/1000/
+cowInterval()*
+100
+)
++
+"%"
+
+:
+
+"0%";
+
+
+document.getElementById(
+"pigFill"
+).style.width=
+
+state.pigFeed>0
+
+?
+
+Math.min(
+100,
+(
+Date.now()-
+state.pigLastProduction
+)
+/1000/
+pigInterval()*
+100
+)
++
+"%"
+
+:
+
+"0%";
+
+}
+
+
+if(state.millBought){
+
+document.getElementById(
+"millQueue"
+).textContent=
+state.millQueue;
+
+
+document.getElementById(
+"flourWaiting"
+).textContent=
+state.flourWaiting;
+
+
+document.getElementById(
+"millFill"
+).style.width=
+
+state.millQueue>0
+
+?
+
+Math.min(
+100,
+(
+Date.now()-
+state.millLastProduction
+)
+/1000/
+60*
+100
+)
++
+"%"
+
+:
+
+"0%";
+
+}
+
+}
+
+
+/* =================================================
 POULAILLER
-========================= */
+================================================= */
 
-function buyCoop(){
+function henInterval(){
 
-if(
-state.level<
-BUILDINGS.coop.level
-){
-
-return;
-
-}
-
-
-if(state.money<1000){
-
-toast(
-"Il faut 1 000 🪙."
+return Math.max(
+8,
+30/
+state.hens
 );
-
-return;
-
-}
-
-
-state.money-=1000;
-
-state.coopBought=true;
-
-state.coopLastProduction=
-Date.now();
-
-
-showFloatingText(
-"🐔 POULAILLER ACHETÉ"
-);
-
-
-render();
 
 }
 
@@ -3006,21 +3277,8 @@ return;
 state.stock.wheat--;
 
 
-/*
-1 blé =
-5 productions
-*/
-
-state.coopFeed=
-Math.min(
-30,
-state.coopFeed+5
-);
-
-
-toast(
-"🐔 Nourriture +5"
-);
+state.coopFeed+=
+5;
 
 
 render();
@@ -3030,35 +3288,27 @@ render();
 
 function updateCoop(){
 
-if(!state.coopBought){
-
-return;
-
-}
-
-
-const now=
-Date.now();
-
-
 if(
+!state.coopBought
+||
 state.coopFeed<=0
 ||
 state.eggWaiting>=20
 ){
 
-state.coopLastProduction=
-now;
-
 return;
 
 }
 
 
+const interval=
+henInterval();
+
+
 const elapsed=
 
 (
-now-
+Date.now()-
 state.coopLastProduction
 )
 /1000;
@@ -3068,7 +3318,7 @@ const cycles=
 
 Math.floor(
 elapsed/
-30
+interval
 );
 
 
@@ -3099,7 +3349,8 @@ actual;
 state.coopLastProduction+=
 
 actual*
-30000;
+interval*
+1000;
 
 }
 
@@ -3110,10 +3361,6 @@ if(
 state.eggWaiting<=0
 ){
 
-toast(
-"Pas d'œufs prêts."
-);
-
 return;
 
 }
@@ -3122,7 +3369,9 @@ return;
 state.stock.egg=
 
 (
-state.stock.egg||0
+state.stock.egg
+||
+0
 )
 +
 state.eggWaiting;
@@ -3134,7 +3383,8 @@ state.eggWaiting
 );
 
 
-state.eggWaiting=0;
+state.eggWaiting=
+0;
 
 
 render();
@@ -3142,180 +3392,28 @@ render();
 }
 
 
-function renderCoop(){
-
-const buy=
-document.getElementById(
-"coopBuy"
-);
-
-
-if(
-!state.coopBought
-){
-
-document.getElementById(
-"coopDetails"
-).style.display=
-"none";
-
-
-if(state.level>=5){
-
-buy.disabled=
-false;
-
-buy.className=
-"btn gold full";
-
-buy.textContent=
-"🐔 Acheter — 1 000 🪙";
-
-
-document.getElementById(
-"coopStatus"
-).textContent=
-"1 🌾 = 5 œufs potentiels";
-
-}
-
-else{
-
-buy.disabled=
-true;
-
-buy.className=
-"btn dark full";
-
-buy.textContent=
-"🔒 Niveau 5";
-
-}
-
-
-return;
-
-}
-
-
-buy.style.display=
-"none";
-
-
-document.getElementById(
-"coopDetails"
-).style.display=
-"block";
-
-
-document.getElementById(
-"coopStatus"
-).textContent=
-
-state.coopFeed>0
-
-?
-
-"🥚 Production active"
-
-:
-
-"⚠️ Plus de nourriture";
-
-
-document.getElementById(
-"coopFeed"
-).textContent=
-state.coopFeed;
-
-
-document.getElementById(
-"eggWaiting"
-).textContent=
-state.eggWaiting;
-
-
-document.getElementById(
-"coopCollect"
-).disabled=
-state.eggWaiting<=0;
-
-
-const elapsed=
-
-(
-Date.now()-
-state.coopLastProduction
-)
-/1000;
-
-
-document.getElementById(
-"coopFill"
-).style.width=
-
-state.coopFeed<=0
-
-?
-
-"0%"
-
-:
-
-Math.min(
-100,
-elapsed/30*100
-)
-+
-"%";
-
-}
-
-
-/* =========================
+/* =================================================
 ETABLE
-========================= */
+================================================= */
 
-function buyBarn(){
+function cowInterval(){
 
-if(state.level<9){
-
-return;
+return Math.max(
+30,
+120/
+state.cows
+);
 
 }
 
 
-if(state.money<4000){
+function pigInterval(){
 
-toast(
-"Il faut 4 000 🪙."
+return Math.max(
+45,
+180/
+state.pigs
 );
-
-return;
-
-}
-
-
-state.money-=4000;
-
-state.barnBought=
-true;
-
-
-state.cowLastProduction=
-Date.now();
-
-
-state.pigLastProduction=
-Date.now();
-
-
-showFloatingText(
-"🐄 ÉTABLE ACHETÉE"
-);
-
-
-render();
 
 }
 
@@ -3335,20 +3433,12 @@ return;
 }
 
 
-state.stock.wheat-=2;
+state.stock.wheat-=
+2;
 
 
-/*
-2 blés =
-3 productions lait
-*/
-
-state.cowFeed+=3;
-
-
-toast(
-"🐄 +3 repas"
-);
+state.cowFeed+=
+3;
 
 
 render();
@@ -3371,15 +3461,12 @@ return;
 }
 
 
-state.stock.corn-=2;
+state.stock.corn-=
+2;
 
 
-state.pigFeed+=3;
-
-
-toast(
-"🐖 +3 repas"
-);
+state.pigFeed+=
+3;
 
 
 render();
@@ -3389,18 +3476,16 @@ render();
 
 function updateBarn(){
 
-if(!state.barnBought){
+if(
+!state.barnBought
+){
 
 return;
 
 }
 
 
-const now=
-Date.now();
-
-
-/* vaches */
+/* VACHES */
 
 if(
 state.cowFeed>0
@@ -3408,20 +3493,21 @@ state.cowFeed>0
 state.milkWaiting<12
 ){
 
-const elapsed=
-
-(
-now-
-state.cowLastProduction
-)
-/1000;
+const interval=
+cowInterval();
 
 
 const cycles=
 
 Math.floor(
-elapsed/
-120
+
+(
+Date.now()-
+state.cowLastProduction
+)
+/1000/
+interval
+
 );
 
 
@@ -3439,25 +3525,23 @@ if(actual>0){
 state.milkWaiting+=
 actual;
 
+
 state.cowFeed-=
 actual;
 
+
 state.cowLastProduction+=
-actual*120000;
+
+actual*
+interval*
+1000;
 
 }
 
 }
 
-else{
 
-state.cowLastProduction=
-now;
-
-}
-
-
-/* cochons */
+/* COCHONS */
 
 if(
 state.pigFeed>0
@@ -3465,20 +3549,21 @@ state.pigFeed>0
 state.baconWaiting<12
 ){
 
-const elapsed=
-
-(
-now-
-state.pigLastProduction
-)
-/1000;
+const interval=
+pigInterval();
 
 
 const cycles=
 
 Math.floor(
-elapsed/
-180
+
+(
+Date.now()-
+state.pigLastProduction
+)
+/1000/
+interval
+
 );
 
 
@@ -3496,20 +3581,18 @@ if(actual>0){
 state.baconWaiting+=
 actual;
 
+
 state.pigFeed-=
 actual;
 
+
 state.pigLastProduction+=
-actual*180000;
+
+actual*
+interval*
+1000;
 
 }
-
-}
-
-else{
-
-state.pigLastProduction=
-now;
 
 }
 
@@ -3518,11 +3601,9 @@ now;
 
 function collectMilk(){
 
-if(state.milkWaiting<=0){
-
-toast(
-"Pas de lait prêt."
-);
+if(
+state.milkWaiting<=0
+){
 
 return;
 
@@ -3532,7 +3613,9 @@ return;
 state.stock.milk=
 
 (
-state.stock.milk||0
+state.stock.milk
+||
+0
 )
 +
 state.milkWaiting;
@@ -3544,7 +3627,8 @@ state.milkWaiting
 );
 
 
-state.milkWaiting=0;
+state.milkWaiting=
+0;
 
 
 render();
@@ -3554,11 +3638,9 @@ render();
 
 function collectBacon(){
 
-if(state.baconWaiting<=0){
-
-toast(
-"Pas de bacon prêt."
-);
+if(
+state.baconWaiting<=0
+){
 
 return;
 
@@ -3568,7 +3650,9 @@ return;
 state.stock.bacon=
 
 (
-state.stock.bacon||0
+state.stock.bacon
+||
+0
 )
 +
 state.baconWaiting;
@@ -3580,7 +3664,8 @@ state.baconWaiting
 );
 
 
-state.baconWaiting=0;
+state.baconWaiting=
+0;
 
 
 render();
@@ -3588,204 +3673,9 @@ render();
 }
 
 
-function renderBarn(){
-
-const buy=
-document.getElementById(
-"barnBuy"
-);
-
-
-if(!state.barnBought){
-
-document.getElementById(
-"barnDetails"
-).style.display=
-"none";
-
-
-if(state.level>=9){
-
-buy.disabled=false;
-
-buy.className=
-"btn gold full";
-
-buy.textContent=
-"🐄 Acheter — 4 000 🪙";
-
-
-document.getElementById(
-"barnStatus"
-).textContent=
-"Vaches + cochons";
-
-}
-
-else{
-
-buy.disabled=true;
-
-buy.className=
-"btn dark full";
-
-buy.textContent=
-"🔒 Niveau 9";
-
-}
-
-
-return;
-
-}
-
-
-buy.style.display=
-"none";
-
-
-document.getElementById(
-"barnDetails"
-).style.display=
-"block";
-
-
-document.getElementById(
-"barnStatus"
-).textContent=
-"🐄 Lait • 🐖 Bacon";
-
-
-document.getElementById(
-"cowFeed"
-).textContent=
-state.cowFeed;
-
-
-document.getElementById(
-"pigFeed"
-).textContent=
-state.pigFeed;
-
-
-document.getElementById(
-"milkWaiting"
-).textContent=
-state.milkWaiting;
-
-
-document.getElementById(
-"baconWaiting"
-).textContent=
-state.baconWaiting;
-
-
-/* bars */
-
-const cowElapsed=
-
-(
-Date.now()-
-state.cowLastProduction
-)
-/1000;
-
-
-document.getElementById(
-"cowFill"
-).style.width=
-
-state.cowFeed<=0
-
-?
-
-"0%"
-
-:
-
-Math.min(
-100,
-cowElapsed/120*100
-)
-+
-"%";
-
-
-const pigElapsed=
-
-(
-Date.now()-
-state.pigLastProduction
-)
-/1000;
-
-
-document.getElementById(
-"pigFill"
-).style.width=
-
-state.pigFeed<=0
-
-?
-
-"0%"
-
-:
-
-Math.min(
-100,
-pigElapsed/180*100
-)
-+
-"%";
-
-}
-
-
-/* =========================
+/* =================================================
 MOULIN
-========================= */
-
-function buyMill(){
-
-if(state.level<12){
-
-return;
-
-}
-
-
-if(state.money<10000){
-
-toast(
-"Il faut 10 000 🪙."
-);
-
-return;
-
-}
-
-
-state.money-=10000;
-
-
-state.millBought=
-true;
-
-
-state.millLastProduction=
-Date.now();
-
-
-showFloatingText(
-"⚙️ MOULIN ACHETÉ"
-);
-
-
-render();
-
-}
-
+================================================= */
 
 function loadMill(){
 
@@ -3802,23 +3692,21 @@ return;
 }
 
 
-state.stock.wheat-=2;
+state.stock.wheat-=
+2;
 
 
 state.millQueue++;
 
 
-if(state.millQueue===1){
+if(
+state.millQueue===1
+){
 
 state.millLastProduction=
 Date.now();
 
 }
-
-
-toast(
-"⚙️ Production ajoutée"
-);
 
 
 render();
@@ -3828,41 +3716,30 @@ render();
 
 function updateMill(){
 
-if(!state.millBought){
-
-return;
-
-}
-
-
 if(
+!state.millBought
+||
 state.millQueue<=0
 ||
 state.flourWaiting>=15
 ){
 
-state.millLastProduction=
-Date.now();
-
 return;
 
 }
 
 
-const elapsed=
+const cycles=
+
+Math.floor(
 
 (
 Date.now()-
 state.millLastProduction
 )
-/1000;
-
-
-const cycles=
-
-Math.floor(
-elapsed/
+/1000/
 60
+
 );
 
 
@@ -3886,7 +3763,8 @@ actual;
 
 
 state.millLastProduction+=
-actual*60000;
+actual*
+60000;
 
 }
 
@@ -3899,10 +3777,6 @@ if(
 state.flourWaiting<=0
 ){
 
-toast(
-"Pas de farine prête."
-);
-
 return;
 
 }
@@ -3911,7 +3785,9 @@ return;
 state.stock.flour=
 
 (
-state.stock.flour||0
+state.stock.flour
+||
+0
 )
 +
 state.flourWaiting;
@@ -3923,7 +3799,8 @@ state.flourWaiting
 );
 
 
-state.flourWaiting=0;
+state.flourWaiting=
+0;
 
 
 render();
@@ -3931,407 +3808,978 @@ render();
 }
 
 
-function renderMill(){
+/* =================================================
+SHOP
+================================================= */
 
-const buy=
-document.getElementById(
-"millBuy"
+let shopCategory=
+"fields";
+
+
+function openShop(
+category="fields"
+){
+
+shopCategory=
+category;
+
+
+renderShop();
+
+}
+
+
+function renderShop(){
+
+let html=
+
+'<div class="shopTabs">'
+
++
+
+shopTab(
+"fields",
+"🌱",
+"CHAMPS"
+)
+
++
+
+shopTab(
+"buildings",
+"🏗️",
+"BÂTIMENTS"
+)
+
++
+
+shopTab(
+"animals",
+"🐔",
+"ANIMAUX"
+)
+
++
+
+shopTab(
+"machines",
+"🚜",
+"MACHINES"
+)
+
++
+
+"</div>";
+
+
+if(
+shopCategory===
+"fields"
+){
+
+html+=
+shopFields();
+
+}
+
+
+if(
+shopCategory===
+"buildings"
+){
+
+html+=
+shopBuildings();
+
+}
+
+
+if(
+shopCategory===
+"animals"
+){
+
+html+=
+shopAnimals();
+
+}
+
+
+if(
+shopCategory===
+"machines"
+){
+
+html+=
+shopMachines();
+
+}
+
+
+openModal(
+"🛒 Shop",
+html
+);
+
+}
+
+
+function shopTab(
+key,
+icon,
+name
+){
+
+return(
+
+'<button class="shopTab '
++
+(
+shopCategory===key
+?
+"active"
+:
+""
+)
++
+'" onclick="openShop(\''+
+key+
+'\')">'
+
++
+icon+
+"<br>"+
+name
+
++
+"</button>"
+
+);
+
+}
+
+
+/* CHAMPS SHOP */
+
+function shopFields(){
+
+if(
+state.plots>=20
+){
+
+return(
+
+'<div class="shopCard">'
++
+"<b>🌱 Toutes les parcelles V1 sont débloquées.</b>"
++
+"</div>"
+
+);
+
+}
+
+
+const cost=
+plotCost();
+
+
+return(
+
+shopCard(
+
+"🌱",
+
+"Parcelle "+
+(state.plots+1),
+
+"Augmente la taille de ta zone cultivable.",
+
+cost,
+
+true,
+
+"buyPlot()",
+
+false
+
+)
+
+);
+
+}
+
+
+/* BATIMENTS SHOP */
+
+function shopBuildings(){
+
+let html="";
+
+
+html+=
+shopCard(
+
+"🐔",
+
+"Poulailler",
+
+"Produit des œufs quand les poules sont nourries.",
+
+1000,
+
+state.level>=5,
+
+"buyCoop()",
+
+state.coopBought,
+
+"niveau 5"
+
 );
 
 
-if(!state.millBought){
+html+=
+shopCard(
 
-document.getElementById(
-"millDetails"
-).style.display=
-"none";
+"🐄",
+
+"Étable",
+
+"Débloque les vaches et les cochons.",
+
+4000,
+
+state.level>=9,
+
+"buyBarn()",
+
+state.barnBought,
+
+"niveau 9"
+
+);
 
 
-if(state.level>=12){
+html+=
+shopCard(
 
-buy.disabled=false;
+"⚙️",
 
-buy.className=
-"btn gold full";
+"Moulin",
 
-buy.textContent=
-"⚙️ Acheter — 10 000 🪙";
+"Transforme 2 blés en 1 farine.",
+
+10000,
+
+state.level>=12,
+
+"buyMill()",
+
+state.millBought,
+
+"niveau 12"
+
+);
 
 
-document.getElementById(
-"millStatus"
-).textContent=
-"2 blés → 1 farine";
+return html;
+
+}
+
+
+/* ANIMAUX SHOP */
+
+function shopAnimals(){
+
+let html="";
+
+
+html+=
+shopCard(
+
+"🐔",
+
+"Poule supplémentaire",
+
+"Accélère la production d'œufs. Tu en possèdes "+state.hens+".",
+
+henPrice(),
+
+state.coopBought,
+
+"buyHen()",
+
+false,
+
+"Poulailler requis"
+
+);
+
+
+html+=
+shopCard(
+
+"🐄",
+
+"Vache supplémentaire",
+
+"Accélère la production de lait. Tu en possèdes "+state.cows+".",
+
+cowPrice(),
+
+state.barnBought,
+
+"buyCow()",
+
+false,
+
+"Étable requise"
+
+);
+
+
+html+=
+shopCard(
+
+"🐖",
+
+"Cochon supplémentaire",
+
+"Accélère la production de bacon. Tu en possèdes "+state.pigs+".",
+
+pigPrice(),
+
+state.barnBought,
+
+"buyPig()",
+
+false,
+
+"Étable requise"
+
+);
+
+
+return html;
+
+}
+
+
+/* MACHINES */
+
+function shopMachines(){
+
+return(
+
+shopCard(
+
+"🚜",
+
+"Tracteur",
+
+"Récolte toutes les parcelles prêtes en un clic.",
+
+5000,
+
+state.level>=8,
+
+"buyTractor()",
+
+state.tractor,
+
+"niveau 8"
+
+)
+
+);
+
+}
+
+
+/* CARD SHOP */
+
+function shopCard(
+icon,
+name,
+description,
+price,
+unlocked,
+action,
+owned=false,
+requirement=""
+){
+
+let button="";
+
+
+if(owned){
+
+button=
+
+'<button class="btn dark full" disabled>'
++
+"✅ DÉJÀ ACHETÉ"
++
+"</button>";
+
+}
+
+else if(!unlocked){
+
+button=
+
+'<button class="btn dark full" disabled>'
++
+"🔒 "+
+requirement
++
+"</button>";
 
 }
 
 else{
 
-buy.disabled=true;
+button=
 
-buy.className=
-"btn dark full";
+'<button class="btn gold full" onclick="'
++
+action
++
+'">'
 
-buy.textContent=
-"🔒 Niveau 12";
-
-}
-
-
-return;
-
-}
-
-
-buy.style.display=
-"none";
-
-
-document.getElementById(
-"millDetails"
-).style.display=
-"block";
-
-
-document.getElementById(
-"millStatus"
-).textContent=
-
-state.millQueue>0
-
-?
-
-"⚙️ Production active"
-
-:
-
-"En attente de blé";
-
-
-document.getElementById(
-"millQueue"
-).textContent=
-state.millQueue;
-
-
-document.getElementById(
-"flourWaiting"
-).textContent=
-state.flourWaiting;
-
-
-const elapsed=
-
-(
-Date.now()-
-state.millLastProduction
-)
-/1000;
-
-
-document.getElementById(
-"millFill"
-).style.width=
-
-state.millQueue<=0
-
-?
-
-"0%"
-
-:
-
-Math.min(
-100,
-elapsed/60*100
++
+"ACHETER — "
++
+price.toLocaleString(
+"fr-FR"
 )
 +
-"%";
+" 🪙"
+
++
+"</button>";
 
 }
 
 
-/* =========================
-OFFLINE
-========================= */
+return(
 
-function processOfflineProduction(){
+'<div class="shopCard">'
 
-if(
-typeof state.lastSeen!=="number"
-){
++
 
-return;
+'<div class="shopHeader">'
 
-}
++
 
+'<div class="shopIcon">'
++
+icon
++
+"</div>"
 
-const now=
-Date.now();
++
 
+'<div class="shopInfo">'
 
-const seconds=
++
 
-Math.min(
+'<div class="shopName">'
++
+name
++
+"</div>"
 
-OFFLINE_LIMIT,
++
 
-Math.max(
-0,
-(now-state.lastSeen)/1000
+'<div class="shopDescription">'
++
+description
++
+"</div>"
+
++
+
+"</div>"
+
++
+
+"</div>"
+
++
+
+'<div class="shopPrice">'
++
+price.toLocaleString(
+"fr-FR"
 )
++
+" 🪙"
++
+"</div>"
+
++
+
+button
+
++
+
+"</div>"
 
 );
 
+}
 
-let report=[];
 
+/* =================================================
+ACHATS BATIMENTS
+================================================= */
 
-/* coop */
+function buyCoop(){
 
 if(
 state.coopBought
-&&
-state.coopFeed>0
-&&
-state.eggWaiting<20
+||
+state.level<5
 ){
 
-const cycles=
-
-Math.floor(
-seconds/30
-);
-
-
-const actual=
-
-Math.min(
-cycles,
-state.coopFeed,
-20-state.eggWaiting
-);
-
-
-if(actual>0){
-
-state.eggWaiting+=
-actual;
-
-state.coopFeed-=
-actual;
-
-report.push(
-"🥚 +"+actual+" œufs"
-);
+return;
 
 }
 
-}
-
-
-/* cow */
 
 if(
-state.barnBought
-&&
-state.cowFeed>0
-&&
-state.milkWaiting<12
+state.money<1000
 ){
 
-const cycles=
-
-Math.floor(
-seconds/120
+toast(
+"Pas assez d'argent."
 );
 
-
-const actual=
-
-Math.min(
-cycles,
-state.cowFeed,
-12-state.milkWaiting
-);
-
-
-if(actual>0){
-
-state.milkWaiting+=
-actual;
-
-state.cowFeed-=
-actual;
-
-report.push(
-"🥛 +"+actual+" lait"
-);
-
-}
+return;
 
 }
 
 
-/* pig */
+state.money-=
+1000;
 
-if(
-state.barnBought
-&&
-state.pigFeed>0
-&&
-state.baconWaiting<12
-){
 
-const cycles=
+state.coopBought=
+true;
 
-Math.floor(
-seconds/180
+
+state.hens=
+Math.max(
+1,
+state.hens
 );
 
 
-const actual=
+state.coopLastProduction=
+Date.now();
 
-Math.min(
-cycles,
-state.pigFeed,
-12-state.baconWaiting
+
+showFloatingText(
+"🐔 POULAILLER ACHETÉ"
 );
 
-
-if(actual>0){
-
-state.baconWaiting+=
-actual;
-
-state.pigFeed-=
-actual;
-
-report.push(
-"🥓 +"+actual+" bacon"
-);
-
-}
-
-}
-
-
-/* mill */
-
-if(
-state.millBought
-&&
-state.millQueue>0
-&&
-state.flourWaiting<15
-){
-
-const cycles=
-
-Math.floor(
-seconds/60
-);
-
-
-const actual=
-
-Math.min(
-cycles,
-state.millQueue,
-15-state.flourWaiting
-);
-
-
-if(actual>0){
-
-state.flourWaiting+=
-actual;
-
-state.millQueue-=
-actual;
-
-report.push(
-"🥣 +"+actual+" farine"
-);
-
-}
-
-}
-
-
-/* reset clocks */
-
-state.coopLastProduction=now;
-
-state.cowLastProduction=now;
-
-state.pigLastProduction=now;
-
-state.millLastProduction=now;
-
-
-if(report.length){
-
-document.getElementById(
-"offlineText"
-).innerHTML=
-
-report.join(
-"<br>"
-);
-
-
-setTimeout(
-()=>{
-
-document.getElementById(
-"offline"
-).classList.add(
-"show"
-);
-
-},
-300
-);
-
-}
-
-}
-
-
-function closeOffline(){
-
-document.getElementById(
-"offline"
-).classList.remove(
-"show"
-);
 
 render();
 
+
+openShop(
+"buildings"
+);
+
 }
 
 
-/* =========================
-COMMANDES
-========================= */
+function buyBarn(){
+
+if(
+state.barnBought
+||
+state.level<9
+){
+
+return;
+
+}
+
+
+if(
+state.money<4000
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+4000;
+
+
+state.barnBought=
+true;
+
+
+state.cows=
+Math.max(
+1,
+state.cows
+);
+
+
+state.pigs=
+Math.max(
+1,
+state.pigs
+);
+
+
+state.cowLastProduction=
+Date.now();
+
+
+state.pigLastProduction=
+Date.now();
+
+
+showFloatingText(
+"🐄 ÉTABLE ACHETÉE"
+);
+
+
+render();
+
+
+openShop(
+"buildings"
+);
+
+}
+
+
+function buyMill(){
+
+if(
+state.millBought
+||
+state.level<12
+){
+
+return;
+
+}
+
+
+if(
+state.money<10000
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+10000;
+
+
+state.millBought=
+true;
+
+
+state.millLastProduction=
+Date.now();
+
+
+showFloatingText(
+"⚙️ MOULIN ACHETÉ"
+);
+
+
+render();
+
+
+openShop(
+"buildings"
+);
+
+}
+
+
+/* =================================================
+ANIMAUX SHOP
+================================================= */
+
+function henPrice(){
+
+return Math.floor(
+
+600*
+
+Math.pow(
+1.65,
+state.hens-1
+)
+
+);
+
+}
+
+
+function cowPrice(){
+
+return Math.floor(
+
+1800*
+
+Math.pow(
+1.7,
+state.cows-1
+)
+
+);
+
+}
+
+
+function pigPrice(){
+
+return Math.floor(
+
+1500*
+
+Math.pow(
+1.7,
+state.pigs-1
+)
+
+);
+
+}
+
+
+function buyHen(){
+
+const price=
+henPrice();
+
+
+if(
+state.money<
+price
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+price;
+
+
+state.hens++;
+
+
+showFloatingText(
+"🐔 +1 poule"
+);
+
+
+render();
+
+
+openShop(
+"animals"
+);
+
+}
+
+
+function buyCow(){
+
+const price=
+cowPrice();
+
+
+if(
+state.money<
+price
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+price;
+
+
+state.cows++;
+
+
+showFloatingText(
+"🐄 +1 vache"
+);
+
+
+render();
+
+
+openShop(
+"animals"
+);
+
+}
+
+
+function buyPig(){
+
+const price=
+pigPrice();
+
+
+if(
+state.money<
+price
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+price;
+
+
+state.pigs++;
+
+
+showFloatingText(
+"🐖 +1 cochon"
+);
+
+
+render();
+
+
+openShop(
+"animals"
+);
+
+}
+
+
+/* =================================================
+TRACTEUR
+================================================= */
+
+function buyTractor(){
+
+if(
+state.tractor
+||
+state.level<8
+){
+
+return;
+
+}
+
+
+if(
+state.money<5000
+){
+
+toast(
+"Pas assez d'argent."
+);
+
+return;
+
+}
+
+
+state.money-=
+5000;
+
+
+state.tractor=
+true;
+
+
+showFloatingText(
+"🚜 TRACTEUR ACHETÉ"
+);
+
+
+render();
+
+
+openShop(
+"machines"
+);
+
+}
+
+
+/* =================================================
+COMMANDES — RÉPARÉ
+================================================= */
 
 function availableOrderProducts(){
 
 let list=[];
 
 
-/* crops */
+/* CULTURES */
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
-if(unlocked(key)){
+if(
+unlocked(key)
+){
 
 list.push({
+
 key:key,
-icon:CROPS[key].icon,
-sell:CROPS[key].sell,
-type:"crop"
+
+icon:
+CROPS[key].icon,
+
+sell:
+CROPS[key].sell
+
 });
 
 }
@@ -4339,46 +4787,65 @@ type:"crop"
 }
 
 
-/* products */
+/* PRODUITS */
 
-if(state.coopBought){
+if(
+state.coopBought
+){
 
 list.push({
+
 key:"egg",
+
 icon:"🥚",
-sell:35,
-type:"product"
+
+sell:35
+
 });
 
 }
 
 
-if(state.barnBought){
+if(
+state.barnBought
+){
 
 list.push({
+
 key:"milk",
+
 icon:"🥛",
-sell:150,
-type:"product"
+
+sell:150
+
 });
 
+
 list.push({
+
 key:"bacon",
+
 icon:"🥓",
-sell:240,
-type:"product"
+
+sell:240
+
 });
 
 }
 
 
-if(state.millBought){
+if(
+state.millBought
+){
 
 list.push({
+
 key:"flour",
+
 icon:"🥣",
-sell:120,
-type:"product"
+
+sell:120
+
 });
 
 }
@@ -4395,12 +4862,38 @@ const available=
 availableOrderProducts();
 
 
-let count=1;
+if(
+available.length===0
+){
+
+return{
+
+items:[
+{
+key:"wheat",
+qty:5
+}
+],
+
+reward:70,
+
+xp:10
+
+};
+
+}
 
 
-if(state.level>=4){
+let itemCount=
+1;
 
-count=2;
+
+if(
+state.level>=4
+){
+
+itemCount=
+2;
 
 }
 
@@ -4411,19 +4904,20 @@ state.level>=9
 Math.random()<.5
 ){
 
-count=3;
+itemCount=
+3;
 
 }
 
 
-count=
+itemCount=
 Math.min(
-count,
+itemCount,
 available.length
 );
 
 
-const chosen=
+const selected=
 
 [...available]
 
@@ -4433,21 +4927,24 @@ const chosen=
 
 .slice(
 0,
-count
+itemCount
 );
 
 
-let value=0;
+let marketValue=0;
 
 
 const items=
-chosen.map(item=>{
+selected.map(
+product=>{
 
 
 let qty=1;
 
 
-if(item.sell<=30){
+if(
+product.sell<=30
+){
 
 qty=
 4+
@@ -4457,7 +4954,9 @@ Math.random()*7
 
 }
 
-else if(item.sell<=150){
+else if(
+product.sell<=150
+){
 
 qty=
 2+
@@ -4478,16 +4977,18 @@ Math.random()*3
 }
 
 
-value+=
-item.sell*
+marketValue+=
+product.sell*
 qty;
 
 
 return{
 
-key:item.key,
+key:
+product.key,
 
-qty:qty
+qty:
+qty
 
 };
 
@@ -4496,18 +4997,26 @@ qty:qty
 
 return{
 
-items:items,
+items:
+items,
 
 reward:
+
+Math.max(
+25,
 Math.floor(
-value*1.4
+marketValue*
+1.4
+)
 ),
 
 xp:
+
 Math.max(
 10,
 Math.floor(
-value/12
+marketValue/
+12
 )
 )
 
@@ -4519,9 +5028,13 @@ value/12
 function generateOrders(){
 
 state.orders=[
+
 randomOrder(),
+
 randomOrder(),
+
 randomOrder()
+
 ];
 
 }
@@ -4529,17 +5042,35 @@ randomOrder()
 
 function productInfo(key){
 
-if(CROPS[key]){
+if(
+CROPS[key]
+){
 
 return{
-icon:CROPS[key].icon,
-name:CROPS[key].name
+
+icon:
+CROPS[key].icon,
+
+name:
+CROPS[key].name
+
 };
 
 }
 
 
-return PRODUCTS[key];
+return(
+
+PRODUCTS[key]
+
+||
+
+{
+icon:"📦",
+name:"Produit"
+}
+
+);
 
 }
 
@@ -4552,14 +5083,53 @@ document.getElementById(
 );
 
 
-container.innerHTML="";
+container.innerHTML=
+"";
+
+
+/*
+sécurité supplémentaire
+*/
+
+if(
+!Array.isArray(
+state.orders
+)
+||
+state.orders.length!==3
+){
+
+generateOrders();
+
+}
 
 
 state.orders.forEach(
 (order,index)=>{
 
 
-let possible=true;
+if(
+!order
+||
+!Array.isArray(
+order.items
+)
+){
+
+state.orders[
+index
+]=
+randomOrder();
+
+
+return;
+
+}
+
+
+let possible=
+true;
+
 
 let lines="";
 
@@ -4575,14 +5145,20 @@ item.key
 
 
 const have=
-state.stock[item.key]
+state.stock[
+item.key
+]
 ||
 0;
 
 
-if(have<item.qty){
+if(
+have<
+item.qty
+){
 
-possible=false;
+possible=
+false;
 
 }
 
@@ -4592,7 +5168,8 @@ lines+=
 '<div class="orderLine">'
 
 +
-info.icon+
+info.icon
++
 " "
 
 +
@@ -4652,15 +5229,18 @@ lines
 '<div class="reward">'
 
 +
-"🪙 "+
+"🪙 "
++
 order.reward
 .toLocaleString(
 "fr-FR"
 )
 
 +
-"<br>⭐ "+
-order.xp+
+"<br>⭐ "
++
+order.xp
++
 " XP"
 
 +
@@ -4682,8 +5262,10 @@ possible
 
 +
 
-' onclick="deliver('+
-index+
+' onclick="deliver('
++
+index
++
 ')">'
 
 +
@@ -4705,15 +5287,41 @@ div
 function deliver(index){
 
 const order=
-state.orders[index];
+state.orders[
+index
+];
 
-
-for(const item of order.items){
 
 if(
-(state.stock[item.key]||0)
+!order
+||
+!Array.isArray(
+order.items
+)
+){
+
+return;
+
+}
+
+
+for(
+const item of order.items
+){
+
+if(
+
+(
+state.stock[
+item.key
+]
+||
+0
+)
+
 <
 item.qty
+
 ){
 
 toast(
@@ -4730,7 +5338,9 @@ return;
 order.items.forEach(
 item=>{
 
-state.stock[item.key]-=
+state.stock[
+item.key
+]-=
 item.qty;
 
 });
@@ -4745,18 +5355,23 @@ order.xp
 );
 
 
-state.orders[index]=
+state.orders[
+index
+]=
 randomOrder();
 
 
 showFloatingText(
-"📦 +"+
+
+"📦 +"
++
 order.reward
 .toLocaleString(
 "fr-FR"
 )
 +
 " 🪙"
+
 );
 
 
@@ -4765,9 +5380,9 @@ render();
 }
 
 
-/* =========================
+/* =================================================
 STOCK
-========================= */
+================================================= */
 
 function renderStock(){
 
@@ -4777,10 +5392,13 @@ document.getElementById(
 );
 
 
-container.innerHTML="";
+container.innerHTML=
+"";
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
 if(
 unlocked(key)
@@ -4788,7 +5406,7 @@ unlocked(key)
 (state.stock[key]||0)>0
 ){
 
-addStockItem(
+stockItem(
 container,
 key,
 CROPS[key].icon,
@@ -4800,9 +5418,12 @@ CROPS[key].name
 }
 
 
-for(const key in PRODUCTS){
+for(
+const key in PRODUCTS
+){
 
-if(
+const show=
+
 (state.stock[key]||0)>0
 
 ||
@@ -4816,7 +5437,11 @@ state.coopBought
 ||
 
 (
-(key==="milk"||key==="bacon")
+(
+key==="milk"
+||
+key==="bacon"
+)
 &&
 state.barnBought
 )
@@ -4827,11 +5452,12 @@ state.barnBought
 key==="flour"
 &&
 state.millBought
-)
+);
 
-){
 
-addStockItem(
+if(show){
+
+stockItem(
 container,
 key,
 PRODUCTS[key].icon,
@@ -4845,7 +5471,7 @@ PRODUCTS[key].name
 }
 
 
-function addStockItem(
+function stockItem(
 container,
 key,
 icon,
@@ -4864,16 +5490,20 @@ div.className=
 
 div.innerHTML=
 
-"<span>"+
+"<span>"
++
 icon+
 " "+
-name+
+name
++
 "</span>"
 
 +
 
-"<b>"+
-(state.stock[key]||0)+
+"<b>"
++
+(state.stock[key]||0)
++
 "</b>";
 
 
@@ -4884,27 +5514,37 @@ div
 }
 
 
-/* =========================
-MARKET
-========================= */
+/* =================================================
+MARCHÉ
+================================================= */
 
 function showMarket(){
 
-let body=
+let html=
 
-"<p>Vends tes productions ou garde-les pour les commandes.</p>";
+"<p>Vends tes produits ou conserve-les pour les commandes.</p>";
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
-if(unlocked(key)){
+if(
+unlocked(key)
+){
 
-body+=
-marketHTML(
+html+=
+
+marketCard(
+
 key,
+
 CROPS[key].icon,
+
 CROPS[key].name,
+
 CROPS[key].sell
+
 );
 
 }
@@ -4912,9 +5552,11 @@ CROPS[key].sell
 }
 
 
-for(const key in PRODUCTS){
+for(
+const key in PRODUCTS
+){
 
-const visible=
+const available=
 
 (
 key==="egg"
@@ -4925,7 +5567,11 @@ state.coopBought
 ||
 
 (
-(key==="milk"||key==="bacon")
+(
+key==="milk"
+||
+key==="bacon"
+)
 &&
 state.barnBought
 )
@@ -4939,14 +5585,20 @@ state.millBought
 );
 
 
-if(visible){
+if(available){
 
-body+=
-marketHTML(
+html+=
+
+marketCard(
+
 key,
+
 PRODUCTS[key].icon,
+
 PRODUCTS[key].name,
+
 PRODUCTS[key].sell
+
 );
 
 }
@@ -4955,14 +5607,14 @@ PRODUCTS[key].sell
 
 
 openModal(
-"🛒 Marché",
-body
+"💰 Marché",
+html
 );
 
 }
 
 
-function marketHTML(
+function marketCard(
 key,
 icon,
 name,
@@ -4970,7 +5622,9 @@ price
 ){
 
 const qty=
-state.stock[key]||0;
+state.stock[key]
+||
+0;
 
 
 return(
@@ -4996,17 +5650,15 @@ name+
 "<br>"
 
 +
-"<small>"
-
+"<small>Stock : "
 +
-"Stock : "+
-qty+
-" • "+
-price+
-" 🪙/u"
-
+qty
 +
-"</small>"
+" • "
++
+price
++
+" 🪙/u</small>"
 
 +
 "</div>"
@@ -5014,18 +5666,13 @@ price+
 +
 
 "<b>"
-
 +
 (qty*price)
 .toLocaleString(
 "fr-FR"
 )
-
 +
-" 🪙"
-
-+
-"</b>"
+" 🪙</b>"
 
 +
 
@@ -5038,36 +5685,65 @@ price+
 +
 
 '<button class="btn small" '
+
 +
-(qty<1?"disabled":"")
+(
+qty<1
+?
+"disabled"
+:
+""
+)
+
 +
+
 ' onclick="sellProduct(\''+
 key+
 '\',1,'+
 price+
-')">VENDRE 1</button>'
+')">x1</button>'
 
 +
 
 '<button class="btn blue small" '
+
 +
-(qty<5?"disabled":"")
+(
+qty<5
+?
+"disabled"
+:
+""
+)
+
 +
+
 ' onclick="sellProduct(\''+
 key+
 '\',5,'+
 price+
-')">VENDRE 5</button>'
+')">x5</button>'
 
 +
 
 '<button class="btn gold small" '
+
 +
-(qty<1?"disabled":"")
+(
+qty<1
+?
+"disabled"
+:
+""
+)
+
 +
-' onclick="sellAllProduct(\''+
+
+' onclick="sellProduct(\''+
 key+
 '\','+
+qty+
+','+
 price+
 ')">TOUT</button>'
 
@@ -5092,8 +5768,13 @@ price
 
 quantity=
 Math.min(
+
 quantity,
-state.stock[key]||0
+
+state.stock[key]
+||
+0
+
 );
 
 
@@ -5105,6 +5786,7 @@ return;
 
 
 const gain=
+
 quantity*
 price;
 
@@ -5118,206 +5800,132 @@ gain;
 
 
 showFloatingText(
-"🪙 +"+
+
+"🪙 +"
++
 gain
 .toLocaleString(
 "fr-FR"
 )
+
 );
 
 
 render();
+
 
 showMarket();
 
 }
 
 
-function sellAllProduct(
-key,
-price
-){
-
-sellProduct(
-key,
-state.stock[key]||0,
-price
-);
-
-}
-
-
-/* TRACTOR */
-
-function renderTractor(){
-
-const status=
-document.getElementById(
-"tractorStatus"
-);
-
-
-const button=
-document.getElementById(
-"tractorButton"
-);
-
-
-if(state.tractor){
-
-status.textContent=
-"ACHETÉ";
-
-status.className=
-"tag ok";
-
-
-button.disabled=
-true;
-
-button.textContent=
-"✅ Tracteur actif";
-
-return;
-
-}
-
-
-if(state.level>=8){
-
-status.textContent=
-"DISPONIBLE";
-
-status.className=
-"tag ok";
-
-
-button.disabled=
-false;
-
-button.className=
-"btn gold full";
-
-button.textContent=
-"🚜 Acheter — 5 000 🪙";
-
-}
-
-else{
-
-button.disabled=
-true;
-
-}
-
-}
-
-
-function buyTractor(){
-
-if(state.money<5000){
-
-toast(
-"Il faut 5 000 🪙."
-);
-
-return;
-
-}
-
-
-state.money-=5000;
-
-state.tractor=true;
-
-
-showFloatingText(
-"🚜 TRACTEUR ACHETÉ"
-);
-
-
-render();
-
-}
-
-
-/* PROGRESSION */
+/* =================================================
+PROGRESSION
+================================================= */
 
 function showProgress(){
 
-let body=
+let html=
 
-"<p><b>Déblocages de Farm Rush</b></p>";
+"<p><b>Développement de ta ferme</b></p>";
 
 
-body+=
-progressRow(
+html+=
+
+progressCard(
+
 "🐔",
+
 "Poulailler",
+
 5,
+
 state.coopBought
+
 );
 
 
-body+=
-progressRow(
+html+=
+
+progressCard(
+
 "🚜",
+
 "Tracteur",
+
 8,
+
 state.tractor
+
 );
 
 
-body+=
-progressRow(
+html+=
+
+progressCard(
+
 "🐄",
+
 "Étable",
+
 9,
+
 state.barnBought
+
 );
 
 
-body+=
-progressRow(
+html+=
+
+progressCard(
+
 "⚙️",
+
 "Moulin",
+
 12,
+
 state.millBought
+
 );
 
 
 openModal(
 "⭐ Progression",
-body
+html
 );
 
 }
 
 
-function progressRow(
+function progressCard(
 icon,
 name,
 level,
-bought
+owned
 ){
 
 return(
 
-'<div class="marketRow">'
+'<div class="shopCard">'
 
 +
-"<b>"+
+
+"<b>"
++
 icon+
 " "+
 name+
 "</b>"
 
 +
+
 "<span style='float:right'>"
 
 +
+
 (
-bought
+owned
 ?
 "✅"
 :
@@ -5329,17 +5937,23 @@ state.level>=level
 )
 
 +
+
 "</span>"
 
 +
+
 "<br>"
 
 +
-"<small>Niveau "+
-level+
+
+"<small>Déblocage niveau "
++
+level
++
 "</small>"
 
 +
+
 "</div>"
 
 );
@@ -5347,7 +5961,9 @@ level+
 }
 
 
-/* MODALS */
+/* =================================================
+MODALE
+================================================= */
 
 function openModal(
 title,
@@ -5386,9 +6002,14 @@ document.getElementById(
 }
 
 
-function modalBackgroundClose(event){
+function modalBackgroundClose(
+event
+){
 
-if(event.target.id==="modal"){
+if(
+event.target.id===
+"modal"
+){
 
 closeModal();
 
@@ -5397,24 +6018,28 @@ closeModal();
 }
 
 
-/* UI */
+/* =================================================
+UI
+================================================= */
 
 let toastTimer;
 
 
-function toast(message){
+function toast(
+message
+){
 
-const el=
+const element=
 document.getElementById(
 "toast"
 );
 
 
-el.textContent=
+element.textContent=
 message;
 
 
-el.classList.add(
+element.classList.add(
 "show"
 );
 
@@ -5428,42 +6053,44 @@ toastTimer=
 setTimeout(
 ()=>{
 
-el.classList.remove(
+element.classList.remove(
 "show"
 );
 
 },
-1500
+1400
 );
 
 }
 
 
-function showFloatingText(text){
+function showFloatingText(
+text
+){
 
-const el=
+const element=
 document.createElement(
 "div"
 );
 
 
-el.className=
+element.className=
 "floatText";
 
 
-el.innerText=
+element.innerText=
 text;
 
 
 document.body.appendChild(
-el
+element
 );
 
 
 setTimeout(
 ()=>{
 
-el.remove();
+element.remove();
 
 },
 1200
@@ -5472,7 +6099,9 @@ el.remove();
 }
 
 
-/* LOOP */
+/* =================================================
+BOUCLE
+================================================= */
 
 setInterval(
 ()=>{
@@ -5487,16 +6116,13 @@ updateMill();
 if(
 document.getElementById(
 "game"
-).style.display==="block"
+).style.display===
+"block"
 ){
 
 renderFields();
 
-renderCoop();
-
-renderBarn();
-
-renderMill();
+renderBuildings();
 
 renderGoal();
 
@@ -5507,7 +6133,9 @@ renderGoal();
 );
 
 
-/* SAVE */
+/* =================================================
+SAVE EVENTS
+================================================= */
 
 window.addEventListener(
 "beforeunload",
@@ -5520,7 +6148,8 @@ document.addEventListener(
 ()=>{
 
 if(
-document.visibilityState==="hidden"
+document.visibilityState===
+"hidden"
 ){
 
 saveGame();
@@ -5531,7 +6160,9 @@ saveGame();
 );
 
 
-/* START */
+/* =================================================
+START
+================================================= */
 
 loadGame();
 
