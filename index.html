@@ -3,270 +3,750 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#2f5b2e">
-<title>Farm Rush V1.1</title>
+<meta name="theme-color" content="#315e30">
+
+<title>Farm Rush V1.2.1</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e}
-button{font:inherit;cursor:pointer}
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#dff0c9;
+color:#26351e;
+overscroll-behavior:none;
+}
+
+button{
+font:inherit;
+cursor:pointer;
+}
 
 .app{
-max-width:500px;margin:auto;min-height:100vh;
-background:linear-gradient(#a7da79,#edf6dc);
-padding-bottom:86px
+max-width:500px;
+margin:auto;
+min-height:100vh;
+background:linear-gradient(#9ed875,#eef6dc);
+padding-bottom:88px;
 }
 
 /* ACCUEIL */
 
 #home{
-min-height:100vh;display:flex;flex-direction:column;
-align-items:center;justify-content:center;text-align:center;
-padding:28px;background:linear-gradient(#dff7bd,#76bd58)
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:28px;
+background:linear-gradient(#e4f8c5,#78bf59);
 }
 
-.logo{font-size:78px}
-.title{font-weight:900;font-size:46px;color:#2f5d2e;text-shadow:0 3px white}
-.subtitle{color:#496d42;line-height:1.5;margin:10px 0 28px}
-
-.play{
-width:100%;max-width:340px;border:0;border-radius:18px;
-padding:18px;background:#69b63b;color:white;
-font-weight:900;font-size:20px;box-shadow:0 5px #438026
+.homeLogo{
+font-size:82px;
+animation:floatLogo 2.5s ease-in-out infinite;
 }
 
-.version{font-size:11px;color:#4e6b48;margin-top:16px}
+@keyframes floatLogo{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-8px)}
+}
+
+.homeTitle{
+font-weight:1000;
+font-size:46px;
+color:#315e30;
+text-shadow:0 3px white;
+}
+
+.homeSubtitle{
+color:#496e42;
+line-height:1.5;
+margin:10px 0 28px;
+}
+
+.playButton{
+width:100%;
+max-width:340px;
+border:0;
+border-radius:18px;
+padding:18px;
+background:#69b63b;
+color:white;
+font-weight:1000;
+font-size:20px;
+box-shadow:0 6px #438026;
+}
+
+.playButton:active{
+transform:translateY(3px);
+box-shadow:0 3px #438026;
+}
+
+.version{
+font-size:11px;
+color:#4e6b48;
+margin-top:18px;
+}
 
 /* JEU */
 
-#game{display:none}
+#game{
+display:none;
+}
 
 header{
-position:sticky;top:0;z-index:8;
-background:#294c29;color:white;padding:10px
+position:sticky;
+top:0;
+z-index:20;
+background:#294c29;
+color:white;
+padding:calc(10px + env(safe-area-inset-top)) 10px 10px;
+box-shadow:0 3px 10px #0003;
 }
 
-.top{display:flex;align-items:center;gap:8px}
+.top{
+display:flex;
+align-items:center;
+gap:8px;
+}
 
 .avatar{
-width:50px;height:50px;border-radius:14px;
-background:#f5bd56;display:grid;place-items:center;font-size:29px
+width:50px;
+height:50px;
+border-radius:14px;
+background:#f5bd56;
+display:grid;
+place-items:center;
+font-size:29px;
+border:2px solid #f8df8e;
 }
 
-.player{flex:1}
+.player{
+flex:1;
+min-width:0;
+}
 
-.playerName{font-size:13px;font-weight:900}
+.playerName{
+font-size:12px;
+font-weight:1000;
+white-space:nowrap;
+}
 
-.xpText{font-size:10px}
+.xpText{
+font-size:10px;
+margin-top:2px;
+}
 
 .xpbar{
-height:8px;background:#173419;border-radius:20px;
-overflow:hidden;margin-top:4px
+height:9px;
+background:#173419;
+border-radius:20px;
+overflow:hidden;
+margin-top:4px;
+border:1px solid #578558;
 }
 
 .xpfill{
-height:100%;background:#8ee052;width:0;
-transition:.3s
+height:100%;
+background:linear-gradient(90deg,#70d447,#d5f462);
+width:0%;
+transition:width .4s ease;
 }
 
 .money{
-background:#183b1e;border-radius:10px;
-padding:9px;font-weight:900
+background:#183b1e;
+border:1px solid #567c54;
+border-radius:10px;
+padding:9px 8px;
+font-weight:1000;
+white-space:nowrap;
+font-size:13px;
 }
 
-main{padding:10px}
+main{
+padding:10px;
+}
 
 .panel{
-background:#fff7e5;border:2px solid #b9955b;
-border-radius:16px;padding:11px;margin-bottom:10px
+background:#fff7e5;
+border:2px solid #b9955b;
+border-radius:16px;
+padding:11px;
+margin-bottom:10px;
+box-shadow:0 4px 12px #50703225;
 }
 
 .panelTitle{
-display:flex;justify-content:space-between;
-align-items:center;font-weight:900
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+font-weight:1000;
 }
 
-.tiny{font-size:10px;color:#777}
+.tiny{
+font-size:10px;
+color:#777;
+font-weight:normal;
+}
+
+.sectionSub{
+font-size:11px;
+color:#756b58;
+margin-top:4px;
+}
+
+/* OBJECTIF */
+
+.goalPanel{
+background:linear-gradient(135deg,#fff3b1,#ffe078);
+border-color:#d3a83f;
+}
+
+.goalRow{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.goalIcon{
+font-size:40px;
+}
+
+.goalBody{
+flex:1;
+}
+
+.goalTitle{
+font-weight:1000;
+font-size:13px;
+}
+
+.goalText{
+font-size:10px;
+margin:3px 0;
+}
+
+.goalBar{
+height:9px;
+background:#c9ad63;
+border-radius:20px;
+overflow:hidden;
+}
+
+.goalFill{
+height:100%;
+background:#62a93c;
+width:0;
+transition:.4s;
+}
+
+/* COMMANDES */
+
+.orders{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-top:8px;
+}
+
+.order{
+background:white;
+border:1px solid #d8c79f;
+border-radius:11px;
+padding:8px;
+font-size:10px;
+}
+
+.orderComplete{
+border-color:#71ad50;
+background:#f2ffe8;
+}
+
+.orderTitle{
+font-weight:1000;
+font-size:11px;
+margin-bottom:5px;
+}
+
+.orderLine{
+margin:4px 0;
+padding:3px 4px;
+background:#f7f3e8;
+border-radius:5px;
+}
+
+.reward{
+font-weight:1000;
+color:#a66a00;
+margin:7px 0;
+}
 
 /* FERME */
 
 .farm{
-height:455px;position:relative;overflow:hidden;
-border:3px solid #66994d;border-radius:19px;
-background:linear-gradient(#8fd46c 0 51%,#72b958 51%)
+height:470px;
+position:relative;
+overflow:hidden;
+border:3px solid #66994d;
+border-radius:19px;
+background:linear-gradient(#90d46c 0 51%,#72b958 51%);
+box-shadow:inset 0 0 35px #315a2617;
 }
 
-.sun{position:absolute;right:24px;top:18px;font-size:36px}
-.house{position:absolute;top:35px;left:23%;font-size:75px}
-.barn{position:absolute;top:105px;right:7%;font-size:53px}
+.cloud{
+position:absolute;
+font-size:29px;
+opacity:.85;
+animation:cloudMove 20s linear infinite;
+}
+
+.cloud.one{
+top:20px;
+left:-40px;
+}
+
+.cloud.two{
+top:73px;
+left:-90px;
+animation-duration:28s;
+}
+
+@keyframes cloudMove{
+from{transform:translateX(0)}
+to{transform:translateX(600px)}
+}
+
+.sun{
+position:absolute;
+right:22px;
+top:15px;
+font-size:38px;
+}
+
+.house{
+position:absolute;
+top:40px;
+left:22%;
+font-size:76px;
+}
+
+.barn{
+position:absolute;
+top:108px;
+right:6%;
+font-size:54px;
+}
+
+.tree1{
+position:absolute;
+top:150px;
+right:12px;
+font-size:39px;
+}
+
+.tree2{
+position:absolute;
+top:160px;
+left:15px;
+font-size:35px;
+}
 
 .sign{
-position:absolute;top:143px;left:6%;
-background:#f3dda8;border:2px solid #8b6333;
-border-radius:8px;padding:5px 8px;font-size:11px;font-weight:bold
+position:absolute;
+top:145px;
+left:6%;
+background:#f3dda8;
+border:2px solid #8b6333;
+border-radius:8px;
+padding:5px 8px;
+font-size:11px;
+font-weight:1000;
 }
 
 .fields{
-position:absolute;left:11px;right:11px;bottom:11px;
-display:grid;grid-template-columns:repeat(4,1fr);gap:7px
+position:absolute;
+left:11px;
+right:11px;
+bottom:11px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px;
 }
 
 .plot{
-aspect-ratio:1;background:#8b5931;
-border:3px solid #623c20;border-radius:11px;
-display:grid;place-items:center;position:relative;
-color:white;font-size:30px
+aspect-ratio:1;
+background:#8b5931;
+border:3px solid #623c20;
+border-radius:11px;
+display:grid;
+place-items:center;
+position:relative;
+color:white;
+font-size:30px;
+overflow:hidden;
 }
 
-.plot.locked{background:#777267;border-color:#555}
-.plot.empty{background:#915d34}
+.plot.locked{
+background:#777267;
+border-color:#555;
+font-size:20px;
+}
+
+.plot.empty{
+background:#915d34;
+}
+
+.cropStage{
+font-size:28px;
+animation:cropIdle 1.7s ease-in-out infinite;
+}
+
+@keyframes cropIdle{
+0%,100%{transform:rotate(-2deg)}
+50%{transform:rotate(2deg)}
+}
 
 .timer{
-position:absolute;top:3px;left:3px;right:3px;
-background:white;color:#333;border-radius:6px;
-text-align:center;font-size:10px;font-weight:900;padding:3px
+position:absolute;
+top:3px;
+left:3px;
+right:3px;
+background:white;
+color:#333;
+border-radius:6px;
+text-align:center;
+font-size:9px;
+font-weight:1000;
+padding:3px;
 }
 
 .ready{
-background:#ffd044;color:#563600;border:2px solid white;
-border-radius:8px;padding:6px 4px;font-size:10px;font-weight:900
+background:#ffd044;
+color:#563600;
+border:2px solid white;
+border-radius:8px;
+padding:6px 4px;
+font-size:9px;
+font-weight:1000;
+animation:readyPulse .8s ease-in-out infinite alternate;
+}
+
+@keyframes readyPulse{
+from{transform:scale(.96)}
+to{transform:scale(1.05)}
 }
 
 /* BOUTONS */
 
 .actions{
-display:grid;grid-template-columns:1fr 1fr;
-gap:8px;margin:9px 0
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin:9px 0;
 }
 
 .btn{
-border:0;border-radius:13px;padding:13px 8px;
-background:#69b63b;color:white;font-weight:900
+border:0;
+border-radius:13px;
+padding:13px 8px;
+background:#69b63b;
+color:white;
+font-weight:1000;
+box-shadow:inset 0 -3px #4d902b;
 }
 
-.btn.orange{background:#f29b27}
-.btn.dark{background:#53604e}
-.btn.gold{background:#f1bd35;color:#513600}
-.btn.full{width:100%}
-.btn:disabled{opacity:.45}
-
-/* COMMANDES */
-
-.orders{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:7px;margin-top:8px
+.btn:active{
+transform:scale(.97);
 }
 
-.order{
-background:white;border:1px solid #d8c79f;
-border-radius:11px;padding:8px;font-size:10px
+.btn.orange{
+background:#f29b27;
+box-shadow:inset 0 -3px #bc6e0d;
 }
 
-.orderTitle{font-weight:900;font-size:11px}
-.orderLine{margin:4px 0}
+.btn.dark{
+background:#53604e;
+box-shadow:inset 0 -3px #3e493a;
+}
 
-.reward{
-font-weight:900;color:#a66a00;margin:7px 0
+.btn.gold{
+background:#f1bd35;
+color:#513600;
+box-shadow:inset 0 -3px #c99215;
+}
+
+.btn.blue{
+background:#5f98c7;
+box-shadow:inset 0 -3px #3e739e;
+}
+
+.btn.full{
+width:100%;
+}
+
+.btn.small{
+font-size:10px;
+padding:8px 6px;
+}
+
+.btn:disabled{
+opacity:.4;
+box-shadow:none;
 }
 
 /* STOCK */
 
 .stockGrid{
-display:grid;grid-template-columns:repeat(2,1fr);
-gap:7px;margin-top:8px
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:7px;
+margin-top:8px;
 }
 
 .stockItem{
-background:white;border:1px solid #decda5;
-border-radius:10px;padding:8px;font-size:11px;
-display:flex;justify-content:space-between
+background:white;
+border:1px solid #decda5;
+border-radius:10px;
+padding:9px;
+font-size:11px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 /* TRACTEUR */
 
-.tractor{display:flex;align-items:center;gap:10px}
-.tractorIcon{font-size:45px}
-.tractorInfo{flex:1}
-
-.tag{
-display:inline-block;color:white;border-radius:20px;
-padding:4px 8px;font-size:9px;font-weight:900;background:#666
+.tractor{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-.tag.ok{background:#4e9a42}
+.tractorIcon{
+font-size:48px;
+}
+
+.tractorInfo{
+flex:1;
+}
+
+.tag{
+display:inline-block;
+color:white;
+border-radius:20px;
+padding:4px 8px;
+font-size:9px;
+font-weight:1000;
+background:#666;
+margin-top:3px;
+}
+
+.tag.ok{
+background:#4e9a42;
+}
 
 /* NAV */
 
 .nav{
-position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-width:100%;max-width:500px;background:#493c2c;
-display:grid;grid-template-columns:repeat(4,1fr);z-index:12
+position:fixed;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:100%;
+max-width:500px;
+background:#493c2c;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+z-index:25;
+padding-bottom:env(safe-area-inset-bottom);
+box-shadow:0 -3px 10px #0004;
 }
 
 .nav button{
-border:0;background:none;color:white;
-padding:8px;font-size:9px;font-weight:900
+border:0;
+background:none;
+color:white;
+padding:8px 3px;
+font-size:9px;
+font-weight:1000;
 }
 
-.nav span{display:block;font-size:21px}
+.nav span{
+display:block;
+font-size:21px;
+}
 
 /* MODALE */
 
 .modal{
-display:none;position:fixed;inset:0;background:#0008;
-z-index:30;align-items:flex-end
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+z-index:50;
+align-items:flex-end;
 }
 
-.modal.show{display:flex}
+.modal.show{
+display:flex;
+}
 
 .sheet{
-width:100%;max-width:500px;margin:auto 0 0;
-background:#fff7e5;border-radius:22px 22px 0 0;
-padding:17px;max-height:82vh;overflow:auto
+width:100%;
+max-width:500px;
+margin:auto 0 0;
+background:#fff7e5;
+border-radius:22px 22px 0 0;
+padding:17px;
+max-height:82vh;
+overflow:auto;
+padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
 
 .crops{
-display:grid;grid-template-columns:1fr 1fr;gap:8px
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
 }
 
 .cropButton{
-border:0;border-radius:12px;padding:12px 5px;
-background:#69b63b;color:white;font-weight:900
+border:0;
+border-radius:12px;
+padding:12px 5px;
+background:#69b63b;
+color:white;
+font-weight:1000;
+box-shadow:inset 0 -3px #4d902b;
 }
 
-.cropButton:disabled{background:#777;opacity:.55}
+.cropButton:disabled{
+background:#777;
+opacity:.55;
+box-shadow:none;
+}
+
+.cropInfo{
+font-size:9px;
+font-weight:normal;
+margin-top:4px;
+}
+
+/* MARCHÉ */
 
 .marketRow{
-background:white;border:1px solid #d8c79f;
-border-radius:11px;padding:10px;margin-bottom:8px;
-display:flex;justify-content:space-between;align-items:center
+background:white;
+border:1px solid #d8c79f;
+border-radius:11px;
+padding:10px;
+margin-bottom:8px;
 }
 
-/* MESSAGES */
-
-.toast{
-display:none;position:fixed;top:78px;left:50%;
-transform:translateX(-50%);
-background:#203a20;color:white;padding:10px 15px;
-border-radius:12px;z-index:40;font-weight:900
+.marketTop{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:8px;
 }
 
-.toast.show{display:block}
+.marketButtons{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:5px;
+}
+
+/* LEVEL */
 
 .levelUp{
-display:none;position:fixed;inset:0;background:#0009;
-z-index:50;align-items:center;justify-content:center;padding:20px
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:70;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
-.levelUp.show{display:flex}
+.levelUp.show{
+display:flex;
+}
 
 .levelCard{
-background:#fff0aa;border:4px solid #d5a52b;
-border-radius:24px;padding:22px;text-align:center;
-width:100%;max-width:390px
+background:linear-gradient(#fff4be,#ffe177);
+border:4px solid #d5a52b;
+border-radius:24px;
+padding:22px;
+text-align:center;
+width:100%;
+max-width:390px;
 }
 
-.levelStar{font-size:60px}
+.levelStar{
+font-size:62px;
+}
+
+/* FLOAT */
+
+.floatText{
+position:fixed;
+left:50%;
+top:45%;
+transform:translate(-50%,-50%);
+font-size:24px;
+font-weight:1000;
+color:white;
+text-shadow:0 2px 3px black;
+pointer-events:none;
+z-index:80;
+animation:floatGain 1.2s forwards;
+}
+
+@keyframes floatGain{
+0%{
+opacity:0;
+transform:translate(-50%,10px) scale(.8);
+}
+20%{
+opacity:1;
+}
+100%{
+opacity:0;
+transform:translate(-50%,-70px) scale(1.1);
+}
+}
+
+/* TOAST */
+
+.toast{
+display:none;
+position:fixed;
+top:calc(78px + env(safe-area-inset-top));
+left:50%;
+transform:translateX(-50%);
+background:#203a20;
+color:white;
+padding:10px 15px;
+border-radius:12px;
+z-index:90;
+font-weight:1000;
+font-size:12px;
+white-space:nowrap;
+}
+
+.toast.show{
+display:block;
+}
 </style>
 </head>
 
@@ -276,21 +756,26 @@ width:100%;max-width:390px
 
 <section id="home">
 
-<div class="logo">🌱</div>
+<div class="homeLogo">🌱</div>
 
-<div class="title">FARM RUSH</div>
+<div class="homeTitle">
+FARM RUSH
+</div>
 
-<div class="subtitle">
-Plante. Récolte. Vends.<br>
+<div class="homeSubtitle">
+Plante. Récolte. Vends.
+<br>
 <b>Construis ton empire agricole.</b>
 </div>
 
-<button class="play" onclick="startGame()">
+<button
+class="playButton"
+onclick="startGame()">
 ▶ JOUER
 </button>
 
 <div class="version">
-V1.1 — Marché • Commandes • Tracteur
+V1.2.1
 </div>
 
 </section>
@@ -302,67 +787,159 @@ V1.1 — Marché • Commandes • Tracteur
 
 <div class="top">
 
-<div class="avatar">👨‍🌾</div>
+<div class="avatar">
+👨‍🌾
+</div>
 
 <div class="player">
 
 <div class="playerName">
-FERMIER — NIVEAU <span id="level">1</span>
+FERMIER — NIVEAU
+<span id="level">1</span>
 </div>
 
 <div class="xpText">
-XP <span id="xp">0</span>/<span id="xpNeed">100</span>
+XP
+<span id="xp">0</span>
+/
+<span id="xpNeed">100</span>
 </div>
 
 <div class="xpbar">
-<div id="xpFill" class="xpfill"></div>
+<div
+id="xpFill"
+class="xpfill">
+</div>
 </div>
 
 </div>
 
 <div class="money">
-🪙 <span id="money">100</span>
+🪙
+<span id="money">100</span>
 </div>
 
 </div>
 
 </header>
 
-
 <main>
+
+<div
+id="goalPanel"
+class="panel goalPanel">
+
+<div class="goalRow">
+
+<div class="goalIcon">
+🚜
+</div>
+
+<div class="goalBody">
+
+<div
+id="goalTitle"
+class="goalTitle">
+OBJECTIF : TRACTEUR
+</div>
+
+<div
+id="goalText"
+class="goalText">
+Atteins le niveau 8
+</div>
+
+<div class="goalBar">
+<div
+id="goalFill"
+class="goalFill">
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 
 <div class="panel">
 
 <div class="panelTitle">
-<span>📋 COMMANDES</span>
-<span class="tiny">Plus rentables</span>
+
+<span>
+📋 COMMANDES
+</span>
+
+<span class="tiny">
++35% de valeur
+</span>
+
 </div>
 
-<div id="orders" class="orders"></div>
+<div
+id="orders"
+class="orders">
+</div>
 
 </div>
 
 
 <div class="farm">
 
-<div class="sun">☀️</div>
-<div class="house">🏡</div>
-<div class="barn">🏠</div>
-<div class="sign">Ma ferme</div>
+<div class="cloud one">
+☁️
+</div>
 
-<div id="fields" class="fields"></div>
+<div class="cloud two">
+☁️
+</div>
+
+<div class="sun">
+☀️
+</div>
+
+<div class="house">
+🏡
+</div>
+
+<div class="barn">
+🏠
+</div>
+
+<div class="tree1">
+🌳
+</div>
+
+<div class="tree2">
+🌳
+</div>
+
+<div class="sign">
+Ma ferme
+</div>
+
+<div
+id="fields"
+class="fields">
+</div>
 
 </div>
 
 
 <div class="actions">
 
-<button class="btn" onclick="plantFirstEmpty()">
+<button
+class="btn"
+onclick="plantFirstEmpty()">
 🌱 PLANTER
 </button>
 
-<button class="btn orange" onclick="harvestAll()">
-🌾 RÉCOLTER <span id="ready">(0)</span>
+<button
+class="btn orange"
+onclick="harvestAll()">
+🌾 RÉCOLTER
+<span id="ready">(0)</span>
 </button>
 
 </div>
@@ -372,7 +949,9 @@ XP <span id="xp">0</span>/<span id="xpNeed">100</span>
 
 <div class="panelTitle">
 
-<span>🏡 AGRANDIR</span>
+<span>
+🏡 AGRANDIR
+</span>
 
 <span>
 <span id="plotCount">4</span>/20
@@ -380,12 +959,18 @@ XP <span id="xp">0</span>/<span id="xpNeed">100</span>
 
 </div>
 
-<button class="btn full"
+<div class="sectionSub">
+🎁 Les 4 premières parcelles sont gratuites.
+</div>
+
+<button
+class="btn full"
 style="margin-top:8px"
 onclick="buyPlot()">
 
-➕ Nouvelle parcelle —
-<span id="plotCost">100</span> 🪙
+➕ Parcelle suivante —
+<span id="plotCost">100</span>
+🪙
 
 </button>
 
@@ -396,16 +981,24 @@ onclick="buyPlot()">
 
 <div class="panelTitle">
 
-<span>📦 STOCK</span>
+<span>
+📦 STOCK
+</span>
 
-<button class="btn gold"
+<button
+class="btn gold small"
 onclick="showMarket()">
+
 🛒 VENDRE
+
 </button>
 
 </div>
 
-<div id="stock" class="stockGrid"></div>
+<div
+id="stock"
+class="stockGrid">
+</div>
 
 </div>
 
@@ -414,7 +1007,9 @@ onclick="showMarket()">
 
 <div class="tractor">
 
-<div class="tractorIcon">🚜</div>
+<div class="tractorIcon">
+🚜
+</div>
 
 <div class="tractorInfo">
 
@@ -422,19 +1017,22 @@ onclick="showMarket()">
 
 <br>
 
-<span id="tractorStatus" class="tag">
+<span
+id="tractorStatus"
+class="tag">
 NIVEAU 8
 </span>
 
 <p style="font-size:11px">
-Permet de récolter toutes les cultures prêtes en un clic.
+Récolte toutes les cultures prêtes en un clic.
 </p>
 
 </div>
 
 </div>
 
-<button id="tractorButton"
+<button
+id="tractorButton"
 class="btn dark full"
 onclick="buyTractor()"
 disabled>
@@ -477,7 +1075,10 @@ QUITTER
 </div>
 
 
-<div id="modal" class="modal">
+<div
+id="modal"
+class="modal"
+onclick="modalBackgroundClose(event)">
 
 <div class="sheet">
 
@@ -485,11 +1086,10 @@ QUITTER
 
 <div id="modalBody"></div>
 
-<button class="btn dark full"
+<button
+class="btn dark full"
 onclick="closeModal()">
-
 FERMER
-
 </button>
 
 </div>
@@ -497,41 +1097,51 @@ FERMER
 </div>
 
 
-<div id="toast" class="toast"></div>
-
-
-<div id="levelUp" class="levelUp">
+<div
+id="levelUp"
+class="levelUp">
 
 <div class="levelCard">
 
-<div class="levelStar">⭐</div>
+<div class="levelStar">
+⭐
+</div>
 
-<h2>NIVEAU <span id="levelUpNumber"></span> !</h2>
+<h2>
+NIVEAU
+<span id="levelUpNumber"></span>
+!
+</h2>
 
 <p id="levelUpReward"></p>
 
-<button class="btn gold full"
+<button
+class="btn gold full"
 onclick="closeLevelUp()">
-
 CONTINUER
-
 </button>
 
 </div>
 
+</div>
+
+
+<div
+id="toast"
+class="toast">
 </div>
 
 
 <script>
 
-/* ==============================
-   CULTURES
-============================== */
+/* CULTURES */
 
 const CROPS={
 
 wheat:{
 icon:"🌾",
+seed:"🌱",
+sprout:"🌿",
 name:"Blé",
 time:5,
 cost:5,
@@ -542,6 +1152,8 @@ level:1
 
 carrot:{
 icon:"🥕",
+seed:"🌱",
+sprout:"🌿",
 name:"Carotte",
 time:15,
 cost:12,
@@ -552,6 +1164,8 @@ level:2
 
 tomato:{
 icon:"🍅",
+seed:"🌱",
+sprout:"🌿",
 name:"Tomate",
 time:30,
 cost:25,
@@ -562,6 +1176,8 @@ level:4
 
 corn:{
 icon:"🌽",
+seed:"🌱",
+sprout:"🌿",
 name:"Maïs",
 time:60,
 cost:50,
@@ -572,6 +1188,8 @@ level:7
 
 strawberry:{
 icon:"🍓",
+seed:"🌱",
+sprout:"🌿",
 name:"Fraise",
 time:120,
 cost:100,
@@ -582,6 +1200,8 @@ level:10
 
 potato:{
 icon:"🥔",
+seed:"🌱",
+sprout:"🌿",
 name:"Pomme de terre",
 time:180,
 cost:160,
@@ -592,6 +1212,8 @@ level:13
 
 grape:{
 icon:"🍇",
+seed:"🌱",
+sprout:"🌿",
 name:"Raisin",
 time:300,
 cost:275,
@@ -602,6 +1224,8 @@ level:16
 
 sunflower:{
 icon:"🌻",
+seed:"🌱",
+sprout:"🌿",
 name:"Tournesol",
 time:480,
 cost:450,
@@ -613,78 +1237,109 @@ level:20
 };
 
 
-/* ==============================
-   RÉCOMPENSES NIVEAUX
-============================== */
+/* LEVEL REWARDS */
 
 const LEVEL_REWARDS={
 
 2:{
 money:100,
-text:"🥕 Carotte débloquée + 100 🪙"
+text:"🥕 Carotte débloquée<br>+100 🪙"
 },
 
 3:{
 money:150,
-text:"🪙 +150 pièces"
+text:"+150 🪙"
 },
 
 4:{
 money:200,
-text:"🍅 Tomate débloquée + 200 🪙"
+text:"🍅 Tomate débloquée<br>+200 🪙"
 },
 
 5:{
 money:250,
-text:"🪙 +250 pièces"
+text:"+250 🪙"
 },
 
 6:{
 money:300,
-text:"🪙 +300 pièces"
+text:"+300 🪙"
 },
 
 7:{
 money:350,
-text:"🌽 Maïs débloqué + 350 🪙"
+text:"🌽 Maïs débloqué<br>+350 🪙"
 },
 
 8:{
 money:500,
-text:"🚜 Tracteur disponible + 500 🪙"
+text:"🚜 Tracteur disponible<br>+500 🪙"
 },
 
 9:{
 money:500,
-text:"🪙 +500 pièces"
+text:"+500 🪙"
 },
 
 10:{
 money:600,
-text:"🍓 Fraise débloquée + 600 🪙"
+text:"🍓 Fraise débloquée<br>+600 🪙"
+},
+
+11:{
+money:650,
+text:"+650 🪙"
+},
+
+12:{
+money:700,
+text:"+700 🪙"
 },
 
 13:{
 money:800,
-text:"🥔 Pomme de terre débloquée + 800 🪙"
+text:"🥔 Pomme de terre débloquée<br>+800 🪙"
+},
+
+14:{
+money:900,
+text:"+900 🪙"
+},
+
+15:{
+money:1000,
+text:"+1 000 🪙"
 },
 
 16:{
 money:1200,
-text:"🍇 Raisin débloqué + 1 200 🪙"
+text:"🍇 Raisin débloqué<br>+1 200 🪙"
+},
+
+17:{
+money:1300,
+text:"+1 300 🪙"
+},
+
+18:{
+money:1400,
+text:"+1 400 🪙"
+},
+
+19:{
+money:1600,
+text:"+1 600 🪙"
 },
 
 20:{
 money:2000,
-text:"🌻 Tournesol débloqué + 2 000 🪙"
+text:"🌻 Tournesol débloqué<br>+2 000 🪙"
 }
 
 };
 
 
-/* ==============================
-   ÉTAT DU JEU
-============================== */
+/* ETAT INITIAL */
 
 let state={
 
@@ -693,6 +1348,8 @@ money:100,
 level:1,
 
 xp:0,
+
+/* IMPORTANT : 4 GRATUITES */
 
 plots:4,
 
@@ -709,32 +1366,51 @@ totalHarvests:0
 };
 
 
-/* ==============================
-   SAUVEGARDE
-============================== */
+/* SAUVEGARDE */
 
 function saveGame(){
 
 localStorage.setItem(
-"farmRushV11",
+"farmRushV121",
 JSON.stringify(state)
 );
 
 }
 
 
+/* CHARGEMENT + MIGRATION */
+
 function loadGame(){
 
 let saved=
-localStorage.getItem("farmRushV11");
-
-
-/* récupération V1.0 */
+localStorage.getItem(
+"farmRushV121"
+);
 
 if(!saved){
 
 saved=
-localStorage.getItem("farmRushV1");
+localStorage.getItem(
+"farmRushV12"
+);
+
+}
+
+if(!saved){
+
+saved=
+localStorage.getItem(
+"farmRushV11"
+);
+
+}
+
+if(!saved){
+
+saved=
+localStorage.getItem(
+"farmRushV1"
+);
 
 }
 
@@ -743,55 +1419,203 @@ if(saved){
 
 try{
 
-const old=JSON.parse(saved);
+const old=
+JSON.parse(saved);
 
-state={
-...state,
-...old
-};
 
-}catch(e){}
+if(
+typeof old.money==="number"
+){
+
+state.money=
+old.money;
 
 }
 
 
-if(!state.fields){
+if(
+typeof old.level==="number"
+){
+
+state.level=
+old.level;
+
+}
+
+
+if(
+typeof old.xp==="number"
+){
+
+state.xp=
+old.xp;
+
+}
+
+
+/*
+LES 4 PREMIERES SONT
+TOUJOURS GRATUITES
+*/
+
+if(
+typeof old.plots==="number"
+){
+
+state.plots=
+Math.max(
+4,
+old.plots
+);
+
+}
+
+
+if(
+Array.isArray(old.fields)
+){
+
+state.fields=
+old.fields;
+
+}
+
+
+if(
+old.stock &&
+typeof old.stock==="object"
+){
+
+state.stock=
+old.stock;
+
+}
+
+
+if(
+typeof old.tractor==="boolean"
+){
+
+state.tractor=
+old.tractor;
+
+}
+
+
+if(
+typeof old.totalHarvests==="number"
+){
+
+state.totalHarvests=
+old.totalHarvests;
+
+}
+
+
+if(
+Array.isArray(old.orders)
+){
+
+state.orders=
+old.orders;
+
+}
+
+
+}catch(error){
+
+console.log(
+"Erreur migration",
+error
+);
+
+}
+
+}
+
+
+/*
+SECURITE :
+MINIMUM 4 PARCELLES
+MAXIMUM 20
+*/
+
+state.plots=
+Math.max(
+4,
+Math.min(
+20,
+state.plots
+)
+);
+
+
+/* FIELDS */
+
+if(
+!Array.isArray(state.fields)
+){
 
 state.fields=
 Array(20).fill(null);
 
 }
 
-
-while(state.fields.length<20){
+while(
+state.fields.length<20
+){
 
 state.fields.push(null);
 
 }
 
+state.fields=
+state.fields.slice(
+0,
+20
+);
 
-if(!state.stock){
+
+/* STOCK */
+
+if(
+!state.stock ||
+typeof state.stock!=="object"
+){
 
 state.stock={};
 
 }
 
 
-if(!state.orders){
+/* COMMANDES */
 
-state.orders=[];
+const invalidOrders=
 
-}
+!Array.isArray(state.orders)
+
+||
+
+state.orders.length!==3
+
+||
+
+state.orders.some(
+order=>
+
+!order
+
+||
+
+!Array.isArray(
+order.items
+)
+
+);
 
 
 if(
-!Array.isArray(state.orders) ||
-state.orders.length !== 3 ||
-state.orders.some(
-order =>
-!order ||
-!Array.isArray(order.items)
-)
+invalidOrders
 ){
 
 generateOrders();
@@ -799,19 +1623,26 @@ generateOrders();
 }
 
 
+saveGame();
+
 render();
 
 }
 
 
-/* ==============================
-   XP
-============================== */
+/* XP */
 
 function xpRequired(){
 
 return Math.floor(
-100*Math.pow(1.28,state.level-1)
+
+100*
+
+Math.pow(
+1.28,
+state.level-1
+)
+
 );
 
 }
@@ -819,17 +1650,27 @@ return Math.floor(
 
 function addXP(amount){
 
-state.xp+=amount;
+state.xp+=
+amount;
 
 
 while(
-state.level<20 &&
-state.xp>=xpRequired()
+
+state.level<20
+
+&&
+
+state.xp>=
+xpRequired()
+
 ){
 
-state.xp-=xpRequired();
+state.xp-=
+xpRequired();
+
 
 state.level++;
+
 
 applyLevelReward(
 state.level
@@ -843,44 +1684,47 @@ saveGame();
 }
 
 
-/* ==============================
-   LEVEL UP
-============================== */
+/* LEVEL UP */
 
 function applyLevelReward(level){
 
 const reward=
-LEVEL_REWARDS[level] || {
+LEVEL_REWARDS[level]
 
+||
+
+{
 money:100+level*35,
-
-text:
-"🪙 Bonus de niveau : +"
-+(100+level*35)
-+" pièces"
-
+text:"+"+(100+level*35)+" 🪙"
 };
 
 
-state.money+=reward.money;
+state.money+=
+reward.money;
 
 
 document.getElementById(
 "levelUpNumber"
-).textContent=level;
+).textContent=
+level;
 
 
 document.getElementById(
 "levelUpReward"
-).textContent=reward.text;
+).innerHTML=
+reward.text;
 
 
 document.getElementById(
 "levelUp"
-).classList.add("show");
+).classList.add(
+"show"
+);
 
 
-vibrate([70,40,90]);
+vibrate(
+[80,40,100]
+);
 
 }
 
@@ -889,16 +1733,17 @@ function closeLevelUp(){
 
 document.getElementById(
 "levelUp"
-).classList.remove("show");
+).classList.remove(
+"show"
+);
+
 
 render();
 
 }
 
 
-/* ==============================
-   UTILITAIRES
-============================== */
+/* OUTILS */
 
 function unlocked(key){
 
@@ -910,13 +1755,16 @@ CROPS[key].level;
 
 function formatTime(seconds){
 
-seconds=Math.max(
+seconds=
+Math.max(
 0,
 Math.ceil(seconds)
 );
 
 
-if(seconds<60){
+if(
+seconds<60
+){
 
 return seconds+"s";
 
@@ -924,94 +1772,128 @@ return seconds+"s";
 
 
 const minutes=
-Math.floor(seconds/60);
+Math.floor(
+seconds/60
+);
+
 
 const secondsLeft=
 seconds%60;
 
 
-return minutes+"m "
-+String(secondsLeft)
-.padStart(2,"0")
-+"s";
+return minutes+
+"m "+
+String(secondsLeft)
+.padStart(2,"0")+
+"s";
 
 }
 
 
-/* ==============================
-   ACCUEIL
-============================== */
+/* START */
 
 function startGame(){
 
-document.getElementById("home")
-.style.display="none";
+document.getElementById(
+"home"
+).style.display=
+"none";
 
-document.getElementById("game")
-.style.display="block";
+
+document.getElementById(
+"game"
+).style.display=
+"block";
+
 
 render();
 
 }
 
 
+/* HOME */
+
 function goHome(){
 
 saveGame();
 
-document.getElementById("game")
-.style.display="none";
 
-document.getElementById("home")
-.style.display="flex";
+document.getElementById(
+"game"
+).style.display=
+"none";
+
+
+document.getElementById(
+"home"
+).style.display=
+"flex";
 
 }
 
 
-/* ==============================
-   RENDER
-============================== */
+/* RENDER */
 
 function render(){
 
-document.getElementById("money")
-.textContent=
-Math.floor(state.money)
-.toLocaleString("fr-FR");
+document.getElementById(
+"money"
+).textContent=
+
+Math.floor(
+state.money
+)
+.toLocaleString(
+"fr-FR"
+);
 
 
-document.getElementById("level")
-.textContent=
+document.getElementById(
+"level"
+).textContent=
 state.level;
 
 
-document.getElementById("xp")
-.textContent=
+document.getElementById(
+"xp"
+).textContent=
 state.xp;
 
 
-document.getElementById("xpNeed")
-.textContent=
+document.getElementById(
+"xpNeed"
+).textContent=
 xpRequired();
 
 
-document.getElementById("xpFill")
-.style.width=
+document.getElementById(
+"xpFill"
+).style.width=
+
 Math.min(
 100,
-state.xp/xpRequired()*100
-)+"%";
+state.xp/
+xpRequired()*
+100
+)
++
+"%";
 
 
-document.getElementById("plotCount")
-.textContent=
+document.getElementById(
+"plotCount"
+).textContent=
 state.plots;
 
 
-document.getElementById("plotCost")
-.textContent=
+document.getElementById(
+"plotCost"
+).textContent=
+
 plotCost()
-.toLocaleString("fr-FR");
+.toLocaleString(
+"fr-FR"
+);
 
 
 renderFields();
@@ -1022,58 +1904,193 @@ renderStock();
 
 renderTractor();
 
+renderGoal();
+
+
 saveGame();
 
 }
 
 
-/* ==============================
-   CHAMPS
-============================== */
+/* OBJECTIF */
 
-function renderFields(){
+function renderGoal(){
 
-const container=
-document.getElementById("fields");
+const title=
+document.getElementById(
+"goalTitle"
+);
 
-container.innerHTML="";
+const text=
+document.getElementById(
+"goalText"
+);
 
-
-let ready=0;
-
-
-state.fields.forEach(
-(field,index)=>{
-
-const plot=
-document.createElement("div");
-
-plot.className="plot";
+const fill=
+document.getElementById(
+"goalFill"
+);
 
 
-if(index>=state.plots){
+if(
+state.tractor
+){
 
-plot.classList.add("locked");
+title.textContent=
+"🚜 TRACTEUR ACQUIS";
 
-plot.innerHTML="🔒";
+text.textContent=
+"Ta ferme est automatisée.";
 
-container.appendChild(plot);
+fill.style.width=
+"100%";
 
 return;
 
 }
 
 
-if(!field){
+if(
+state.level<8
+){
 
-plot.classList.add("empty");
+title.textContent=
+"OBJECTIF : TRACTEUR";
 
-plot.textContent="🌱";
+text.textContent=
+
+"Niveau "
++
+state.level
++
+"/8";
+
+
+fill.style.width=
+
+Math.min(
+100,
+state.level/8*100
+)
++
+"%";
+
+return;
+
+}
+
+
+title.textContent=
+"OBJECTIF : ACHETER LE TRACTEUR";
+
+
+text.textContent=
+
+Math.floor(
+state.money
+)
+.toLocaleString(
+"fr-FR"
+)
++
+" / 5 000 🪙";
+
+
+fill.style.width=
+
+Math.min(
+100,
+state.money/5000*100
+)
++
+"%";
+
+}
+
+
+/* CHAMPS */
+
+function renderFields(){
+
+const container=
+document.getElementById(
+"fields"
+);
+
+
+container.innerHTML=
+"";
+
+
+let ready=
+0;
+
+
+state.fields.forEach(
+(field,index)=>{
+
+
+const plot=
+document.createElement(
+"div"
+);
+
+
+plot.className=
+"plot";
+
+
+/*
+SEULEMENT A PARTIR DE
+LA PARCELLE state.plots
+ON VERROUILLE
+*/
+
+if(
+index>=state.plots
+){
+
+plot.classList.add(
+"locked"
+);
+
+plot.textContent=
+"🔒";
+
+container.appendChild(
+plot
+);
+
+return;
+
+}
+
+
+/*
+LES 4 PREMIERES
+SONT DONC VIDES ET
+UTILISABLES AU DEPART
+*/
+
+if(
+!field
+){
+
+plot.classList.add(
+"empty"
+);
+
+plot.textContent=
+"🌱";
 
 plot.onclick=
-()=>openSeeds(index);
+()=>openSeeds(
+index
+);
 
-container.appendChild(plot);
+container.appendChild(
+plot
+);
 
 return;
 
@@ -1081,80 +2098,187 @@ return;
 
 
 const crop=
-CROPS[field.crop];
+CROPS[
+field.crop
+];
 
 
-if(!crop){
+if(
+!crop
+){
 
-state.fields[index]=null;
+state.fields[index]=
+null;
+
+container.appendChild(
+plot
+);
 
 return;
 
 }
 
 
-const remaining=
-(field.ready-Date.now())/1000;
+if(
+typeof field.ready!=="number"
+){
 
-
-if(remaining<=0){
-
-ready++;
-
-plot.innerHTML=
-'<div class="ready">'
-+crop.icon+
-' RÉCOLTER</div>';
-
-plot.onclick=
-()=>harvest(index);
+field.ready=
+Date.now();
 
 }
 
-else{
+
+const remaining=
+
+(
+field.ready-
+Date.now()
+)
+/1000;
+
+
+const elapsed=
+
+crop.time-
+Math.max(
+0,
+remaining
+);
+
+
+const progress=
+
+Math.min(
+1,
+Math.max(
+0,
+elapsed/
+crop.time
+)
+);
+
+
+/* PRET */
+
+if(
+remaining<=0
+){
+
+ready++;
+
 
 plot.innerHTML=
 
-'<div>'
-+crop.icon+
-'</div>'
+'<div class="ready">'
++
+crop.icon
++
+" RÉCOLTER"
++
+"</div>";
+
+
+plot.onclick=
+()=>harvest(
+index
+);
+
+
+container.appendChild(
+plot
+);
+
+return;
+
+}
+
+
+/* POUSSE */
+
+let stageIcon=
+crop.seed;
+
+
+if(
+progress>=.33
+){
+
+stageIcon=
+crop.sprout;
+
+}
+
+
+if(
+progress>=.7
+){
+
+stageIcon=
+crop.icon;
+
+}
+
+
+plot.innerHTML=
+
+'<div class="cropStage">'
++
+stageIcon
++
+"</div>"
 
 +
 
 '<div class="timer">'
-+formatTime(remaining)+
-'</div>';
++
+formatTime(
+remaining
+)
++
+"</div>";
 
-}
 
-
-container.appendChild(plot);
+container.appendChild(
+plot
+);
 
 });
 
 
-document.getElementById("ready")
-.textContent=
-"("+ready+")";
+document.getElementById(
+"ready"
+).textContent=
+
+"("
++
+ready
++
+")";
 
 }
 
 
-/* ==============================
-   PLANTATION
-============================== */
+/* PLANTER */
 
 function plantFirstEmpty(){
 
 const index=
 state.fields.findIndex(
 (field,i)=>
-i<state.plots &&
+
+i<state.plots
+
+&&
+
 !field
+
 );
 
 
-if(index<0){
+if(
+index<0
+){
 
 toast(
 "Toutes les parcelles sont occupées !"
@@ -1165,27 +2289,37 @@ return;
 }
 
 
-openSeeds(index);
+openSeeds(
+index
+);
 
 }
 
 
+/* MENU CULTURES */
+
 function openSeeds(index){
 
 let body=
-"<p>Choisis une culture :</p>";
+
+"<p>Choisis une culture.</p>";
 
 body+=
 '<div class="crops">';
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
 const crop=
 CROPS[key];
 
+
 const available=
-unlocked(key);
+unlocked(
+key
+);
 
 
 body+=
@@ -1200,25 +2334,45 @@ available
 ?
 
 'onclick="plant('
-+index+
-',\''+key+'\')"'
++
+index
++
+',\''
++
+key
++
+'\')"'
 
 :
 
-'disabled'
+"disabled"
+
 )
 
 +
 
-'>'
+">"
 
-+crop.icon+
-" "+crop.name+
++
 
-"<br><small>"
+crop.icon+
+" "+
+crop.name
 
-+formatTime(crop.time)+
-" • "+crop.cost+
++
+
+'<div class="cropInfo">'
+
++
+formatTime(
+crop.time
+)
+
++
+" • "
++
+crop.cost
++
 " 🪙"
 
 +
@@ -1228,17 +2382,24 @@ available
 ?
 ""
 :
-" • Niveau "+crop.level
+" • Niv. "
++
+crop.level
 )
 
 +
 
-"</small></button>";
+"</div>"
+
++
+
+"</button>";
 
 }
 
 
-body+="</div>";
+body+=
+"</div>";
 
 
 openModal(
@@ -1249,16 +2410,30 @@ body
 }
 
 
-function plant(index,key){
+/* PLANTER CULTURE */
+
+function plant(
+index,
+key
+){
 
 const crop=
 CROPS[key];
 
 
-if(!unlocked(key))return;
+if(
+!unlocked(key)
+){
+
+return;
+
+}
 
 
-if(state.money<crop.cost){
+if(
+state.money<
+crop.cost
+){
 
 toast(
 "Pas assez d'argent."
@@ -1269,10 +2444,17 @@ return;
 }
 
 
-if(state.fields[index])return;
+if(
+state.fields[index]
+){
+
+return;
+
+}
 
 
-state.money-=crop.cost;
+state.money-=
+crop.cost;
 
 
 state.fields[index]={
@@ -1280,9 +2462,13 @@ state.fields[index]={
 crop:key,
 
 ready:
+
 Date.now()
+
 +
-crop.time*1000
+
+crop.time*
+1000
 
 };
 
@@ -1298,7 +2484,9 @@ crop.name+
 );
 
 
-vibrate(25);
+vibrate(
+25
+);
 
 
 render();
@@ -1306,9 +2494,7 @@ render();
 }
 
 
-/* ==============================
-   RÉCOLTE
-============================== */
+/* RECOLTER */
 
 function harvest(index){
 
@@ -1317,8 +2503,10 @@ state.fields[index];
 
 
 if(
-!field ||
-field.ready>Date.now()
+!field
+||
+field.ready>
+Date.now()
 ){
 
 return;
@@ -1327,31 +2515,52 @@ return;
 
 
 const crop=
-CROPS[field.crop];
+CROPS[
+field.crop
+];
 
 
-state.stock[field.crop]=
-(state.stock[field.crop]||0)+1;
+state.stock[
+field.crop
+]=
+
+(
+state.stock[
+field.crop
+]
+||
+0
+)
+
++
+1;
 
 
-state.fields[index]=null;
+state.fields[
+index
+]=
+null;
 
 
 state.totalHarvests++;
 
 
-addXP(crop.xp);
+addXP(
+crop.xp
+);
 
 
-toast(
+showFloatingText(
 crop.icon+
-" Récolté ! +"
-+crop.xp+
+" +"+
+crop.xp+
 " XP"
 );
 
 
-vibrate(35);
+vibrate(
+35
+);
 
 
 render();
@@ -1359,7 +2568,7 @@ render();
 }
 
 
-/* bouton récolter */
+/* RECOLTER BOUTON */
 
 function harvestAll(){
 
@@ -1370,18 +2579,24 @@ state.fields.forEach(
 (field,index)=>{
 
 if(
-field &&
-field.ready<=Date.now()
+field
+&&
+field.ready<=
+Date.now()
 ){
 
-ready.push(index);
+ready.push(
+index
+);
 
 }
 
 });
 
 
-if(!ready.length){
+if(
+!ready.length
+){
 
 toast(
 "Aucune culture prête."
@@ -1392,24 +2607,80 @@ return;
 }
 
 
-/* tracteur */
+if(
+state.tractor
+){
 
-if(state.tractor){
+let totalXP=
+0;
+
 
 ready.forEach(
-index=>harvest(index)
+index=>{
+
+const field=
+state.fields[index];
+
+const crop=
+CROPS[
+field.crop
+];
+
+
+state.stock[
+field.crop
+]=
+
+(
+state.stock[
+field.crop
+]
+||
+0
+)
+
++
+1;
+
+
+state.fields[
+index
+]=
+null;
+
+
+state.totalHarvests++;
+
+
+totalXP+=
+crop.xp;
+
+});
+
+
+addXP(
+totalXP
 );
 
-toast(
+
+showFloatingText(
 "🚜 "+
 ready.length+
-" récoltes !"
+" récoltes\n+"+
+totalXP+
+" XP"
 );
+
+
+vibrate(
+[40,30,50]
+);
+
+
+render();
 
 }
 
-
-/* manuel */
 
 else{
 
@@ -1418,11 +2689,13 @@ ready[0]
 );
 
 
-if(ready.length>1){
+if(
+ready.length>1
+){
 
 toast(
-"Encore "
-+(ready.length-1)+
+"Encore "+
+(ready.length-1)+
 " récolte(s) prête(s)."
 );
 
@@ -1433,22 +2706,31 @@ toast(
 }
 
 
-/* ==============================
-   PARCELLES
-============================== */
+/* PRIX PARCELLES */
 
 function plotCost(){
+
+/*
+PARCELLES 1 A 4 :
+GRATUITES
+
+PREMIER ACHAT :
+PARCELLE 5 = 100
+*/
 
 return Math.floor(
 
 100*
 
 Math.pow(
+
 1.42,
+
 Math.max(
 0,
 state.plots-4
 )
+
 )
 
 );
@@ -1456,9 +2738,13 @@ state.plots-4
 }
 
 
+/* ACHAT PARCELLE */
+
 function buyPlot(){
 
-if(state.plots>=20){
+if(
+state.plots>=20
+){
 
 toast(
 "Maximum atteint."
@@ -1473,13 +2759,19 @@ const cost=
 plotCost();
 
 
-if(state.money<cost){
+if(
+state.money<
+cost
+){
 
 toast(
-"Il te manque "
-+
-(cost-state.money)
-.toLocaleString("fr-FR")
+"Il te manque "+
+Math.ceil(
+cost-state.money
+)
+.toLocaleString(
+"fr-FR"
+)
 +
 " 🪙"
 );
@@ -1489,20 +2781,26 @@ return;
 }
 
 
-state.money-=cost;
+state.money-=
+cost;
+
 
 state.plots++;
 
 
-addXP(12);
-
-
-toast(
-"🏡 Nouvelle parcelle !"
+addXP(
+12
 );
 
 
-vibrate([40,30,40]);
+showFloatingText(
+"🏡 +1 parcelle"
+);
+
+
+vibrate(
+[40,30,40]
+);
 
 
 render();
@@ -1510,14 +2808,16 @@ render();
 }
 
 
-/* ==============================
-   COMMANDES
-============================== */
+/* COMMANDES */
 
 function availableCrops(){
 
-return Object.keys(CROPS)
-.filter(unlocked);
+return Object.keys(
+CROPS
+)
+.filter(
+unlocked
+);
 
 }
 
@@ -1528,38 +2828,57 @@ const keys=
 availableCrops();
 
 
-let itemCount=1;
+let itemCount=
+1;
 
 
-if(state.level>=4){
+if(
+state.level>=4
+){
 
-itemCount=2;
+itemCount=
+2;
 
 }
 
 
 if(
-state.level>=7 &&
-Math.random()<0.55
+state.level>=7
+&&
+Math.random()<.55
 ){
 
-itemCount=3;
+itemCount=
+Math.min(
+3,
+keys.length
+);
 
 }
 
 
 const selected=
+
 [...keys]
-.sort(()=>Math.random()-.5)
-.slice(0,itemCount);
+
+.sort(
+()=>Math.random()-.5
+)
+
+.slice(
+0,
+itemCount
+);
 
 
 const items=[];
 
-let marketValue=0;
+let marketValue=
+0;
 
 
-selected.forEach(key=>{
+selected.forEach(
+key=>{
 
 const crop=
 CROPS[key];
@@ -1567,7 +2886,9 @@ CROPS[key];
 let qty;
 
 
-if(crop.time<=15){
+if(
+crop.time<=15
+){
 
 qty=
 4+
@@ -1577,7 +2898,9 @@ Math.random()*7
 
 }
 
-else if(crop.time<=60){
+else if(
+crop.time<=60
+){
 
 qty=
 2+
@@ -1599,16 +2922,14 @@ Math.random()*3
 
 
 items.push({
-
 crop:key,
-
 qty:qty
-
 });
 
 
 marketValue+=
-crop.sell*qty;
+crop.sell*
+qty;
 
 });
 
@@ -1618,15 +2939,18 @@ return{
 items:items,
 
 reward:
+Math.max(
+25,
 Math.floor(
 marketValue*1.35
+)
 ),
 
 xp:
 Math.max(
 8,
 Math.floor(
-marketValue/10
+marketValue/12
 )
 )
 
@@ -1638,13 +2962,9 @@ marketValue/10
 function generateOrders(){
 
 state.orders=[
-
 randomOrder(),
-
 randomOrder(),
-
 randomOrder()
-
 ];
 
 }
@@ -1655,31 +2975,72 @@ randomOrder()
 function renderOrders(){
 
 const container=
-document.getElementById("orders");
+document.getElementById(
+"orders"
+);
 
-container.innerHTML="";
+
+container.innerHTML=
+"";
 
 
 state.orders.forEach(
 (order,index)=>{
 
-let possible=true;
 
-let lines="";
+if(
+!order
+||
+!Array.isArray(
+order.items
+)
+){
+
+return;
+
+}
 
 
-order.items.forEach(item=>{
+let possible=
+true;
+
+let lines=
+"";
+
+
+order.items.forEach(
+item=>{
 
 const crop=
-CROPS[item.crop];
+CROPS[
+item.crop
+];
+
+
+if(
+!crop
+){
+
+return;
+
+}
+
 
 const have=
-state.stock[item.crop]||0;
+state.stock[
+item.crop
+]
+||
+0;
 
 
-if(have<item.qty){
+if(
+have<
+item.qty
+){
 
-possible=false;
+possible=
+false;
 
 }
 
@@ -1688,54 +3049,87 @@ lines+=
 
 '<div class="orderLine">'
 
-+crop.icon+
++
+crop.icon+
 " "
 
-+Math.min(
++
+Math.min(
 have,
 item.qty
 )
 
-+"/"
++
+"/"
 
-+item.qty+
++
+item.qty
 
++
 "</div>";
 
 });
 
 
 const div=
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 
-div.className="order";
+div.className=
+
+"order"
+
++
+
+(
+possible
+?
+" orderComplete"
+:
+""
+);
 
 
 div.innerHTML=
 
 '<div class="orderTitle">'
-+"Client "+(index+1)+
++
+"Client "+
+(index+1)
++
 "</div>"
 
-+lines+
++
+
+lines
+
++
 
 '<div class="reward">'
 
-+"🪙 "
-+order.reward.toLocaleString("fr-FR")
++
+"🪙 "+
+order.reward
+.toLocaleString(
+"fr-FR"
+)
 
-+"<br>⭐ "
-+order.xp+
++
+"<br>⭐ "+
+order.xp+
 " XP"
 
-+"</div>"
++
+"</div>"
 
 +
 
-'<button class="btn full" '
+'<button class="btn full small" '
 
 +
+
 (
 possible
 ?
@@ -1747,33 +3141,58 @@ possible
 +
 
 ' onclick="deliver('
-+index+
++
+index
++
 ')">'
 
-+"LIVRER"
++
+"📦 LIVRER"
 
-+"</button>";
++
+"</button>";
 
 
-container.appendChild(div);
+container.appendChild(
+div
+);
 
 });
 
 }
 
 
-/* LIVRAISON */
+/* LIVRER */
 
 function deliver(index){
 
 const order=
-state.orders[index];
+state.orders[
+index
+];
 
-
-for(const item of order.items){
 
 if(
-(state.stock[item.crop]||0)
+!order
+){
+
+return;
+
+}
+
+
+for(
+const item of order.items
+){
+
+if(
+(
+state.stock[
+item.crop
+]
+||
+0
+)
 <
 item.qty
 ){
@@ -1792,7 +3211,9 @@ return;
 order.items.forEach(
 item=>{
 
-state.stock[item.crop]-=
+state.stock[
+item.crop
+]-=
 item.qty;
 
 });
@@ -1807,18 +3228,26 @@ order.xp
 );
 
 
-state.orders[index]=
+state.orders[
+index
+]=
 randomOrder();
 
 
-toast(
-"📦 Commande livrée ! +"
-+order.reward+
+showFloatingText(
+"📦 +"+
+order.reward
+.toLocaleString(
+"fr-FR"
+)
++
 " 🪙"
 );
 
 
-vibrate([50,30,70]);
+vibrate(
+[50,30,70]
+);
 
 
 render();
@@ -1826,26 +3255,43 @@ render();
 }
 
 
-/* ==============================
-   STOCK
-============================== */
+/* STOCK */
 
 function renderStock(){
 
 const container=
-document.getElementById("stock");
+document.getElementById(
+"stock"
+);
 
-container.innerHTML="";
+
+container.innerHTML=
+"";
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
+
+if(
+!unlocked(key)
+&&
+(state.stock[key]||0)<=0
+){
+
+continue;
+
+}
+
 
 const crop=
 CROPS[key];
 
 
 const div=
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 
 div.className=
@@ -1854,29 +3300,29 @@ div.className=
 
 div.innerHTML=
 
-"<span>"
-+crop.icon+
-" "
-+crop.name+
+"<span>"+
+crop.icon+
+" "+
+crop.name+
 "</span>"
 
 +
 
-"<b>"
-+(state.stock[key]||0)+
+"<b>"+
+(state.stock[key]||0)+
 "</b>";
 
 
-container.appendChild(div);
+container.appendChild(
+div
+);
 
 }
 
 }
 
 
-/* ==============================
-   MARCHÉ
-============================== */
+/* MARCHE */
 
 function showMarket(){
 
@@ -1884,21 +3330,32 @@ let body=
 
 "<p>"
 +
-"Vends tes récoltes ou garde-les pour les commandes."
+"Garde tes récoltes pour les commandes ou vends-les."
 +
 "</p>";
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
-if(!unlocked(key))continue;
+if(
+!unlocked(key)
+){
+
+continue;
+
+}
 
 
 const crop=
 CROPS[key];
 
+
 const qty=
-state.stock[key]||0;
+state.stock[key]
+||
+0;
 
 
 body+=
@@ -1907,78 +3364,139 @@ body+=
 
 +
 
-'<div>'
+'<div class="marketTop">'
 
-+"<b>"
-+crop.icon+
-" "
-+crop.name+
++
+
+"<div>"
+
++
+"<b>"+
+crop.icon+
+" "+
+crop.name+
 "</b>"
 
-+"<br>"
++
+"<br>"
 
-+"<small>"
++
+"<small>"
 
-+"Stock : "
-+qty+
-" • "
++
+"Stock : "+
+qty+
+" • "+
+crop.sell+
+" 🪙/u"
 
-+crop.sell+
-" 🪙 / unité"
++
+"</small>"
 
-+"</small>"
-
-+"</div>"
++
+"</div>"
 
 +
 
-'<div>'
+"<b>"
+
++
+(
+qty*
+crop.sell
+)
+.toLocaleString(
+"fr-FR"
+)
+
++
+" 🪙"
+
++
+"</b>"
 
 +
 
-'<button class="btn" '
-
-+
-(qty<1?"disabled":"")
+"</div>"
 
 +
 
-' onclick="sellCrop(\''
+'<div class="marketButtons">'
 
-+key+
++
 
+'<button class="btn small" '
+
++
+(
+qty<1
+?
+"disabled"
+:
+""
+)
+
++
+
+' onclick="sellCrop(\''+
+key+
 '\',1)">'
 
-+"x1"
++
+"VENDRE 1"
 
-+"</button>"
++
+"</button>"
 
 +
 
-" "
+'<button class="btn blue small" '
+
++
+(
+qty<5
+?
+"disabled"
+:
+""
+)
 
 +
 
-'<button class="btn gold" '
+' onclick="sellCrop(\''+
+key+
+'\',5)">'
 
 +
-(qty<1?"disabled":"")
+"VENDRE 5"
+
++
+"</button>"
 
 +
 
-' onclick="sellCrop(\''
+'<button class="btn gold small" '
 
-+key+
++
+(
+qty<1
+?
+"disabled"
+:
+""
+)
 
-'\','
++
 
-+qty+
+' onclick="sellAllCrop(\''+
+key+
+'\')">'
 
-')">'
++
+"TOUT"
 
-+"TOUT"
-
-+"</button>"
++
+"</button>"
 
 +
 
@@ -2010,14 +3528,26 @@ const crop=
 CROPS[key];
 
 
+const available=
+state.stock[key]
+||
+0;
+
+
 quantity=
 Math.min(
 quantity,
-state.stock[key]||0
+available
 );
 
 
-if(quantity<=0)return;
+if(
+quantity<=0
+){
+
+return;
+
+}
 
 
 const gain=
@@ -2033,14 +3563,17 @@ state.money+=
 gain;
 
 
-toast(
-"🛒 +"
-+gain.toLocaleString("fr-FR")
-+" 🪙"
+showFloatingText(
+"🪙 +"+
+gain.toLocaleString(
+"fr-FR"
+)
 );
 
 
-vibrate(25);
+vibrate(
+25
+);
 
 
 render();
@@ -2051,9 +3584,17 @@ showMarket();
 }
 
 
-/* ==============================
-   TRACTEUR
-============================== */
+function sellAllCrop(key){
+
+sellCrop(
+key,
+state.stock[key]||0
+);
+
+}
+
+
+/* TRACTEUR */
 
 function renderTractor(){
 
@@ -2062,13 +3603,16 @@ document.getElementById(
 "tractorStatus"
 );
 
+
 const button=
 document.getElementById(
 "tractorButton"
 );
 
 
-if(state.tractor){
+if(
+state.tractor
+){
 
 status.textContent=
 "ACHETÉ";
@@ -2080,17 +3624,17 @@ status.className=
 button.textContent=
 "✅ Tracteur actif";
 
-button.disabled=true;
-
-button.className=
-"btn dark full";
+button.disabled=
+true;
 
 return;
 
 }
 
 
-if(state.level>=8){
+if(
+state.level>=8
+){
 
 status.textContent=
 "DISPONIBLE";
@@ -2102,13 +3646,13 @@ status.className=
 button.textContent=
 "🚜 Acheter — 5 000 🪙";
 
-button.disabled=false;
+button.disabled=
+false;
 
 button.className=
 "btn gold full";
 
 }
-
 
 else{
 
@@ -2122,7 +3666,8 @@ status.className=
 button.textContent=
 "🔒 Débloqué au niveau 8";
 
-button.disabled=true;
+button.disabled=
+true;
 
 button.className=
 "btn dark full";
@@ -2132,18 +3677,31 @@ button.className=
 }
 
 
+/* ACHAT TRACTEUR */
+
 function buyTractor(){
 
-if(state.level<8)return;
+if(
+state.level<8
+){
+
+return;
+
+}
 
 
-if(state.money<5000){
+if(
+state.money<5000
+){
 
 toast(
-"Il te manque "
-+
-(5000-state.money)
-.toLocaleString("fr-FR")
+"Il te manque "+
+Math.ceil(
+5000-state.money
+)
+.toLocaleString(
+"fr-FR"
+)
 +
 " 🪙"
 );
@@ -2153,17 +3711,22 @@ return;
 }
 
 
-state.money-=5000;
+state.money-=
+5000;
 
-state.tractor=true;
+
+state.tractor=
+true;
 
 
-toast(
-"🚜 Tracteur acheté !"
+showFloatingText(
+"🚜 TRACTEUR ACHETÉ !"
 );
 
 
-vibrate([80,50,100]);
+vibrate(
+[80,50,100]
+);
 
 
 render();
@@ -2171,18 +3734,18 @@ render();
 }
 
 
-/* ==============================
-   PROGRESSION
-============================== */
+/* PROGRESSION */
 
 function showProgress(){
 
 let body=
 
-"<p><b>Progression Farm Rush</b></p>";
+"<p><b>Déblocages</b></p>";
 
 
-for(const key in CROPS){
+for(
+const key in CROPS
+){
 
 const crop=
 CROPS[key];
@@ -2194,25 +3757,36 @@ body+=
 
 +
 
+'<div class="marketTop" style="margin:0">'
+
++
+
 "<span>"
 
-+crop.icon+
-" "
++
+crop.icon+
+" "+
+crop.name
 
-+crop.name+
-
++
 "<br>"
 
-+"<small>"
++
+"<small>"
 
-+"Niveau "
-+crop.level+
-" • "
-+formatTime(crop.time)
++
+"Niveau "+
+crop.level+
+" • "+
+formatTime(
+crop.time
+)
 
-+"</small>"
++
+"</small>"
 
-+"</span>"
++
+"</span>"
 
 +
 
@@ -2228,8 +3802,11 @@ unlocked(key)
 )
 
 +
-
 "</b>"
+
++
+
+"</div>"
 
 +
 
@@ -2240,13 +3817,19 @@ unlocked(key)
 
 body+=
 
-"<p>"
+'<div class="marketRow">'
+
 +
-"<b>🚜 Tracteur</b><br>"
+"<b>🚜 Tracteur</b>"
+
 +
-"Niveau 8 • 5 000 🪙"
+"<br>"
+
 +
-"</p>";
+"<small>Niveau 8 • 5 000 🪙</small>"
+
++
+"</div>";
 
 
 openModal(
@@ -2257,9 +3840,7 @@ body
 }
 
 
-/* ==============================
-   MODALES
-============================== */
+/* MODAL */
 
 function openModal(
 title,
@@ -2298,9 +3879,22 @@ document.getElementById(
 }
 
 
-/* ==============================
-   TOAST
-============================== */
+function modalBackgroundClose(
+event
+){
+
+if(
+event.target.id==="modal"
+){
+
+closeModal();
+
+}
+
+}
+
+
+/* TOAST */
 
 let toastTimer;
 
@@ -2342,13 +3936,48 @@ element.classList.remove(
 }
 
 
-/* ==============================
-   VIBRATION
-============================== */
+/* FLOAT */
+
+function showFloatingText(text){
+
+const element=
+document.createElement(
+"div"
+);
+
+
+element.className=
+"floatText";
+
+
+element.innerText=
+text;
+
+
+document.body.appendChild(
+element
+);
+
+
+setTimeout(
+()=>{
+
+element.remove();
+
+},
+1200
+);
+
+}
+
+
+/* VIBRATION */
 
 function vibrate(pattern){
 
-if(navigator.vibrate){
+if(
+navigator.vibrate
+){
 
 navigator.vibrate(
 pattern
@@ -2359,19 +3988,20 @@ pattern
 }
 
 
-/* ==============================
-   TIMER
-============================== */
+/* TIMERS */
 
 setInterval(
 ()=>{
 
 if(
-document.getElementById("game")
-.style.display==="block"
+document.getElementById(
+"game"
+).style.display==="block"
 ){
 
 renderFields();
+
+renderGoal();
 
 }
 
@@ -2380,7 +4010,7 @@ renderFields();
 );
 
 
-/* sauvegarde fermeture */
+/* SAUVEGARDE */
 
 window.addEventListener(
 "beforeunload",
@@ -2388,7 +4018,23 @@ saveGame
 );
 
 
-/* lancement */
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+if(
+document.visibilityState==="hidden"
+){
+
+saveGame();
+
+}
+
+}
+);
+
+
+/* START */
 
 loadGame();
 
