@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.0</title>
+<title>Farm Rush V2.1</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -20,13 +20,129 @@
 /* Farm Rush V2.0 */
 .farm{height:555px}.plot{height:44px}.orchardFarm{height:365px}
 .fertilizerStatus{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px 9px;background:#eef7d9;border:1px solid #a8c778;border-radius:11px;font-size:10px}.fertilizerStatus small{width:100%;color:#677456}.manureBox{background:#f3eadb;border:1px solid #c4aa83;border-radius:11px;padding:8px;margin-top:8px;display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;font-size:10px}.manureBox .btn{grid-column:1/-1}.manureAmount{font-weight:1000;font-size:12px}.manureGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.manureGrid .manureBox{margin-top:0}
+
+/* Farm Rush V2.1 — Vignoble */
+.vineyardFarm{
+  min-height:500px;
+  height:auto;
+  background:linear-gradient(#a6dd7b 0 23%,#78b753 23% 100%);
+  padding:118px 10px 12px;
+  position:relative;
+}
+.vineyardDecor{
+  position:absolute;
+  left:16px;
+  right:16px;
+  top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  pointer-events:none;
+}
+.vineyardDecor .vineHouse{font-size:56px}
+.vineyardDecor .vineBarrels{font-size:45px}
+.vineyardTitleBoard{
+  position:absolute;
+  top:73px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  background:#6e3e2a;
+  color:#fff8df;
+  border:2px solid #4e2a1d;
+  border-radius:10px;
+  padding:6px 10px;
+  font-size:10px;
+  font-weight:1000;
+  box-shadow:0 3px 0 #4e2a1d;
+  pointer-events:none;
+}
+.vineGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+.vinePlot{
+  min-height:62px;
+  border:2px solid #664628;
+  border-radius:11px;
+  background:linear-gradient(#7d542f,#684322);
+  display:grid;
+  place-items:center;
+  position:relative;
+  overflow:hidden;
+  font-size:28px;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+}
+.vinePlot.locked{
+  background:#73736a;
+  border-color:#56564f;
+  font-size:18px;
+}
+.vinePlot.growing{
+  background:linear-gradient(#805630,#6c4524);
+}
+.vinePlot.readyVine{
+  background:linear-gradient(#85572d,#6b421f);
+  box-shadow:inset 0 0 0 2px #d7c04c;
+}
+.vinePlant{font-size:31px;pointer-events:none}
+.vineTimer{
+  position:absolute;
+  left:3px;
+  right:3px;
+  top:3px;
+  background:#fff;
+  color:#3c3224;
+  border-radius:5px;
+  padding:2px;
+  font-size:8px;
+  font-weight:1000;
+  text-align:center;
+  pointer-events:none;
+}
+.vineReady{
+  background:#f2cb3e;
+  color:#513609;
+  border:1px solid #fff4a1;
+  border-radius:7px;
+  padding:5px 4px;
+  font-size:8px;
+  font-weight:1000;
+  text-align:center;
+  pointer-events:none;
+}
+.vineInfo{
+  margin-top:9px;
+  padding:8px 9px;
+  background:#f3ead0;
+  border:1px solid #c8ac72;
+  border-radius:10px;
+  font-size:10px;
+  line-height:1.45;
+}
+.cellarPanel{
+  background:linear-gradient(135deg,#f4e4cd,#dfc09f);
+  border-color:#93663e;
+}
+.wineBadge{
+  display:inline-block;
+  background:#7d2443;
+  color:#fff;
+  border-radius:999px;
+  padding:2px 6px;
+  font-size:8px;
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.0 — Fumier, engrais, 60 parcelles & Jardin/Verger 30</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.1 — Vignoble, Cave & grands crus • engrais et extensions</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -903,21 +1019,16 @@ function runAnimalProductionV20(o,now=Date.now()){
   let feed=Number(state[o.feed])||0;
   let waiting=Number(state[o.wait])||0;
   let last=Number(state[o.last])||now;
-
   if(feed<=0||waiting>=o.cap){state[o.last]=now;return}
-
   const interval=o.interval();
   const cycles=Math.floor((now-last)/1000/interval);
   if(cycles<=0)return;
-
   const actual=Math.min(cycles,feed,o.cap-waiting);
   state[o.wait]+=actual;
   state[o.feed]-=actual;
-
   if(o.manureWait){
     state[o.manureWait]=Math.min(o.manureCap,(Number(state[o.manureWait])||0)+actual*o.manureYield);
   }
-
   state[o.last]=last+actual*interval*1000;
   if(state[o.feed]<=0||state[o.wait]>=o.cap)state[o.last]=now;
 }
@@ -1384,7 +1495,1902 @@ levelReward=function(level){
   }
 };
 
+
+/* ======================================================
+   FARM RUSH V2.1 — VIGNOBLE & CAVE
+====================================================== */
+
+Object.assign(PRODUCTS,{
+  grapeJuice:{
+    icon:"🧃",
+    name:"Jus de raisin",
+    sell:2800
+  },
+  wine:{
+    icon:"🍷",
+    name:"Vin",
+    sell:5200
+  },
+  premiumWine:{
+    icon:"🍾",
+    name:"Grand cru",
+    sell:14000
+  }
+});
+
+Object.assign(DEFAULT_STATE,{
+  vineyardBought:false,
+  vineyardPlots:0,
+  vineyardFields:Array(24).fill(null),
+
+  cellarBought:false,
+
+  grapeJuiceQueue:0,
+  grapeJuiceWaiting:0,
+  grapeJuiceLastProduction:Date.now(),
+
+  wineQueue:0,
+  wineWaiting:0,
+  wineLastProduction:Date.now(),
+
+  premiumWineQueue:0,
+  premiumWineWaiting:0,
+  premiumWineLastProduction:Date.now()
+});
+
+DEFAULT_STATE.boosts.cellar=0;
+BOOST_BASE_COST.cellar=35000;
+BOOST_LABELS.cellar="🍷 Cave";
+
+Object.assign(RESTAURANT_RECIPES,{
+  vineyardDinner:{
+    icon:"🍷",
+    name:"Menu du vigneron",
+    minLevel:43,
+    time:240,
+    reward:13500,
+    xp:390,
+    ingredients:{
+      groundSteak:1,
+      fries:1,
+      parmesan:1,
+      wine:1
+    }
+  },
+
+  premiumTasting:{
+    icon:"🍾",
+    name:"Dégustation grand cru",
+    minLevel:45,
+    time:300,
+    reward:22000,
+    xp:620,
+    ingredients:{
+      premiumWine:1,
+      mozzarella:1,
+      parmesan:1,
+      blueCheese:1
+    }
+  }
+});
+
+const restaurantRecipePoolV20Base=
+  restaurantRecipePool;
+
+restaurantRecipePool=function(){
+  let pool=
+    restaurantRecipePoolV20Base();
+
+  if(
+    !state.cellarBought
+  ){
+    pool=
+      pool.filter(
+        key=>
+        ![
+          "vineyardDinner",
+          "premiumTasting"
+        ].includes(key)
+      );
+  }
+
+  return pool;
+};
+
+const VINE_GROW_TIME=420;
+const VINEYARD_PRICE=100000;
+const CELLAR_PRICE=150000;
+
+function vineyardPlotLimit(){
+  if(state.level>=45)return 24;
+  if(state.level>=44)return 18;
+  if(state.level>=43)return 12;
+  if(state.level>=42)return 8;
+  return 0;
+}
+
+function nextVineyardExpansionLevel(){
+  const limit=vineyardPlotLimit();
+  if(limit<8)return 42;
+  if(limit<12)return 43;
+  if(limit<18)return 44;
+  if(limit<24)return 45;
+  return null;
+}
+
+function vineYield(){
+  return state.level>=45?3:2;
+}
+
+function vinePlotCost(){
+  const owned=Math.max(4,Number(state.vineyardPlots)||4);
+  return Math.floor(
+    14000*
+    Math.pow(
+      1.22,
+      Math.max(0,owned-4)
+    )
+  );
+}
+
+function ensureVineField(index){
+  if(
+    !state.vineyardBought||
+    index<0||
+    index>=state.vineyardPlots
+  ){
+    return null;
+  }
+
+  if(
+    !state.vineyardFields[index]||
+    typeof state.vineyardFields[index]!=="object"
+  ){
+    state.vineyardFields[index]={
+      ready:Date.now()+VINE_GROW_TIME*1000
+    };
+  }
+
+  state.vineyardFields[index].ready=
+    Number(state.vineyardFields[index].ready)||
+    (Date.now()+VINE_GROW_TIME*1000);
+
+  return state.vineyardFields[index];
+}
+
+function ensureV21Dom(){
+  const tabs=document.querySelector(".zoneTabs");
+
+  if(
+    tabs&&
+    !document.getElementById("zoneVineyardBtn")
+  ){
+    tabs.style.gridTemplateColumns="repeat(3,1fr)";
+
+    const button=document.createElement("button");
+    button.id="zoneVineyardBtn";
+    button.className="zoneTab";
+    button.type="button";
+    button.textContent="🔒 VIGNOBLE";
+    button.onclick=()=>switchZone("vineyard");
+
+    tabs.appendChild(button);
+  }
+
+  const orchard=
+    document.getElementById("orchardArea");
+
+  if(
+    orchard&&
+    !document.getElementById("vineyardArea")
+  ){
+    const area=document.createElement("div");
+
+    area.id="vineyardArea";
+    area.className="farm vineyardFarm";
+    area.style.display="none";
+
+    area.innerHTML=`
+      <div class="vineyardDecor">
+        <div class="vineHouse">🏡</div>
+        <div class="vineBarrels">🍇🛢️</div>
+      </div>
+
+      <div class="vineyardTitleBoard">
+        🍇 VIGNOBLE DE LA FERME
+      </div>
+
+      <div id="vineyardFields" class="vineGrid"></div>
+
+      <div id="vineyardInfo" class="vineInfo"></div>
+    `;
+
+    orchard.insertAdjacentElement(
+      "afterend",
+      area
+    );
+  }
+
+  ensureV19Dom();
+
+  const restaurant=
+    document.getElementById("restaurantPanel");
+
+  if(
+    restaurant&&
+    !document.getElementById("cellarPanel")
+  ){
+    const cellar=document.createElement("div");
+
+    cellar.id="cellarPanel";
+    cellar.className="panel buildingPanel cellarPanel";
+    cellar.style.display="none";
+
+    restaurant.insertAdjacentElement(
+      "afterend",
+      cellar
+    );
+  }
+}
+
+const renderZoneV20Base=renderZone;
+renderZone=function(){
+  ensureV21Dom();
+
+  const farm=
+    state.currentZone==="farm";
+
+  const orchard=
+    state.currentZone==="orchard";
+
+  const vineyard=
+    state.currentZone==="vineyard";
+
+  document.getElementById("farmArea").style.display=
+    farm?"block":"none";
+
+  document.getElementById("orchardArea").style.display=
+    orchard?"block":"none";
+
+  const vineyardArea=
+    document.getElementById("vineyardArea");
+
+  if(vineyardArea){
+    vineyardArea.style.display=
+      vineyard?"block":"none";
+  }
+
+  document.getElementById("zoneFarmBtn")
+    .classList.toggle("active",farm);
+
+  document.getElementById("zoneOrchardBtn")
+    .classList.toggle("active",orchard);
+
+  const vineyardButton=
+    document.getElementById("zoneVineyardBtn");
+
+  if(vineyardButton){
+    vineyardButton.classList.toggle(
+      "active",
+      vineyard
+    );
+
+    vineyardButton.textContent=
+      state.vineyardBought
+        ?"🍇 VIGNOBLE"
+        :"🔒 VIGNOBLE";
+  }
+
+  document.getElementById("zoneOrchardBtn").textContent=
+    state.orchardBought
+      ?"🌿 JARDIN & VERGER"
+      :"🔒 JARDIN & VERGER";
+};
+
+const switchZoneV20Base=switchZone;
+switchZone=function(zone){
+  cancelPaintSession();
+
+  if(
+    zone==="orchard"&&
+    !state.orchardBought
+  ){
+    openShop("spaces");
+    return;
+  }
+
+  if(
+    zone==="vineyard"&&
+    !state.vineyardBought
+  ){
+    openShop("spaces");
+    return;
+  }
+
+  if(
+    !["farm","orchard","vineyard"].includes(zone)
+  ){
+    zone="farm";
+  }
+
+  state.currentZone=zone;
+
+  render();
+};
+
+function renderVineyard(){
+  ensureV21Dom();
+
+  const grid=
+    document.getElementById("vineyardFields");
+
+  const info=
+    document.getElementById("vineyardInfo");
+
+  if(!grid)return;
+
+  grid.innerHTML="";
+
+  if(!state.vineyardBought){
+    document.getElementById("ready").textContent="(0)";
+    if(info){
+      info.innerHTML=
+        "🔒 Le vignoble se débloque au niveau 42.";
+    }
+    return;
+  }
+
+  const limit=
+    vineyardPlotLimit();
+
+  let readyCount=0;
+
+  for(
+    let index=0;
+    index<limit;
+    index++
+  ){
+    const plot=
+      document.createElement("div");
+
+    plot.className="vinePlot";
+    plot.dataset.index=index;
+
+    if(
+      index>=state.vineyardPlots
+    ){
+      plot.classList.add("locked");
+      plot.innerHTML="🔒";
+      grid.appendChild(plot);
+      continue;
+    }
+
+    const vine=
+      ensureVineField(index);
+
+    const remaining=
+      (vine.ready-Date.now())/1000;
+
+    if(
+      remaining<=0
+    ){
+      readyCount++;
+
+      plot.classList.add("readyVine");
+
+      plot.innerHTML=`
+        <div class="vineReady">
+          🍇 RÉCOLTER<br>
+          +${vineYield()} raisins
+        </div>
+      `;
+
+    }else{
+      plot.classList.add("growing");
+
+      const progress=
+        Math.min(
+          1,
+          Math.max(
+            0,
+            (
+              VINE_GROW_TIME-
+              Math.max(0,remaining)
+            )/
+            VINE_GROW_TIME
+          )
+        );
+
+      const stage=
+        progress>.68
+          ?"🍇"
+          :progress>.32
+          ?"🌿"
+          :"🌱";
+
+      plot.innerHTML=`
+        <div class="vinePlant">${stage}</div>
+        <div class="vineTimer">${formatTime(remaining)}</div>
+      `;
+    }
+
+    plot.addEventListener(
+      "click",
+      ()=>handleVineyardPlot(index)
+    );
+
+    grid.appendChild(plot);
+  }
+
+  document.getElementById("ready").textContent=
+    "("+readyCount+")";
+
+  if(info){
+    const next=
+      nextVineyardExpansionLevel();
+
+    info.innerHTML=
+      `<b>🍇 ${state.vineyardPlots}/${limit} pieds de vigne</b> • `+
+      `${readyCount} prêt(s) • rendement : <b>${vineYield()} raisins/pied</b><br>`+
+      `Les vignes sont permanentes : après la récolte elles repoussent automatiquement en ${formatTime(VINE_GROW_TIME)}.`+
+      (
+        state.vineyardPlots>=limit&&next
+          ?`<br>🔒 Extension suivante au niveau ${next}.`
+          :""
+      );
+  }
+}
+
+const renderFieldsV20Base=renderFields;
+renderFields=function(){
+  if(
+    state.currentZone==="vineyard"
+  ){
+    renderVineyard();
+    return;
+  }
+
+  return renderFieldsV20Base();
+};
+
+function handleVineyardPlot(index){
+  if(
+    !state.vineyardBought||
+    index<0||
+    index>=state.vineyardPlots
+  ){
+    return;
+  }
+
+  const vine=
+    ensureVineField(index);
+
+  if(
+    vine.ready<=Date.now()
+  ){
+    harvestVine(index,true);
+    return;
+  }
+
+  openVineFertilizerMenu(index);
+}
+
+function harvestVine(index,doRender=true){
+  const vine=
+    ensureVineField(index);
+
+  if(
+    !vine||
+    vine.ready>Date.now()
+  ){
+    return false;
+  }
+
+  const qty=
+    vineYield();
+
+  state.stock.grape=
+    (state.stock.grape||0)+qty;
+
+  vine.ready=
+    Date.now()+
+    VINE_GROW_TIME*
+    1000;
+
+  addXP(
+    12+
+    qty*
+    2
+  );
+
+  if(doRender){
+    showFloatingText(
+      `🍇 +${qty} raisins\n🌱 La vigne repousse`
+    );
+
+    tone(
+      870,
+      .065
+    );
+
+    render();
+  }
+
+  return true;
+}
+
+function harvestAllVines(){
+  const ready=[];
+
+  for(
+    let i=0;
+    i<state.vineyardPlots;
+    i++
+  ){
+    const vine=
+      ensureVineField(i);
+
+    if(
+      vine&&
+      vine.ready<=Date.now()
+    ){
+      ready.push(i);
+    }
+  }
+
+  if(
+    !ready.length
+  ){
+    return toast(
+      "Aucune vigne prête."
+    );
+  }
+
+  if(!state.tractor){
+    harvestVine(
+      ready[0],
+      true
+    );
+
+    return;
+  }
+
+  let grapes=0;
+  let xp=0;
+
+  ready.forEach(index=>{
+    const vine=
+      ensureVineField(index);
+
+    const qty=
+      vineYield();
+
+    grapes+=qty;
+
+    xp+=
+      12+
+      qty*
+      2;
+
+    vine.ready=
+      Date.now()+
+      VINE_GROW_TIME*
+      1000;
+  });
+
+  state.stock.grape=
+    (state.stock.grape||0)+grapes;
+
+  addXP(xp);
+
+  showFloatingText(
+    `🚜 ${ready.length} vignes\n🍇 +${grapes}`
+  );
+
+  tone(
+    960,
+    .09
+  );
+
+  render();
+}
+
+const harvestAllV20Base=harvestAll;
+harvestAll=function(){
+  if(
+    state.currentZone==="vineyard"
+  ){
+    harvestAllVines();
+    return;
+  }
+
+  return harvestAllV20Base();
+};
+
+function openVineFertilizerMenu(index){
+  const vine=
+    ensureVineField(index);
+
+  if(
+    !vine||
+    vine.ready<=Date.now()
+  ){
+    return;
+  }
+
+  const stock=
+    fertilizerStock();
+
+  const remaining=
+    Math.max(
+      1,
+      (vine.ready-Date.now())/1000
+    );
+
+  const button=(
+    bags,
+    reduction,
+    label
+  )=>`
+    <button
+      class="btn ${bags===3?"gold":bags===2?"orange":"blue"} full"
+      style="margin-top:8px"
+      ${stock<bags?"disabled":""}
+      onclick="applyVineFertilizer(${index},${bags},${reduction})">
+      ${label} — ${bags} 🧪
+    </button>
+  `;
+
+  openModal(
+    "🧪 Engrais — Vignoble",
+    `
+      <div class="plantPrompt">
+        <b>🍇 Pied de vigne ${index+1}</b><br>
+        Temps restant : <b>${formatTime(remaining)}</b><br>
+        Stock d'engrais : <b>${stock} 🧪</b><br><br>
+        Comme dans les champs, l'engrais réduit immédiatement le temps restant.
+      </div>
+
+      ${button(1,.30,"⚡ -30 %")}
+      ${button(2,.50,"⚡⚡ -50 %")}
+      ${button(3,.70,"⚡⚡⚡ -70 %")}
+    `
+  );
+}
+
+function applyVineFertilizer(
+  index,
+  bags,
+  reduction
+){
+  const vine=
+    ensureVineField(index);
+
+  if(
+    !vine||
+    vine.ready<=Date.now()
+  ){
+    closeModal();
+
+    return toast(
+      "Cette vigne est déjà prête."
+    );
+  }
+
+  bags=
+    Math.max(
+      1,
+      Math.floor(
+        Number(bags)||1
+      )
+    );
+
+  reduction=
+    Math.max(
+      0,
+      Math.min(
+        .9,
+        Number(reduction)||.30
+      )
+    );
+
+  if(
+    fertilizerStock()<bags
+  ){
+    return toast(
+      "Pas assez d'engrais."
+    );
+  }
+
+  const now=
+    Date.now();
+
+  const remaining=
+    Math.max(
+      0,
+      vine.ready-now
+    );
+
+  state.stock.fertilizer-=bags;
+
+  vine.ready=
+    now+
+    Math.max(
+      900,
+      remaining*
+      (1-reduction)
+    );
+
+  addXP(
+    bags*
+    2
+  );
+
+  closeModal();
+
+  showFloatingText(
+    `🍇🧪 VIGNE ACCÉLÉRÉE\n-${Math.round(reduction*100)} %`
+  );
+
+  tone(
+    980,
+    .07
+  );
+
+  render();
+}
+
+function buyVineyard(){
+  if(
+    state.vineyardBought
+  ){
+    return;
+  }
+
+  if(
+    state.level<42
+  ){
+    return toast(
+      "Le vignoble se débloque au niveau 42."
+    );
+  }
+
+  if(
+    state.money<VINEYARD_PRICE
+  ){
+    return toast(
+      "Pas assez d'argent."
+    );
+  }
+
+  state.money-=VINEYARD_PRICE;
+
+  state.vineyardBought=true;
+  state.vineyardPlots=4;
+  state.vineyardFields=
+    Array(24).fill(null);
+
+  for(
+    let i=0;
+    i<4;
+    i++
+  ){
+    state.vineyardFields[i]={
+      ready:
+        Date.now()+
+        (
+          VINE_GROW_TIME+
+          i*
+          8
+        )*
+        1000
+    };
+  }
+
+  state.currentZone="vineyard";
+
+  showFloatingText(
+    "🍇 VIGNOBLE DÉBLOQUÉ\n4 pieds de vigne"
+  );
+
+  tone(
+    720,
+    .12
+  );
+
+  render();
+
+  openShop(
+    "spaces"
+  );
+}
+
+function buyVinePlot(){
+  if(
+    !state.vineyardBought
+  ){
+    return;
+  }
+
+  const limit=
+    vineyardPlotLimit();
+
+  if(
+    state.vineyardPlots>=limit
+  ){
+    const next=
+      nextVineyardExpansionLevel();
+
+    return toast(
+      next
+        ?`Extension suivante au niveau ${next}.`
+        :"24 pieds de vigne maximum."
+    );
+  }
+
+  const cost=
+    vinePlotCost();
+
+  if(
+    state.money<cost
+  ){
+    return toast(
+      "Pas assez d'argent."
+    );
+  }
+
+  state.money-=cost;
+
+  const index=
+    state.vineyardPlots;
+
+  state.vineyardPlots++;
+
+  state.vineyardFields[index]={
+    ready:
+      Date.now()+
+      VINE_GROW_TIME*
+      1000
+  };
+
+  addXP(30);
+
+  render();
+
+  openShop(
+    "fields"
+  );
+}
+
+const shopSpacesV20Base=shopSpaces;
+shopSpaces=function(){
+  let html=
+    shopSpacesV20Base();
+
+  html+=shopCard(
+    "🍇",
+    "Vignoble",
+    "Une zone de vignes permanentes. Récolte les raisins puis transforme-les à la Cave.",
+    VINEYARD_PRICE,
+    state.level>=42,
+    "buyVineyard()",
+    state.vineyardBought,
+    "Niveau 42"
+  );
+
+  return html;
+};
+
+const shopFieldsV20Base=shopFields;
+shopFields=function(){
+  let html=
+    shopFieldsV20Base();
+
+  if(
+    state.vineyardBought
+  ){
+    const limit=
+      vineyardPlotLimit();
+
+    const next=
+      nextVineyardExpansionLevel();
+
+    if(
+      state.vineyardPlots>=limit
+    ){
+      html+=`
+        <div class="shopCard">
+          <b>🍇 Vignoble : ${state.vineyardPlots}/${limit} pieds</b><br>
+          <small>
+            ${
+              next
+                ?`Prochaine extension au niveau ${next}.`
+                :"Capacité maximale : 24 pieds de vigne."
+            }
+          </small>
+        </div>
+      `;
+    }else{
+      html+=shopCard(
+        "🍇",
+        "Nouveau pied de vigne "+(state.vineyardPlots+1),
+        `Vigne permanente • ${vineYield()} raisins par récolte • limite actuelle ${limit}/24.`,
+        vinePlotCost(),
+        true,
+        "buyVinePlot()"
+      );
+    }
+  }
+
+  return html;
+};
+
+const shopBuildingsV20Base=shopBuildings;
+shopBuildings=function(){
+  let html=
+    shopBuildingsV20Base();
+
+  html+=shopCard(
+    "🍷",
+    "Cave du vignoble",
+    "Produit du jus de raisin, du vin et des grands crus pour le marché et le restaurant.",
+    CELLAR_PRICE,
+    state.level>=43&&
+    state.vineyardBought,
+    "buyBuilding('cellar')",
+    state.cellarBought,
+    "Niveau 43 + Vignoble"
+  );
+
+  return html;
+};
+
+const buyBuildingV20Base=buyBuilding;
+buyBuilding=function(type){
+  if(
+    type!=="cellar"
+  ){
+    return buyBuildingV20Base(type);
+  }
+
+  if(
+    state.cellarBought
+  ){
+    return;
+  }
+
+  if(
+    state.level<43
+  ){
+    return toast(
+      "La Cave se débloque au niveau 43."
+    );
+  }
+
+  if(
+    !state.vineyardBought
+  ){
+    return toast(
+      "Il faut d'abord acheter le Vignoble."
+    );
+  }
+
+  if(
+    state.money<CELLAR_PRICE
+  ){
+    return toast(
+      "Pas assez d'argent."
+    );
+  }
+
+  state.money-=CELLAR_PRICE;
+
+  state.cellarBought=true;
+
+  const now=
+    Date.now();
+
+  state.grapeJuiceLastProduction=now;
+  state.wineLastProduction=now;
+  state.premiumWineLastProduction=now;
+
+  showFloatingText(
+    "🍷 CAVE CONSTRUITE"
+  );
+
+  tone(
+    520,
+    .11
+  );
+
+  render();
+
+  openShop(
+    "buildings"
+  );
+};
+
+const buildingOwnedForBoostV20Base=
+  buildingOwnedForBoost;
+
+buildingOwnedForBoost=function(key){
+  if(
+    key==="cellar"
+  ){
+    return state.cellarBought;
+  }
+
+  return buildingOwnedForBoostV20Base(key);
+};
+
+function loadGrapeJuice(){
+  if(
+    !state.cellarBought
+  ){
+    return;
+  }
+
+  if(
+    !queueRecipeV19(
+      {grape:3},
+      "grapeJuiceQueue",
+      "grapeJuiceLastProduction"
+    )
+  ){
+    toast(
+      "Il faut 3 raisins."
+    );
+  }
+}
+
+function loadWine(){
+  if(
+    !state.cellarBought
+  ){
+    return;
+  }
+
+  if(
+    !queueRecipeV19(
+      {grape:5},
+      "wineQueue",
+      "wineLastProduction"
+    )
+  ){
+    toast(
+      "Il faut 5 raisins."
+    );
+  }
+}
+
+function loadPremiumWine(){
+  if(
+    !state.cellarBought
+  ){
+    return;
+  }
+
+  if(
+    state.level<45
+  ){
+    return toast(
+      "Le Grand cru se débloque au niveau 45."
+    );
+  }
+
+  if(
+    !queueRecipeV19(
+      {
+        grape:6,
+        wine:1
+      },
+      "premiumWineQueue",
+      "premiumWineLastProduction"
+    )
+  ){
+    toast(
+      "Il faut 6 raisins + 1 vin."
+    );
+  }
+}
+
+function collectGrapeJuice(){
+  collectWaiting(
+    "grapeJuiceWaiting",
+    "grapeJuice",
+    "🧃"
+  );
+}
+
+function collectWine(){
+  collectWaiting(
+    "wineWaiting",
+    "wine",
+    "🍷"
+  );
+}
+
+function collectPremiumWine(){
+  collectWaiting(
+    "premiumWineWaiting",
+    "premiumWine",
+    "🍾"
+  );
+}
+
+function renderCellarV21(){
+  ensureV21Dom();
+
+  const panel=
+    document.getElementById("cellarPanel");
+
+  if(!panel)return;
+
+  panel.style.display=
+    state.cellarBought
+      ?"block"
+      :"none";
+
+  if(
+    !state.cellarBought
+  ){
+    return;
+  }
+
+  let recipes="";
+
+  recipes+=
+    recipeCardV19({
+      icon:"🧃",
+      name:"Jus de raisin",
+      description:"3 🍇 raisins → 1 🧃 jus",
+      queue:state.grapeJuiceQueue,
+      waiting:state.grapeJuiceWaiting,
+      cap:15,
+      last:state.grapeJuiceLastProduction,
+      interval:boostedTime("cellar",120),
+      loadAction:"loadGrapeJuice()",
+      collectAction:"collectGrapeJuice()",
+      loadLabel:"🍇 PRESSER",
+      collectLabel:"🧃 PRENDRE"
+    });
+
+  recipes+=
+    recipeCardV19({
+      icon:"🍷",
+      name:"Vin",
+      description:"5 🍇 raisins → 1 🍷 bouteille",
+      queue:state.wineQueue,
+      waiting:state.wineWaiting,
+      cap:10,
+      last:state.wineLastProduction,
+      interval:boostedTime("cellar",480),
+      loadAction:"loadWine()",
+      collectAction:"collectWine()",
+      loadLabel:"🍇 VINIFIER",
+      collectLabel:"🍷 PRENDRE"
+    });
+
+  if(
+    state.level>=45
+  ){
+    recipes+=
+      recipeCardV19({
+        icon:"🍾",
+        name:"Grand cru",
+        description:"6 🍇 raisins + 1 🍷 vin → 1 🍾 grand cru",
+        queue:state.premiumWineQueue,
+        waiting:state.premiumWineWaiting,
+        cap:6,
+        last:state.premiumWineLastProduction,
+        interval:boostedTime("cellar",900),
+        loadAction:"loadPremiumWine()",
+        collectAction:"collectPremiumWine()",
+        loadLabel:"🍾 ÉLEVER",
+        collectLabel:"🍾 PRENDRE"
+      });
+  }else{
+    recipes+=
+      lockedRecipeCard(
+        45,
+        "🍾",
+        "Grand cru",
+        "6 🍇 raisins + 1 🍷 vin → 1 grand cru"
+      );
+  }
+
+  panel.innerHTML=`
+    <div class="buildingHeader">
+      <div class="buildingIcon">
+        🍷
+      </div>
+
+      <div class="buildingBody">
+        <div class="buildingName">
+          CAVE DU VIGNOBLE ${boostBadge("cellar")}
+        </div>
+
+        <div class="buildingStats">
+          Transforme les raisins en boissons à forte valeur.
+          <span class="wineBadge">V2.1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recipeGridV19">
+      ${recipes}
+    </div>
+  `;
+}
+
+const renderBuildingsV20Base=
+  renderBuildings;
+
+renderBuildings=function(){
+  renderBuildingsV20Base();
+  renderCellarV21();
+};
+
+const availableOrderProductsV20Base=
+  availableOrderProducts;
+
+availableOrderProducts=function(){
+  const list=
+    availableOrderProductsV20Base();
+
+  if(
+    state.cellarBought
+  ){
+    list.push(
+      {
+        key:"grapeJuice",
+        sell:PRODUCTS.grapeJuice.sell
+      },
+      {
+        key:"wine",
+        sell:PRODUCTS.wine.sell
+      }
+    );
+
+    if(
+      state.level>=45
+    ){
+      list.push({
+        key:"premiumWine",
+        sell:PRODUCTS.premiumWine.sell
+      });
+    }
+  }
+
+  return list;
+};
+
+const updateProductionsV20Base=
+  updateProductions;
+
+updateProductions=function(now=Date.now()){
+  updateProductionsV20Base(now);
+
+  runQueueProduction({
+    owned:"cellarBought",
+    queue:"grapeJuiceQueue",
+    wait:"grapeJuiceWaiting",
+    last:"grapeJuiceLastProduction",
+    cap:15,
+    interval:boostedTime("cellar",120)
+  },now);
+
+  runQueueProduction({
+    owned:"cellarBought",
+    queue:"wineQueue",
+    wait:"wineWaiting",
+    last:"wineLastProduction",
+    cap:10,
+    interval:boostedTime("cellar",480)
+  },now);
+
+  runQueueProduction({
+    owned:"cellarBought",
+    queue:"premiumWineQueue",
+    wait:"premiumWineWaiting",
+    last:"premiumWineLastProduction",
+    cap:6,
+    interval:boostedTime("cellar",900)
+  },now);
+};
+
+const processOfflineV20Base=
+  processOffline;
+
+processOffline=function(){
+  processOfflineV20Base();
+
+  const now=
+    Date.now();
+
+  state.grapeJuiceLastProduction=now;
+  state.wineLastProduction=now;
+  state.premiumWineLastProduction=now;
+};
+
+function normalizeV21State(){
+  state.vineyardBought=
+    !!state.vineyardBought;
+
+  state.cellarBought=
+    !!state.cellarBought;
+
+  state.vineyardPlots=
+    state.vineyardBought
+      ?Math.max(
+        4,
+        Math.min(
+          24,
+          Number(state.vineyardPlots)||4
+        )
+      )
+      :0;
+
+  if(
+    !Array.isArray(
+      state.vineyardFields
+    )
+  ){
+    state.vineyardFields=[];
+  }
+
+  while(
+    state.vineyardFields.length<24
+  ){
+    state.vineyardFields.push(null);
+  }
+
+  state.vineyardFields=
+    state.vineyardFields.slice(
+      0,
+      24
+    );
+
+  if(
+    state.vineyardBought
+  ){
+    for(
+      let i=0;
+      i<state.vineyardPlots;
+      i++
+    ){
+      ensureVineField(i);
+    }
+  }
+
+  [
+    "grapeJuiceQueue",
+    "grapeJuiceWaiting",
+    "wineQueue",
+    "wineWaiting",
+    "premiumWineQueue",
+    "premiumWineWaiting"
+  ].forEach(key=>{
+    state[key]=
+      Math.max(
+        0,
+        Number(state[key])||0
+      );
+  });
+
+  state.grapeJuiceWaiting=
+    Math.min(
+      15,
+      state.grapeJuiceWaiting
+    );
+
+  state.wineWaiting=
+    Math.min(
+      10,
+      state.wineWaiting
+    );
+
+  state.premiumWineWaiting=
+    Math.min(
+      6,
+      state.premiumWineWaiting
+    );
+
+  [
+    "grapeJuiceLastProduction",
+    "wineLastProduction",
+    "premiumWineLastProduction"
+  ].forEach(key=>{
+    state[key]=
+      Number(state[key])||
+      Date.now();
+  });
+
+  state.stock.grapeJuice=
+    Math.max(
+      0,
+      Number(state.stock.grapeJuice)||0
+    );
+
+  state.stock.wine=
+    Math.max(
+      0,
+      Number(state.stock.wine)||0
+    );
+
+  state.stock.premiumWine=
+    Math.max(
+      0,
+      Number(state.stock.premiumWine)||0
+    );
+
+  if(
+    !state.vineyardBought&&
+    state.currentZone==="vineyard"
+  ){
+    state.currentZone="farm";
+  }
+}
+
+saveGame=function(){
+  state.lastSeen=
+    Date.now();
+
+  localStorage.setItem(
+    "farmRushV21",
+    JSON.stringify(state)
+  );
+};
+
+loadGame=function(){
+  const keys=[
+    "farmRushV21",
+    "farmRushV20",
+    "farmRushV192",
+    "farmRushV191",
+    "farmRushV19",
+    "farmRushV184",
+    "farmRushV183",
+    "farmRushV182",
+    "farmRushV181",
+    "farmRushV18",
+    "farmRushV173",
+    "farmRushV172",
+    "farmRushV171",
+    "farmRushV17",
+    "farmRushV161",
+    "farmRushV16",
+    "farmRushV15"
+  ];
+
+  let raw=null;
+
+  for(
+    const key
+    of
+    keys
+  ){
+    raw=
+      localStorage.getItem(key);
+
+    if(raw)break;
+  }
+
+  if(raw){
+    try{
+      state={
+        ...DEFAULT_STATE,
+        ...JSON.parse(raw)
+      };
+    }catch(e){
+      state={
+        ...DEFAULT_STATE
+      };
+    }
+  }else{
+    state={
+      ...DEFAULT_STATE
+    };
+  }
+
+  state.plots=
+    Math.max(
+      4,
+      Math.min(
+        60,
+        Number(state.plots)||4
+      )
+    );
+
+  state.orchardPlots=
+    Math.max(
+      4,
+      Math.min(
+        30,
+        Number(state.orchardPlots)||4
+      )
+    );
+
+  if(
+    !Array.isArray(
+      state.fields
+    )
+  ){
+    state.fields=[];
+  }
+
+  while(
+    state.fields.length<60
+  ){
+    state.fields.push(null);
+  }
+
+  state.fields=
+    state.fields.slice(
+      0,
+      60
+    );
+
+  if(
+    !Array.isArray(
+      state.orchardFields
+    )
+  ){
+    state.orchardFields=[];
+  }
+
+  while(
+    state.orchardFields.length<30
+  ){
+    state.orchardFields.push(null);
+  }
+
+  state.orchardFields=
+    state.orchardFields.slice(
+      0,
+      30
+    );
+
+  if(
+    !state.stock||
+    typeof state.stock!=="object"
+  ){
+    state.stock={};
+  }
+
+  state.hens=
+    Math.max(
+      1,
+      Number(state.hens)||1
+    );
+
+  state.cows=
+    Math.max(
+      1,
+      Number(state.cows)||1
+    );
+
+  state.pigs=
+    Math.max(
+      1,
+      Number(state.pigs)||1
+    );
+
+  state.workerLevel=
+    Math.max(
+      0,
+      Math.min(
+        4,
+        Number(state.workerLevel)||0
+      )
+    );
+
+  if(
+    !CROPS[state.workerCrop]||
+    CROPS[state.workerCrop].zone!=="farm"
+  ){
+    state.workerCrop="wheat";
+  }
+
+  if(
+    ![
+      "farm",
+      "orchard",
+      "vineyard"
+    ].includes(
+      state.currentZone
+    )
+  ){
+    state.currentZone="farm";
+  }
+
+  if(
+    !state.orchardBought&&
+    state.currentZone==="orchard"
+  ){
+    state.currentZone="farm";
+  }
+
+  normalizeV19State();
+  normalizeV21State();
+  normalizeOrders();
+  processOffline();
+
+  ensureV21Dom();
+
+  render();
+  saveGame();
+};
+
+addXP=function(amount){
+  state.xp+=amount;
+
+  while(
+    state.level<45&&
+    state.xp>=xpRequired()
+  ){
+    state.xp-=xpRequired();
+    state.level++;
+
+    levelReward(
+      state.level
+    );
+  }
+
+  saveGame();
+};
+
+const levelRewardV20FinalBase=
+  levelReward;
+
+levelReward=function(level){
+  if(
+    level<=40
+  ){
+    return levelRewardV20FinalBase(level);
+  }
+
+  const rewards={
+    41:[
+      45000,
+      "🗺️ De nouvelles terres viticoles apparaissent à l'horizon"
+    ],
+
+    42:[
+      60000,
+      "🍇 Vignoble débloqué • jusqu'à 8 pieds de vigne"
+    ],
+
+    43:[
+      75000,
+      "🍷 Cave débloquée • vignoble jusqu'à 12 pieds • Menu du vigneron"
+    ],
+
+    44:[
+      90000,
+      "🍇 Extension du vignoble • jusqu'à 18 pieds"
+    ],
+
+    45:[
+      120000,
+      "🍾 Grand cru débloqué • vignoble 24 pieds • Dégustation premium"
+    ]
+  };
+
+  const reward=
+    rewards[level]||
+    [
+      100+level*100,
+      "Nouveau niveau"
+    ];
+
+  state.money+=reward[0];
+
+  document.getElementById(
+    "levelUpNumber"
+  ).textContent=
+    level;
+
+  document.getElementById(
+    "levelUpReward"
+  ).innerHTML=
+    reward[1]+
+    "<br>+"+
+    reward[0].toLocaleString("fr-FR")+
+    " 🪙";
+
+  document.getElementById(
+    "levelUp"
+  ).classList.add(
+    "show"
+  );
+
+  tone(
+    1000,
+    .12
+  );
+};
+
+const renderGoalV20FinalBase=
+  renderGoal;
+
+renderGoal=function(){
+  renderGoalV20FinalBase();
+
+  if(
+    state.level>=42&&
+    !state.vineyardBought
+  ){
+    document.getElementById("goalIcon").textContent=
+      "🍇";
+
+    document.getElementById("goalTitle").textContent=
+      "OBJECTIF : VIGNOBLE";
+
+    document.getElementById("goalText").textContent=
+      `${state.money.toLocaleString("fr-FR")} / ${VINEYARD_PRICE.toLocaleString("fr-FR")} 🪙`;
+
+    document.getElementById("goalFill").style.width=
+      Math.min(
+        100,
+        state.money/
+        VINEYARD_PRICE*
+        100
+      )+
+      "%";
+
+    return;
+  }
+
+  if(
+    state.level>=43&&
+    state.vineyardBought&&
+    !state.cellarBought
+  ){
+    document.getElementById("goalIcon").textContent=
+      "🍷";
+
+    document.getElementById("goalTitle").textContent=
+      "OBJECTIF : CAVE";
+
+    document.getElementById("goalText").textContent=
+      `${state.money.toLocaleString("fr-FR")} / ${CELLAR_PRICE.toLocaleString("fr-FR")} 🪙`;
+
+    document.getElementById("goalFill").style.width=
+      Math.min(
+        100,
+        state.money/
+        CELLAR_PRICE*
+        100
+      )+
+      "%";
+
+    return;
+  }
+
+  if(
+    state.vineyardBought
+  ){
+    const limit=
+      vineyardPlotLimit();
+
+    if(
+      state.vineyardPlots<limit
+    ){
+      document.getElementById("goalIcon").textContent=
+        "🍇";
+
+      document.getElementById("goalTitle").textContent=
+        "AGRANDIR LE VIGNOBLE";
+
+      document.getElementById("goalText").textContent=
+        `${state.vineyardPlots}/${limit} pieds • prochain : ${vinePlotCost().toLocaleString("fr-FR")} 🪙`;
+
+      document.getElementById("goalFill").style.width=
+        Math.min(
+          100,
+          state.vineyardPlots/
+          limit*
+          100
+        )+
+        "%";
+    }
+  }
+};
+
+const showProgressV20FinalBase=
+  showProgress;
+
+showProgress=function(){
+  showProgressV20FinalBase();
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent=
+    "⭐ Progression V2.1";
+
+  const body=
+    document.getElementById(
+      "modalBody"
+    );
+
+  if(!body)return;
+
+  body.innerHTML=
+    body.innerHTML.replace(
+      /Farm Rush V2\.0 — Niveau \d+\/40/,
+      `Farm Rush V2.1 — Niveau ${state.level}/45`
+    );
+
+  body.insertAdjacentHTML(
+    "beforeend",
+    `
+      <p><b>🍇 Vignoble & Cave</b></p>
+
+      <div class="shopCard">
+        <b>🍇 Vignoble</b>
+        <span style="float:right">
+          ${
+            state.vineyardBought
+              ?state.vineyardPlots+"/"+vineyardPlotLimit()+" • max 24"
+              :"🔒 Niv. 42"
+          }
+        </span>
+      </div>
+
+      <div class="shopCard">
+        <b>🍷 Cave</b>
+        <span style="float:right">
+          ${
+            state.cellarBought
+              ?"✅"
+              :"🔒 Niv. 43"
+          }
+        </span>
+      </div>
+
+      <div class="shopCard">
+        <b>🧃 Jus de raisin</b>
+        <span style="float:right">
+          ${state.stock.grapeJuice||0}
+        </span>
+      </div>
+
+      <div class="shopCard">
+        <b>🍷 Vin</b>
+        <span style="float:right">
+          ${state.stock.wine||0}
+        </span>
+      </div>
+
+      <div class="shopCard">
+        <b>🍾 Grand cru</b>
+        <span style="float:right">
+          ${state.stock.premiumWine||0}
+        </span>
+      </div>
+    `
+  );
+};
+
+const renderV20FinalBase=
+  render;
+
+render=function(){
+  ensureV21Dom();
+
+  renderV20FinalBase();
+
+  if(
+    state.currentZone==="vineyard"
+  ){
+    renderVineyard();
+  }
+};
+
+
 ensureV20Dom();
+
 ensureV19Dom();
 
 bindFieldArea("farmArea","farm");
@@ -1395,19 +3401,31 @@ setInterval(()=>{
   runWorker();
   runAnimalFeeder();
 
-  if(document.getElementById("game").style.display==="block"){
-    if(!paintGesture&&!activeFieldTouch)renderFields();
+  if(
+    document.getElementById("game").style.display==="block"
+  ){
+    if(!paintGesture&&!activeFieldTouch){
+      renderFields();
+    }
+
     renderBuildings();
     renderGoal();
   }
 },500);
 
 window.addEventListener("beforeunload",saveGame);
+
 document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="hidden")saveGame();
+  if(document.visibilityState==="hidden"){
+    saveGame();
+  }
 });
 
-document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";
+document.getElementById("soundHome").textContent=
+  soundOn
+    ?"🔊"
+    :"🔇";
+
 loadGame();
 </script>
 </body>
