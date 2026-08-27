@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V1.9.1</title>
+<title>Farm Rush V1.9.2</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -21,7 +21,7 @@
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V1.9.1 — Stock animaux, nourrisseur auto & swipe corrigé</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V1.9.2 — Jardin, fromages, huile, frites, pesto & 40 niveaux</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -31,7 +31,7 @@
 <div class="zoneTabs"><button id="zoneFarmBtn" class="zoneTab active" onclick="switchZone('farm')">🏡 FERME</button><button id="zoneOrchardBtn" class="zoneTab" onclick="switchZone('orchard')">🍎 VERGER</button></div>
 <div class="farmTools"><div id="paintBar" class="paintBar"><div><div class="tiny">MODE PLANTATION</div><div id="paintCropLabel" class="paintCrop">🌾 Blé</div></div><button class="btn red small" onclick="cancelPaintSession()">✖ ANNULER</button></div><div class="fieldHelp">👆 Touche une <b>parcelle vide</b> → choisis la culture → la première case est plantée → pose ton doigt sur une autre case et glisse. <b>Relâcher = fin.</b></div><div class="quickActions"><button class="btn orange" onclick="harvestAll()">🌾 RÉCOLTER <span id="ready">(0)</span></button></div></div>
 <div id="farmArea" class="farm"><div class="sun">☀️</div><div class="house">🏡</div><div class="barnEmoji">🏠</div><div id="fields" class="fields"></div></div>
-<div id="orchardArea" class="farm orchardFarm" style="display:none"><div class="sun">☀️</div><div class="orchardSign">🌳🍎🍚</div><div id="orchardFields" class="fields"></div></div>
+<div id="orchardArea" class="farm orchardFarm" style="display:none"><div class="sun">☀️</div><div class="orchardSign">🌳🌿🍎</div><div id="orchardFields" class="fields"></div></div>
 <div id="workerPanel" class="panel automationPanel" style="display:none"><div class="panelTitle"><span>🤖 OUVRIER AGRICOLE</span><span id="workerLevelLabel" class="tiny"></span></div><div class="automationGrid"><div><div class="fieldLabel">Culture automatique</div><select id="workerCrop" class="select" onchange="changeWorkerCrop(this.value)"></select></div><div><div class="fieldLabel">Zone automatisée</div><select id="workerPlots" class="select" onchange="changeWorkerPlots(this.value)"></select></div></div><div id="workerStatus" class="autoStatus"></div><div class="actions"><button id="workerToggle" class="btn blue" onclick="toggleWorker()">▶ ACTIVER</button><button class="btn dark" onclick="openShop('automation')">⬆️ AMÉLIORER</button></div></div>
 <div id="coopPanel" class="panel buildingPanel" style="display:none"></div><div id="barnPanel" class="panel buildingPanel" style="display:none"></div><div id="millPanel" class="panel buildingPanel" style="display:none"></div><div id="bakeryPanel" class="panel buildingPanel" style="display:none"></div><div id="dairyPanel" class="panel buildingPanel" style="display:none"></div><div id="pastaPanel" class="panel buildingPanel" style="display:none"></div>
 <div class="panel"><div class="panelTitle"><span>📦 STOCK</span><button class="btn gold small" onclick="showMarket()">🛒 VENDRE</button></div><div id="stock" class="stockGrid"></div></div>
@@ -44,687 +44,45 @@
 <div id="toast" class="toast"></div>
 <script>
 const CROPS={
-wheat:{icon:"🌾",name:"Blé",seed:"🌱",sprout:"🌿",time:5,cost:5,sell:10,xp:2,level:1,zone:"farm"},carrot:{icon:"🥕",name:"Carotte",seed:"🌱",sprout:"🌿",time:15,cost:12,sell:27,xp:3,level:2,zone:"farm"},lettuce:{icon:"🥬",name:"Salade",seed:"🌱",sprout:"🌿",time:25,cost:18,sell:42,xp:4,level:3,zone:"farm"},tomato:{icon:"🍅",name:"Tomate",seed:"🌱",sprout:"🌿",time:30,cost:25,sell:60,xp:5,level:4,zone:"farm"},onion:{icon:"🧅",name:"Oignon",seed:"🌱",sprout:"🌿",time:45,cost:35,sell:88,xp:6,level:6,zone:"farm"},corn:{icon:"🌽",name:"Maïs",seed:"🌱",sprout:"🌿",time:60,cost:50,sell:125,xp:7,level:7,zone:"farm"},strawberry:{icon:"🍓",name:"Fraise",seed:"🌱",sprout:"🌿",time:120,cost:100,sell:270,xp:10,level:10,zone:"farm"},pumpkin:{icon:"🎃",name:"Citrouille",seed:"🌱",sprout:"🌿",time:150,cost:130,sell:360,xp:12,level:11,zone:"farm"},potato:{icon:"🥔",name:"Pomme de terre",seed:"🌱",sprout:"🌿",time:180,cost:160,sell:430,xp:13,level:13,zone:"farm"},grape:{icon:"🍇",name:"Raisin",seed:"🌱",sprout:"🌿",time:300,cost:275,sell:750,xp:18,level:16,zone:"farm"},sunflower:{icon:"🌻",name:"Tournesol",seed:"🌱",sprout:"🌿",time:480,cost:450,sell:1250,xp:25,level:20,zone:"farm"},apple:{icon:"🍎",name:"Pomme",seed:"🌱",sprout:"🌳",time:240,cost:180,sell:520,xp:16,level:14,zone:"orchard"},rice:{icon:"🍚",name:"Riz",seed:"🌱",sprout:"🌾",time:180,cost:220,sell:620,xp:18,level:15,zone:"orchard"},orange:{icon:"🍊",name:"Orange",seed:"🌱",sprout:"🌳",time:420,cost:320,sell:950,xp:24,level:18,zone:"orchard"}
+wheat:{icon:"🌾",name:"Blé",seed:"🌱",sprout:"🌿",time:5,cost:5,sell:10,xp:2,level:1,zone:"farm"},
+carrot:{icon:"🥕",name:"Carotte",seed:"🌱",sprout:"🌿",time:15,cost:12,sell:27,xp:3,level:2,zone:"farm"},
+lettuce:{icon:"🥬",name:"Salade",seed:"🌱",sprout:"🌿",time:25,cost:18,sell:42,xp:4,level:3,zone:"farm"},
+tomato:{icon:"🍅",name:"Tomate",seed:"🌱",sprout:"🌿",time:30,cost:25,sell:60,xp:5,level:4,zone:"farm"},
+onion:{icon:"🧅",name:"Oignon",seed:"🌱",sprout:"🌿",time:45,cost:35,sell:88,xp:6,level:6,zone:"farm"},
+corn:{icon:"🌽",name:"Maïs",seed:"🌱",sprout:"🌿",time:60,cost:50,sell:125,xp:7,level:7,zone:"farm"},
+strawberry:{icon:"🍓",name:"Fraise",seed:"🌱",sprout:"🌿",time:120,cost:100,sell:270,xp:10,level:10,zone:"farm"},
+pumpkin:{icon:"🎃",name:"Citrouille",seed:"🌱",sprout:"🌿",time:150,cost:130,sell:360,xp:12,level:11,zone:"farm"},
+potato:{icon:"🥔",name:"Pomme de terre",seed:"🌱",sprout:"🌿",time:180,cost:160,sell:430,xp:13,level:13,zone:"farm"},
+grape:{icon:"🍇",name:"Raisin",seed:"🌱",sprout:"🌿",time:300,cost:275,sell:750,xp:18,level:16,zone:"farm"},
+sunflower:{icon:"🌻",name:"Tournesol",seed:"🌱",sprout:"🌿",time:480,cost:450,sell:1250,xp:25,level:20,zone:"farm"},
+apple:{icon:"🍎",name:"Pomme",seed:"🌱",sprout:"🌳",time:240,cost:180,sell:520,xp:16,level:14,zone:"orchard"},
+rice:{icon:"🍚",name:"Riz",seed:"🌱",sprout:"🌾",time:180,cost:220,sell:620,xp:18,level:15,zone:"orchard"},
+orange:{icon:"🍊",name:"Orange",seed:"🌱",sprout:"🌳",time:420,cost:320,sell:950,xp:24,level:18,zone:"orchard"}
 };
 const PRODUCTS={egg:{icon:"🥚",name:"Œufs",sell:35},milk:{icon:"🥛",name:"Lait",sell:150},bacon:{icon:"🥓",name:"Bacon",sell:240},flour:{icon:"🥣",name:"Farine",sell:120},bread:{icon:"🥖",name:"Pain",sell:320},cheese:{icon:"🧀",name:"Fromage",sell:480},pasta:{icon:"🍝",name:"Pâtes",sell:750}};
 const DEFAULT_STATE={money:100,level:1,xp:0,plots:4,fields:Array(40).fill(null),orchardBought:false,orchardPlots:4,orchardFields:Array(20).fill(null),currentZone:"farm",stock:{},orders:[],coopBought:false,barnBought:false,millBought:false,bakeryBought:false,dairyBought:false,pastaBought:false,tractor:false,workerLevel:0,workerEnabled:false,workerCrop:"wheat",workerPlots:5,hens:1,cows:1,pigs:1,coopFeed:0,cowFeed:0,pigFeed:0,eggWaiting:0,milkWaiting:0,baconWaiting:0,flourWaiting:0,breadWaiting:0,cheeseWaiting:0,pastaWaiting:0,millQueue:0,bakeryQueue:0,dairyQueue:0,pastaQueue:0,coopLastProduction:Date.now(),cowLastProduction:Date.now(),pigLastProduction:Date.now(),millLastProduction:Date.now(),bakeryLastProduction:Date.now(),dairyLastProduction:Date.now(),pastaLastProduction:Date.now(),lastSeen:Date.now()};
 let state={...DEFAULT_STATE},shopCategory="fields",toastTimer,pendingPlantTarget=null,paintSession=null,paintGesture=false,paintVisited=new Set(),paintOutOfMoneyShown=false,suppressFieldClickUntil=0,lastPaintPoint=null,audioCtx=null,soundOn=localStorage.getItem("farmRushSound")!=="0";
-function saveGame(){state.lastSeen=Date.now();localStorage.setItem("farmRushV184",JSON.stringify(state))}
-function loadGame(){const keys=["farmRushV184","farmRushV181","farmRushV18","farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"];let raw=null;for(const key of keys){raw=localStorage.getItem(key);if(raw)break}if(raw){try{state={...DEFAULT_STATE,...JSON.parse(raw)}}catch(e){state={...DEFAULT_STATE}}}state.plots=Math.max(4,Math.min(40,Number(state.plots)||4));state.orchardPlots=Math.max(4,Math.min(20,Number(state.orchardPlots)||4));if(!Array.isArray(state.fields))state.fields=[];while(state.fields.length<40)state.fields.push(null);state.fields=state.fields.slice(0,40);if(!Array.isArray(state.orchardFields))state.orchardFields=[];while(state.orchardFields.length<20)state.orchardFields.push(null);state.orchardFields=state.orchardFields.slice(0,20);if(!state.stock||typeof state.stock!=="object")state.stock={};state.hens=Math.max(1,Number(state.hens)||1);state.cows=Math.max(1,Number(state.cows)||1);state.pigs=Math.max(1,Number(state.pigs)||1);state.workerLevel=Math.max(0,Math.min(4,Number(state.workerLevel)||0));if(!CROPS[state.workerCrop]||CROPS[state.workerCrop].zone!=="farm")state.workerCrop="wheat";if(!["farm","orchard"].includes(state.currentZone)||(!state.orchardBought&&state.currentZone==="orchard"))state.currentZone="farm";normalizeOrders();processOffline();render();saveGame()}
-function xpRequired(){return Math.floor(100*Math.pow(1.28,state.level-1))}
-function addXP(amount){state.xp+=amount;while(state.level<20&&state.xp>=xpRequired()){state.xp-=xpRequired();state.level++;levelReward(state.level)}saveGame()}
-function levelReward(level){const rewards={2:[100,"🥕 Carotte débloquée"],3:[150,"🥬 Salade débloquée"],4:[200,"🍅 Tomate débloquée"],5:[300,"🐔 Poulailler débloqué"],6:[300,"🧅 Oignon débloqué"],7:[350,"🌽 Maïs débloqué"],8:[500,"🚜 Tracteur débloqué"],9:[700,"🐄 Étable débloquée"],10:[600,"🍓 Fraise débloquée"],11:[700,"🎃 Citrouille débloquée"],12:[900,"⚙️ Moulin débloqué"],13:[1000,"🥔 Pomme de terre + 🥖 Boulangerie"],14:[1200,"🍎 Verger + pomme"],15:[1300,"🍚 Riz + 🧀 Fromagerie"],16:[1400,"🍇 Raisin + 🤖 Ouvrier"],17:[1600,"🏭 Usine de pâtes"],18:[1700,"🍊 Orange"],19:[1800,"🌟 Bonus"],20:[2200,"🌻 Tournesol"]};const r=rewards[level]||[100+level*40,"Nouveau niveau"];state.money+=r[0];document.getElementById("levelUpNumber").textContent=level;document.getElementById("levelUpReward").innerHTML=r[1]+"<br>+"+r[0].toLocaleString("fr-FR")+" 🪙";document.getElementById("levelUp").classList.add("show");tone(1000,.12)}
-function closeLevelUp(){document.getElementById("levelUp").classList.remove("show");render()}
-function unlocked(key){const c=CROPS[key];return !!(c&&state.level>=c.level&&(c.zone!=="orchard"||state.orchardBought))}
-function formatTime(s){s=Math.max(0,Math.ceil(s));return s<60?s+"s":Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s"}
-function initAudio(){if(!audioCtx){try{const A=window.AudioContext||window.webkitAudioContext;if(A)audioCtx=new A()}catch(e){}}if(audioCtx?.state==="suspended")audioCtx.resume()}
-function tone(freq=520,d=.05){if(!soundOn)return;initAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.05,audioCtx.currentTime+.01);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d+.02)}
-function toggleSound(){soundOn=!soundOn;localStorage.setItem("farmRushSound",soundOn?"1":"0");document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";if(soundOn)tone()}
-function startGame(){document.getElementById("home").style.display="none";document.getElementById("game").style.display="block";render()}
-function render(){document.getElementById("money").textContent=Math.floor(state.money).toLocaleString("fr-FR");document.getElementById("level").textContent=state.level;document.getElementById("xp").textContent=state.xp;document.getElementById("xpNeed").textContent=xpRequired();document.getElementById("xpFill").style.width=Math.min(100,state.xp/xpRequired()*100)+"%";renderZone();renderPaintStatus();renderFields();renderOrders();renderStock();renderBuildings();renderWorker();renderGoal();saveGame()}
-function switchZone(zone){cancelPaintSession();if(zone==="orchard"&&!state.orchardBought){openShop("spaces");return}state.currentZone=zone;render()}
-function renderZone(){const orchard=state.currentZone==="orchard";document.getElementById("farmArea").style.display=orchard?"none":"block";document.getElementById("orchardArea").style.display=orchard?"block":"none";document.getElementById("zoneFarmBtn").classList.toggle("active",!orchard);document.getElementById("zoneOrchardBtn").classList.toggle("active",orchard);document.getElementById("zoneOrchardBtn").textContent=state.orchardBought?"🍎 VERGER":"🔒 VERGER"}
-function fieldsForZone(z){return z==="farm"?state.fields:state.orchardFields}
-function plotsForZone(z){return z==="farm"?state.plots:state.orchardPlots}
-function currentFields(){return fieldsForZone(state.currentZone)}
-function currentPlots(){return plotsForZone(state.currentZone)}
-function currentFieldContainer(){return document.getElementById(state.currentZone==="farm"?"fields":"orchardFields")}
-function renderPaintStatus(){const bar=document.getElementById("paintBar"),farm=document.getElementById("farmArea"),orchard=document.getElementById("orchardArea");bar.classList.toggle("show",!!paintSession);farm.classList.toggle("paintActive",!!paintSession&&paintSession.zone==="farm");orchard.classList.toggle("paintActive",!!paintSession&&paintSession.zone==="orchard");if(paintSession){const c=CROPS[paintSession.crop];document.getElementById("paintCropLabel").textContent=c.icon+" "+c.name+" — glisse maintenant"}}
-function renderFields(){const arr=currentFields(),plots=currentPlots(),container=currentFieldContainer();container.innerHTML="";let ready=0;arr.forEach((field,index)=>{const plot=document.createElement("div");plot.className="plot";plot.dataset.index=index;if(index>=plots){plot.classList.add("locked");plot.textContent="🔒";container.appendChild(plot);return}if(!field){plot.classList.add("empty");plot.textContent="🌱";container.appendChild(plot);return}const crop=CROPS[field.crop];if(!crop){arr[index]=null;container.appendChild(plot);return}const remaining=(field.ready-Date.now())/1000,progress=Math.min(1,Math.max(0,(crop.time-Math.max(0,remaining))/crop.time));if(remaining<=0){ready++;plot.classList.add("readyPlot");plot.innerHTML='<div class="ready">'+crop.icon+' RÉCOLTER</div>'}else{let stage=crop.seed;if(progress>.33)stage=crop.sprout;if(progress>.7)stage=crop.icon;plot.innerHTML='<div class="cropStage">'+stage+'</div><div class="timer">'+formatTime(remaining)+'</div>'}container.appendChild(plot)});document.getElementById("ready").textContent="("+ready+")"}
-
-function openPlantPicker(index,zone){
-  cancelPaintSession();
-  const arr=fieldsForZone(zone);
-  if(index<0||index>=plotsForZone(zone)||arr[index])return;
-  pendingPlantTarget={index,zone};
-  let html='<div class="plantPrompt">Choisis une culture. La première case se plante tout de suite, puis pose ton doigt sur une autre case et glisse. <b>Relâcher = fin.</b></div><div class="crops">';
-  for(const key in CROPS){
-    const c=CROPS[key];
-    if(c.zone!==zone)continue;
-    const ok=unlocked(key);
-    html+='<button type="button" class="cropButton" data-crop="'+key+'" '+(ok?'onclick="chooseCropForPaint(\''+key+'\')"':'disabled')+'>'+c.icon+' '+c.name+'<div class="cropInfo">'+formatTime(c.time)+' • '+c.cost+' 🪙'+(ok?'':' • Niv. '+c.level)+'</div></button>';
-  }
-  html+='</div>';
-  openModal("🌱 Que veux-tu planter ?",html);
-
-  document.querySelectorAll('#modalBody .cropButton[data-crop]').forEach(button=>{
-    button.addEventListener('touchend',event=>{
-      if(button.disabled||!pendingPlantTarget)return;
-      event.preventDefault();
-      event.stopPropagation();
-      chooseCropForPaint(button.dataset.crop);
-    },{passive:false});
-  });
-}
-
-function chooseCropForPaint(key){if(!pendingPlantTarget||!CROPS[key])return;const {index,zone}=pendingPlantTarget,c=CROPS[key];if(c.zone!==zone||!unlocked(key))return;if(state.money<c.cost){toast("Pas assez d'argent.");return}if(!plantAt(index,key,zone))return;paintSession={zone,crop:key};pendingPlantTarget=null;closeModal(false);suppressFieldClickUntil=Date.now()+500;tone(700,.05);render();toast(c.icon+" "+c.name+" : glisse puis relâche")}
-function plantAt(index,key,zone){const arr=fieldsForZone(zone),c=CROPS[key];if(index<0||index>=plotsForZone(zone)||arr[index]||!c||c.zone!==zone||!unlocked(key)||state.money<c.cost)return false;state.money-=c.cost;arr[index]={crop:key,ready:Date.now()+c.time*1000};return true}
-function handleNormalPlot(index,zone){
-  if(Date.now()<suppressFieldClickUntil||paintSession)return;
-  const arr=fieldsForZone(zone),field=arr[index];
-  if(index<0||index>=plotsForZone(zone))return;
-  if(field&&field.ready<=Date.now()){
-    harvest(index,true,zone);
-    return;
-  }
-  if(!field)openPlantPicker(index,zone);
-}
-
-let activeFieldTouch=null;
-let harvestVisited=new Set();
-let gestureHarvestCount=0;
-let gestureHarvestXP=0;
-
-function cancelPaintSession(){
-  paintSession=null;
-  paintGesture=false;
-  paintVisited.clear();
-  harvestVisited.clear();
-  paintOutOfMoneyShown=false;
-  pendingPlantTarget=null;
-  lastPaintPoint=null;
-  activeFieldTouch=null;
-  document.getElementById("farmArea")?.classList.remove("paintActive");
-  document.getElementById("orchardArea")?.classList.remove("paintActive");
-  document.getElementById("paintBar")?.classList.remove("show");
-}
-
-function finishPaintGesture(){
-  const wasPlanting=!!paintSession;
-  const hadHarvests=gestureHarvestCount>0;
-  paintGesture=false;
-  paintVisited.clear();
-  harvestVisited.clear();
-  paintOutOfMoneyShown=false;
-  paintSession=null;
-  lastPaintPoint=null;
-  activeFieldTouch=null;
-  suppressFieldClickUntil=Date.now()+700;
-  renderPaintStatus();
-  renderFields();
-  renderStock();
-  document.getElementById("money").textContent=Math.floor(state.money).toLocaleString("fr-FR");
-  if(hadHarvests){
-    showFloatingText("🌾 "+gestureHarvestCount+" récolte"+(gestureHarvestCount>1?"s":"")+"\n+"+gestureHarvestXP+" XP");
-    tone(900,.06);
-  }else if(wasPlanting){
-    tone(620,.035);
-  }
-  gestureHarvestCount=0;
-  gestureHarvestXP=0;
-  saveGame();
-}
-
-function updatePlantedPlotElement(plot,crop){
-  if(!plot)return;
-  plot.className="plot";
-  plot.innerHTML='<div class="cropStage">'+crop.seed+'</div><div class="timer">'+formatTime(crop.time)+'</div>';
-}
-
-function updateEmptyPlotElement(plot){
-  if(!plot)return;
-  plot.className="plot empty";
-  plot.innerHTML="🌱";
-}
-
-function handlePaintField(index,zone,plotElement=null){
-  if(!paintSession||paintSession.zone!==zone||paintVisited.has(index))return;
-  paintVisited.add(index);
-  const arr=fieldsForZone(zone);
-  if(index<0||index>=plotsForZone(zone)||arr[index])return;
-  const c=CROPS[paintSession.crop];
-  if(state.money<c.cost){
-    if(!paintOutOfMoneyShown){
-      toast("Pas assez d'argent.");
-      paintOutOfMoneyShown=true;
-    }
-    return;
-  }
-  if(plantAt(index,paintSession.crop,zone)){
-    tone(680,.025);
-    updatePlantedPlotElement(plotElement,c);
-    document.getElementById("money").textContent=Math.floor(state.money).toLocaleString("fr-FR");
-  }
-}
-
-function handleHarvestField(index,zone,plotElement=null){
-  if(harvestVisited.has(index))return;
-  harvestVisited.add(index);
-  const arr=fieldsForZone(zone),field=arr[index];
-  if(index<0||index>=plotsForZone(zone)||!field||field.ready>Date.now())return;
-  const c=CROPS[field.crop];
-  state.stock[field.crop]=(state.stock[field.crop]||0)+1;
-  arr[index]=null;
-  addXP(c.xp);
-  gestureHarvestCount++;
-  gestureHarvestXP+=c.xp;
-  updateEmptyPlotElement(plotElement);
-}
-
-function plotAtPoint(area,x,y){
-  const el=document.elementFromPoint(x,y),plot=el?.closest?.(".plot");
-  return plot&&area.contains(plot)?plot:null;
-}
-
-function processGesturePoint(area,zone,mode,x,y){
-  const plot=plotAtPoint(area,x,y);
-  if(!plot)return;
-  const index=Number(plot.dataset.index);
-  if(mode==="plant")handlePaintField(index,zone,plot);
-  if(mode==="harvest")handleHarvestField(index,zone,plot);
-}
-
-function processGestureAlong(area,zone,mode,x1,y1,x2,y2){
-  const dx=x2-x1,dy=y2-y1,dist=Math.hypot(dx,dy),steps=Math.max(1,Math.ceil(dist/7));
-  for(let s=0;s<=steps;s++){
-    const r=s/steps;
-    processGesturePoint(area,zone,mode,x1+dx*r,y1+dy*r);
-  }
-}
-
-function bindFieldArea(areaId,zone){
-  const area=document.getElementById(areaId);
-
-  area.addEventListener("click",e=>{
-    if(Date.now()<suppressFieldClickUntil||activeFieldTouch)return;
-    const plot=e.target.closest(".plot");
-    if(plot)handleNormalPlot(Number(plot.dataset.index),zone);
-  });
-
-  area.addEventListener("touchstart",e=>{
-    if(e.touches.length!==1)return;
-    const t=e.touches[0];
-    const direct=e.target.closest?.(".plot");
-    const plot=(direct&&area.contains(direct))?direct:plotAtPoint(area,t.clientX,t.clientY);
-    if(!plot)return;
-    const index=Number(plot.dataset.index);
-    if(index<0||index>=plotsForZone(zone))return;
-    const field=fieldsForZone(zone)[index];
-
-    gestureHarvestCount=0;
-    gestureHarvestXP=0;
-
-    if(paintSession&&paintSession.zone===zone){
-      e.preventDefault();
-      paintGesture=true;
-      paintVisited.clear();
-      harvestVisited.clear();
-      paintOutOfMoneyShown=false;
-      lastPaintPoint={x:t.clientX,y:t.clientY};
-      activeFieldTouch={mode:"plant",zone,startX:t.clientX,startY:t.clientY,lastX:t.clientX,lastY:t.clientY,index};
-      processGesturePoint(area,zone,"plant",t.clientX,t.clientY);
-      return;
-    }
-
-    if(field&&field.ready<=Date.now()){
-      e.preventDefault();
-      paintGesture=true;
-      harvestVisited.clear();
-      paintVisited.clear();
-      lastPaintPoint={x:t.clientX,y:t.clientY};
-      activeFieldTouch={mode:"harvest",zone,startX:t.clientX,startY:t.clientY,lastX:t.clientX,lastY:t.clientY,index};
-      processGesturePoint(area,zone,"harvest",t.clientX,t.clientY);
-      return;
-    }
-
-    activeFieldTouch={mode:"tap",zone,startX:t.clientX,startY:t.clientY,lastX:t.clientX,lastY:t.clientY,index};
-  },{passive:false});
-
-  area.addEventListener("touchmove",e=>{
-    if(!activeFieldTouch||activeFieldTouch.zone!==zone||e.touches.length!==1)return;
-    const t=e.touches[0];
-    const g=activeFieldTouch;
-
-    if(g.mode==="tap"){
-      const distance=Math.hypot(t.clientX-g.startX,t.clientY-g.startY);
-      if(distance>10){
-        g.mode="scroll";
-      }
-      g.lastX=t.clientX;
-      g.lastY=t.clientY;
-      return;
-    }
-
-    if(g.mode==="scroll")return;
-
-    if(g.mode==="plant"||g.mode==="harvest"){
-      e.preventDefault();
-      processGestureAlong(area,zone,g.mode,g.lastX,g.lastY,t.clientX,t.clientY);
-      g.lastX=t.clientX;
-      g.lastY=t.clientY;
-      lastPaintPoint={x:t.clientX,y:t.clientY};
-    }
-  },{passive:false});
-
-  area.addEventListener("touchend",()=>{
-    if(!activeFieldTouch||activeFieldTouch.zone!==zone)return;
-    const g=activeFieldTouch;
-
-    if(g.mode==="tap"){
-      activeFieldTouch=null;
-      handleNormalPlot(g.index,zone);
-      suppressFieldClickUntil=Date.now()+600;
-      return;
-    }
-
-    if(g.mode==="plant"||g.mode==="harvest"){
-      finishPaintGesture();
-      return;
-    }
-
-    activeFieldTouch=null;
-  },{passive:true});
-
-  area.addEventListener("touchcancel",()=>{
-    if(activeFieldTouch&&(activeFieldTouch.mode==="plant"||activeFieldTouch.mode==="harvest")){
-      finishPaintGesture();
-    }else{
-      activeFieldTouch=null;
-    }
-  },{passive:true});
-
-  let mouseDown=false;
-  let mouseMode=null;
-  let mouseLast=null;
-
-  area.addEventListener("mousedown",e=>{
-    if(e.button!==0)return;
-    const plot=e.target.closest(".plot");
-    if(!plot)return;
-    const index=Number(plot.dataset.index);
-    const field=fieldsForZone(zone)[index];
-
-    if(paintSession&&paintSession.zone===zone){
-      e.preventDefault();
-      mouseDown=true;
-      mouseMode="plant";
-      paintGesture=true;
-      paintVisited.clear();
-      harvestVisited.clear();
-      mouseLast={x:e.clientX,y:e.clientY};
-      processGesturePoint(area,zone,"plant",e.clientX,e.clientY);
-    }else if(field&&field.ready<=Date.now()){
-      e.preventDefault();
-      mouseDown=true;
-      mouseMode="harvest";
-      paintGesture=true;
-      harvestVisited.clear();
-      mouseLast={x:e.clientX,y:e.clientY};
-      gestureHarvestCount=0;
-      gestureHarvestXP=0;
-      processGesturePoint(area,zone,"harvest",e.clientX,e.clientY);
-    }
-  });
-
-  window.addEventListener("mousemove",e=>{
-    if(!mouseDown||!mouseMode||!mouseLast)return;
-    processGestureAlong(area,zone,mouseMode,mouseLast.x,mouseLast.y,e.clientX,e.clientY);
-    mouseLast={x:e.clientX,y:e.clientY};
-  });
-
-  window.addEventListener("mouseup",()=>{
-    if(mouseDown){
-      mouseDown=false;
-      mouseMode=null;
-      mouseLast=null;
-      finishPaintGesture();
-    }
-  });
-}
-
-function harvest(index,doRender=true,zone=state.currentZone){
-  const arr=fieldsForZone(zone),field=arr[index];
-  if(!field||field.ready>Date.now())return false;
-  const c=CROPS[field.crop];
-  state.stock[field.crop]=(state.stock[field.crop]||0)+1;
-  arr[index]=null;
-  addXP(c.xp);
-  tone(900,.05);
-  if(doRender){
-    showFloatingText(c.icon+" +"+c.xp+" XP");
-    render();
-  }
-  return true;
-}
-function harvestAll(){const arr=currentFields(),ready=[];arr.forEach((f,i)=>{if(f&&f.ready<=Date.now())ready.push(i)});if(!ready.length){toast("Aucune culture prête.");return}if(state.tractor){let xp=0;ready.forEach(i=>{const c=CROPS[arr[i].crop];state.stock[arr[i].crop]=(state.stock[arr[i].crop]||0)+1;arr[i]=null;xp+=c.xp});addXP(xp);showFloatingText("🚜 "+ready.length+" récoltes");tone(950,.08);render()}else harvest(ready[0])}
-function plotCost(){return Math.floor(100*Math.pow(1.28,Math.max(0,state.plots-4)))}
-function orchardPlotCost(){return Math.floor(800*Math.pow(1.32,Math.max(0,state.orchardPlots-4)))}
-function buyPlot(){if(state.plots>=40)return toast("40 parcelles maximum.");const c=plotCost();if(state.money<c)return toast("Pas assez d'argent.");state.money-=c;state.plots++;addXP(12);render();openShop("fields")}
-function buyOrchardPlot(){if(!state.orchardBought)return;if(state.orchardPlots>=20)return toast("20 parcelles de verger maximum.");const c=orchardPlotCost();if(state.money<c)return toast("Pas assez d'argent.");state.money-=c;state.orchardPlots++;addXP(18);render();openShop("fields")}
-function henInterval(){return Math.max(8,30/state.hens)}
-function cowInterval(){return Math.max(30,120/state.cows)}
-function pigInterval(){return Math.max(45,180/state.pigs)}
-function nextText(last,interval,input,waiting,cap,label){if(input<=0)return "⚠️ Plus de ressources";if(waiting>=cap)return "📦 Stock plein";return label+formatTime(Math.max(0,interval-(Date.now()-last)/1000))}
-function progressWidth(last,interval,active){return active?Math.min(100,(Date.now()-last)/1000/interval*100)+"%":"0%"}
-function renderBuildings(){renderCoop();renderBarn();renderQueuePanel("millPanel",state.millBought,"⚙️","MOULIN","2 🌾 → 1 🥣 farine","flourTimer","🥣 Prochaine farine : ",state.millLastProduction,60,state.millQueue,state.flourWaiting,15,"millQueue","flourWaiting","millFill","🌾 CHARGER","loadMill()","🥣 RÉCUPÉRER","collectFlour()");renderQueuePanel("bakeryPanel",state.bakeryBought,"🥖","BOULANGERIE","1 🥣 farine → 1 🥖 pain","breadTimer","🥖 Prochain pain : ",state.bakeryLastProduction,90,state.bakeryQueue,state.breadWaiting,15,"bakeryQueue","breadWaiting","bakeryFill","🥣 CHARGER","loadBakery()","🥖 RÉCUPÉRER","collectBread()");renderQueuePanel("dairyPanel",state.dairyBought,"🧀","FROMAGERIE","2 🥛 lait → 1 🧀 fromage","cheeseTimer","🧀 Prochain fromage : ",state.dairyLastProduction,120,state.dairyQueue,state.cheeseWaiting,12,"dairyQueue","cheeseWaiting","dairyFill","🥛 CHARGER","loadDairy()","🧀 RÉCUPÉRER","collectCheese()");renderQueuePanel("pastaPanel",state.pastaBought,"🏭","USINE DE PÂTES","2 🥣 farine + 1 🥚 œuf → 1 🍝 pâtes","pastaTimer","🍝 Prochain paquet : ",state.pastaLastProduction,150,state.pastaQueue,state.pastaWaiting,12,"pastaQueue","pastaWaiting","pastaFill","🥣🥚 CHARGER","loadPasta()","🍝 RÉCUPÉRER","collectPasta()")}
-function renderCoop(){const p=document.getElementById("coopPanel");p.style.display=state.coopBought?"block":"none";if(!state.coopBought)return;p.innerHTML=`<div class="buildingHeader"><div class="buildingIcon">🐔</div><div class="buildingBody"><div class="buildingName">POULAILLER</div><div class="buildingStats">🐔 ${state.hens} poule(s)</div><div class="countdown">${nextText(state.coopLastProduction,henInterval(),state.coopFeed,state.eggWaiting,eggCapacity(),"🥚 Prochain œuf : ")}</div><div class="productionBar"><div class="productionFill" style="width:${progressWidth(state.coopLastProduction,henInterval(),state.coopFeed>0&&state.eggWaiting<eggCapacity())}"></div></div></div></div><div class="resourceBox"><div class="resourceRow"><span>🌾 Nourriture</span><b>${state.coopFeed}</b></div></div><div class="resourceBox"><div class="resourceRow"><span>🥚 Œufs prêts</span><b>${state.eggWaiting}/${eggCapacity()}</b></div></div><div class="actions"><button class="btn blue" onclick="feedCoop()">🌾 NOURRIR</button><button class="btn orange" onclick="collectEggs()">🥚 RÉCUPÉRER</button></div>`}
-function renderBarn(){const p=document.getElementById("barnPanel");p.style.display=state.barnBought?"block":"none";if(!state.barnBought)return;p.innerHTML=`<div class="buildingHeader"><div class="buildingIcon">🐄</div><div class="buildingBody"><div class="buildingName">ÉTABLE</div><div class="buildingStats">🐄 ${state.cows} • 🐖 ${state.pigs}</div></div></div><div class="dual"><div class="animalCard"><div class="animalTitle">🐄 VACHES</div><div class="animalStat">🌾 2 blés → 3 productions</div><div class="countdown">${nextText(state.cowLastProduction,cowInterval(),state.cowFeed,state.milkWaiting,milkCapacity(),"🥛 Prochain lait : ")}</div><div>🌾 Nourriture : <b>${state.cowFeed}</b></div><div>🥛 <b>${state.milkWaiting}</b>/${milkCapacity()}</div><div class="productionBar"><div class="productionFill" style="width:${progressWidth(state.cowLastProduction,cowInterval(),state.cowFeed>0&&state.milkWaiting<milkCapacity())}"></div></div><button class="btn blue full small" style="margin-top:6px" onclick="feedCow()">🌾 NOURRIR</button><button class="btn orange full small" style="margin-top:5px" onclick="collectMilk()">🥛 RÉCUPÉRER</button></div><div class="animalCard"><div class="animalTitle">🐖 COCHONS</div><div class="animalStat">🥕 2 carottes → 3 productions</div><div class="countdown">${nextText(state.pigLastProduction,pigInterval(),state.pigFeed,state.baconWaiting,baconCapacity(),"🥓 Prochain bacon : ")}</div><div>🥕 Nourriture : <b>${state.pigFeed}</b></div><div>🥓 <b>${state.baconWaiting}</b>/${baconCapacity()}</div><div class="productionBar"><div class="productionFill" style="width:${progressWidth(state.pigLastProduction,pigInterval(),state.pigFeed>0&&state.baconWaiting<baconCapacity())}"></div></div><button class="btn blue full small" style="margin-top:6px" onclick="feedPig()">🥕 NOURRIR</button><button class="btn orange full small" style="margin-top:5px" onclick="collectBacon()">🥓 RÉCUPÉRER</button></div></div>`}
-function renderQueuePanel(id,owned,icon,name,recipe,timerId,label,last,interval,queue,waiting,cap,queueId,waitingId,fillId,loadLabel,loadAction,collectLabel,collectAction){const p=document.getElementById(id);p.style.display=owned?"block":"none";if(!owned)return;p.innerHTML=`<div class="buildingHeader"><div class="buildingIcon">${icon}</div><div class="buildingBody"><div class="buildingName">${name}</div><div class="buildingStats">${recipe}</div><div id="${timerId}" class="countdown">${nextText(last,interval,queue,waiting,cap,label)}</div><div class="productionBar"><div id="${fillId}" class="productionFill" style="width:${progressWidth(last,interval,queue>0&&waiting<cap)}"></div></div></div></div><div class="resourceBox"><div class="resourceRow"><span>⚙️ File d'attente</span><b id="${queueId}">${queue}</b></div></div><div class="resourceBox"><div class="resourceRow"><span>📦 Prêts</span><b><span id="${waitingId}">${waiting}</span>/${cap}</b></div></div><div class="actions"><button class="btn blue" onclick="${loadAction}">${loadLabel}</button><button class="btn orange" onclick="${collectAction}">${collectLabel}</button></div>`}
-function runFeedProduction(o,now=Date.now()){if(!state[o.owned])return;let feed=state[o.feed],waiting=state[o.wait],last=state[o.last];if(feed<=0||waiting>=o.cap){state[o.last]=now;return}const interval=o.interval(),cycles=Math.floor((now-last)/1000/interval);if(cycles<=0)return;const actual=Math.min(cycles,feed,o.cap-waiting);state[o.wait]+=actual;state[o.feed]-=actual;state[o.last]=last+actual*interval*1000;if(state[o.feed]<=0||state[o.wait]>=o.cap)state[o.last]=now}
-function runQueueProduction(o,now=Date.now()){if(!state[o.owned])return;let queue=state[o.queue],waiting=state[o.wait],last=state[o.last];if(queue<=0||waiting>=o.cap){state[o.last]=now;return}const cycles=Math.floor((now-last)/1000/o.interval);if(cycles<=0)return;const actual=Math.min(cycles,queue,o.cap-waiting);state[o.wait]+=actual;state[o.queue]-=actual;state[o.last]=last+actual*o.interval*1000;if(state[o.queue]<=0||state[o.wait]>=o.cap)state[o.last]=now}
-function updateProductions(now=Date.now()){runFeedProduction({owned:"coopBought",feed:"coopFeed",wait:"eggWaiting",last:"coopLastProduction",cap:eggCapacity(),interval:henInterval},now);runFeedProduction({owned:"barnBought",feed:"cowFeed",wait:"milkWaiting",last:"cowLastProduction",cap:milkCapacity(),interval:cowInterval},now);runFeedProduction({owned:"barnBought",feed:"pigFeed",wait:"baconWaiting",last:"pigLastProduction",cap:baconCapacity(),interval:pigInterval},now);runQueueProduction({owned:"millBought",queue:"millQueue",wait:"flourWaiting",last:"millLastProduction",cap:15,interval:60},now);runQueueProduction({owned:"bakeryBought",queue:"bakeryQueue",wait:"breadWaiting",last:"bakeryLastProduction",cap:15,interval:90},now);runQueueProduction({owned:"dairyBought",queue:"dairyQueue",wait:"cheeseWaiting",last:"dairyLastProduction",cap:12,interval:120},now);runQueueProduction({owned:"pastaBought",queue:"pastaQueue",wait:"pastaWaiting",last:"pastaLastProduction",cap:12,interval:150},now)}
-function processOffline(){const now=Date.now(),last=Number(state.lastSeen)||now,effective=Math.min(now,last+7200000);updateProductions(effective);state.coopLastProduction=state.cowLastProduction=state.pigLastProduction=state.millLastProduction=state.bakeryLastProduction=state.dairyLastProduction=state.pastaLastProduction=now}
-function feedCoop(){if((state.stock.wheat||0)<1)return toast("Il faut 1 blé.");state.stock.wheat--;if(state.coopFeed<=0)state.coopLastProduction=Date.now();state.coopFeed+=5;render()}
-function feedCow(){if((state.stock.wheat||0)<2)return toast("Il faut 2 blés.");state.stock.wheat-=2;if(state.cowFeed<=0)state.cowLastProduction=Date.now();state.cowFeed+=3;render()}
-function feedPig(){if((state.stock.carrot||0)<2)return toast("Il faut 2 carottes.");state.stock.carrot-=2;if(state.pigFeed<=0)state.pigLastProduction=Date.now();state.pigFeed+=3;render()}
-function collectWaiting(waitKey,stockKey,label){const q=state[waitKey]||0;if(q<=0)return toast("Aucune production prête.");state.stock[stockKey]=(state.stock[stockKey]||0)+q;state[waitKey]=0;showFloatingText(label+" +"+q);tone(900,.06);render()}
-function collectEggs(){collectWaiting("eggWaiting","egg","🥚")}
-function collectMilk(){collectWaiting("milkWaiting","milk","🥛")}
-function collectBacon(){collectWaiting("baconWaiting","bacon","🥓")}
-function collectFlour(){collectWaiting("flourWaiting","flour","🥣")}
-function collectBread(){collectWaiting("breadWaiting","bread","🥖")}
-function collectCheese(){collectWaiting("cheeseWaiting","cheese","🧀")}
-function collectPasta(){collectWaiting("pastaWaiting","pasta","🍝")}
-function loadQueue(stockKey,needed,queueKey,lastKey,label){if((state.stock[stockKey]||0)<needed)return toast("Il faut "+needed+" "+label+".");state.stock[stockKey]-=needed;if(state[queueKey]<=0)state[lastKey]=Date.now();state[queueKey]++;render()}
-function loadMill(){loadQueue("wheat",2,"millQueue","millLastProduction","blés")}
-function loadBakery(){loadQueue("flour",1,"bakeryQueue","bakeryLastProduction","farine")}
-function loadDairy(){loadQueue("milk",2,"dairyQueue","dairyLastProduction","laits")}
-function loadPasta(){if((state.stock.flour||0)<2||(state.stock.egg||0)<1)return toast("Il faut 2 farines + 1 œuf.");state.stock.flour-=2;state.stock.egg-=1;if(state.pastaQueue<=0)state.pastaLastProduction=Date.now();state.pastaQueue++;render()}
-function workerCapacity(){return [0,5,10,20,40][state.workerLevel]||0}
-function renderWorker(){const p=document.getElementById("workerPanel");p.style.display=state.workerLevel>0?"block":"none";if(state.workerLevel<=0)return;document.getElementById("workerLevelLabel").textContent="Niv. "+state.workerLevel+" • max "+workerCapacity()+" parcelles";const cropSelect=document.getElementById("workerCrop");cropSelect.innerHTML="";for(const key in CROPS){const c=CROPS[key];if(c.zone!=="farm"||!unlocked(key))continue;const o=document.createElement("option");o.value=key;o.textContent=c.icon+" "+c.name;cropSelect.appendChild(o)}cropSelect.value=CROPS[state.workerCrop]&&unlocked(state.workerCrop)?state.workerCrop:(cropSelect.options[0]?.value||"wheat");state.workerCrop=cropSelect.value;const plotSelect=document.getElementById("workerPlots");plotSelect.innerHTML="";[5,10,20,40].filter(n=>n<=workerCapacity()).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n+" parcelles";plotSelect.appendChild(o)});state.workerPlots=Math.min(Number(state.workerPlots)||5,workerCapacity());if(![...plotSelect.options].some(o=>Number(o.value)===state.workerPlots))state.workerPlots=Number(plotSelect.options[0]?.value||5);plotSelect.value=state.workerPlots;document.getElementById("workerStatus").innerHTML=state.workerEnabled?'<span class="statusOn">● ACTIF</span> — récolte et replante automatiquement les '+state.workerPlots+' premières parcelles.':'<span class="statusOff">● ARRÊTÉ</span> — aucune action automatique.';document.getElementById("workerToggle").textContent=state.workerEnabled?"⏸ ARRÊTER":"▶ ACTIVER"}
-function changeWorkerCrop(v){if(CROPS[v]&&CROPS[v].zone==="farm"&&unlocked(v)){state.workerCrop=v;saveGame()}}
-function changeWorkerPlots(v){state.workerPlots=Math.min(Number(v)||5,workerCapacity());saveGame();renderWorker()}
-function toggleWorker(){if(state.workerLevel<=0)return;state.workerEnabled=!state.workerEnabled;renderWorker();saveGame()}
-function runWorker(){if(!state.workerEnabled||state.workerLevel<=0)return;const max=Math.min(state.workerPlots,workerCapacity(),state.plots),crop=CROPS[state.workerCrop];if(!crop||!unlocked(state.workerCrop))return;let changed=false,xp=0;for(let i=0;i<max;i++){const f=state.fields[i];if(f&&f.ready<=Date.now()){const hc=CROPS[f.crop];state.stock[f.crop]=(state.stock[f.crop]||0)+1;state.fields[i]=null;xp+=hc.xp;changed=true}if(!state.fields[i]&&state.money>=crop.cost){state.money-=crop.cost;state.fields[i]={crop:state.workerCrop,ready:Date.now()+crop.time*1000};changed=true}}if(xp>0)addXP(xp);if(changed&&!paintGesture)render()}
-function availableOrderProducts(){const list=[];for(const key in CROPS)if(unlocked(key))list.push({key,sell:CROPS[key].sell});if(state.coopBought)list.push({key:"egg",sell:35});if(state.barnBought){list.push({key:"milk",sell:150},{key:"bacon",sell:240})}if(state.millBought)list.push({key:"flour",sell:120});if(state.bakeryBought)list.push({key:"bread",sell:320});if(state.dairyBought)list.push({key:"cheese",sell:480});if(state.pastaBought)list.push({key:"pasta",sell:750});return list}
-function isAccessibleOrderKey(k){return availableOrderProducts().some(p=>p.key===k)}
-function normalizeOrders(){if(!Array.isArray(state.orders)||state.orders.length!==3){generateOrders();return}let valid=true,n=[];for(const o of state.orders){if(!o){valid=false;break}const raw=Array.isArray(o.items)?o.items:(o.crop?[{key:o.crop,qty:o.qty}]:null);if(!raw){valid=false;break}const items=[];for(const it of raw){const key=it?.key||it?.crop,qty=Math.max(1,Math.floor(Number(it?.qty)||0));if(!key||!qty||(!CROPS[key]&&!PRODUCTS[key])||!isAccessibleOrderKey(key)){valid=false;break}items.push({key,qty})}if(!valid||!items.length)break;n.push({items,reward:Math.max(1,Number(o.reward)||50),xp:Math.max(1,Number(o.xp)||10)})}if(!valid||n.length!==3)generateOrders();else state.orders=n}
-function randomOrder(){const available=availableOrderProducts();if(!available.length)return{items:[{key:"wheat",qty:5}],reward:70,xp:10};let count=state.level>=4?2:1;if(state.level>=9&&Math.random()<.5)count=3;count=Math.min(count,available.length);const selected=[...available].sort(()=>Math.random()-.5).slice(0,count);let value=0;const items=selected.map(p=>{const qty=p.sell<=30?4+Math.floor(Math.random()*7):p.sell<=150?2+Math.floor(Math.random()*4):1+Math.floor(Math.random()*3);value+=p.sell*qty;return{key:p.key,qty}});return{items,reward:Math.max(25,Math.floor(value*1.4)),xp:Math.max(10,Math.floor(value/12))}}
-function generateOrders(){state.orders=[randomOrder(),randomOrder(),randomOrder()]}
-function productInfo(k){return CROPS[k]?{icon:CROPS[k].icon,name:CROPS[k].name}:(PRODUCTS[k]||{icon:"📦",name:"Produit"})}
-function renderOrders(){const c=document.getElementById("orders");c.innerHTML="";if(!Array.isArray(state.orders)||state.orders.length!==3)generateOrders();state.orders.forEach((o,i)=>{let possible=true,lines="";for(const it of o.items){const info=productInfo(it.key),have=state.stock[it.key]||0;if(have<it.qty)possible=false;lines+='<div class="orderLine">'+info.icon+' '+Math.min(have,it.qty)+'/'+it.qty+'</div>'}const d=document.createElement("div");d.className="order"+(possible?" orderComplete":"");d.innerHTML='<div class="orderTitle">Client '+(i+1)+'</div>'+lines+'<div class="reward">🪙 '+o.reward.toLocaleString("fr-FR")+'<br>⭐ '+o.xp+' XP</div><button class="btn full small" '+(possible?'':'disabled')+' onclick="deliver('+i+')">📦 LIVRER</button>';c.appendChild(d)})}
-function deliver(i){const o=state.orders[i];for(const it of o.items)if((state.stock[it.key]||0)<it.qty)return toast("Il manque des produits.");o.items.forEach(it=>state.stock[it.key]-=it.qty);state.money+=o.reward;addXP(o.xp);state.orders[i]=randomOrder();showFloatingText("📦 +"+o.reward.toLocaleString("fr-FR")+" 🪙");tone(1000,.08);render()}
-function renderStock(){const c=document.getElementById("stock");c.innerHTML="";for(const key in CROPS)if(unlocked(key)||(state.stock[key]||0)>0)stockItem(c,key,CROPS[key].icon,CROPS[key].name);for(const key in PRODUCTS)if((state.stock[key]||0)>0||isAccessibleOrderKey(key))stockItem(c,key,PRODUCTS[key].icon,PRODUCTS[key].name)}
-function stockItem(c,key,icon,name){const d=document.createElement("div");d.className="stockItem";d.innerHTML='<span>'+icon+' '+name+'</span><b>'+(state.stock[key]||0)+'</b>';c.appendChild(d)}
-function showMarket(){cancelPaintSession();let html="<p>Vends tes produits ou garde-les pour les commandes.</p>";for(const key in CROPS)if(unlocked(key))html+=marketCard(key,CROPS[key].icon,CROPS[key].name,CROPS[key].sell);for(const key in PRODUCTS)if(isAccessibleOrderKey(key))html+=marketCard(key,PRODUCTS[key].icon,PRODUCTS[key].name,PRODUCTS[key].sell);openModal("💰 Marché",html)}
-function marketCard(key,icon,name,price){const q=state.stock[key]||0;return '<div class="marketRow"><div class="marketTop"><div><b>'+icon+' '+name+'</b><br><small>Stock : '+q+' • '+price+' 🪙/u</small></div><b>'+(q*price).toLocaleString("fr-FR")+' 🪙</b></div><div class="marketButtons"><button class="btn small" '+(q<1?'disabled':'')+' onclick="sellProduct(\''+key+'\',1,'+price+')">x1</button><button class="btn blue small" '+(q<5?'disabled':'')+' onclick="sellProduct(\''+key+'\',5,'+price+')">x5</button><button class="btn gold small" '+(q<1?'disabled':'')+' onclick="sellProduct(\''+key+'\','+q+','+price+')">TOUT</button></div></div>'}
-function sellProduct(key,q,price){q=Math.min(q,state.stock[key]||0);if(q<=0)return;const gain=q*price;state.stock[key]-=q;state.money+=gain;showFloatingText("🪙 +"+gain.toLocaleString("fr-FR"));tone(1000,.06);render();showMarket()}
-function openShop(category="fields"){cancelPaintSession();shopCategory=category;renderShop()}
-function shopTab(key,icon,name){return '<button class="shopTab '+(shopCategory===key?'active':'')+'" onclick="openShop(\''+key+'\')">'+icon+'<br>'+name+'</button>'}
-function shopCard(icon,name,description,price,isUnlocked,action,owned=false,requirement=""){let button;if(owned)button='<button class="btn dark full" disabled>✅ DÉJÀ ACHETÉ</button>';else if(!isUnlocked)button='<button class="btn dark full" disabled>🔒 '+requirement+'</button>';else button='<button class="btn gold full" onclick="'+action+'">ACHETER — '+price.toLocaleString("fr-FR")+' 🪙</button>';return '<div class="shopCard"><div class="shopHeader"><div class="shopIcon">'+icon+'</div><div class="shopInfo"><div class="shopName">'+name+'</div><div class="shopDescription">'+description+'</div></div></div><div class="shopPrice">'+price.toLocaleString("fr-FR")+' 🪙</div>'+button+'</div>'}
-function renderShop(){let html='<div class="shopTabs">'+shopTab("fields","🌱","CHAMPS")+shopTab("buildings","🏗️","BÂTIMENTS")+shopTab("animals","🐔","ANIMAUX")+shopTab("machines","🚜","MACHINES")+shopTab("spaces","🗺️","ESPACES")+shopTab("automation","🤖","AUTO")+'</div>';if(shopCategory==="fields")html+=shopFields();if(shopCategory==="buildings")html+=shopBuildings();if(shopCategory==="animals")html+=shopAnimals();if(shopCategory==="machines")html+=shopMachines();if(shopCategory==="spaces")html+=shopSpaces();if(shopCategory==="automation")html+=shopAutomation();openModal("🛒 Shop",html)}
-function shopFields(){let html=state.plots>=40?'<div class="shopCard"><b>🏡 Ferme : 40/40 parcelles</b></div>':shopCard("🌱","Parcelle ferme "+(state.plots+1),"Agrandit la grille principale.",plotCost(),true,"buyPlot()");if(state.orchardBought)html+=state.orchardPlots>=20?'<div class="shopCard"><b>🍎 Verger : 20/20 parcelles</b></div>':shopCard("🍎","Parcelle verger "+(state.orchardPlots+1),"Agrandit la zone verger/rizière.",orchardPlotCost(),true,"buyOrchardPlot()");return html}
-function shopBuildings(){return shopCard("🐔","Poulailler","Produit des œufs.",1000,state.level>=5,"buyBuilding('coop')",state.coopBought,"Niveau 5")+shopCard("🐄","Étable","Vaches + cochons.",4000,state.level>=9,"buyBuilding('barn')",state.barnBought,"Niveau 9")+shopCard("⚙️","Moulin","2 blés → 1 farine.",10000,state.level>=12,"buyBuilding('mill')",state.millBought,"Niveau 12")+shopCard("🥖","Boulangerie","1 farine → 1 pain en 90 s.",15000,state.level>=13&&state.millBought,"buyBuilding('bakery')",state.bakeryBought,"Niveau 13 + Moulin")+shopCard("🧀","Fromagerie","2 laits → 1 fromage en 120 s.",18000,state.level>=15&&state.barnBought,"buyBuilding('dairy')",state.dairyBought,"Niveau 15 + Étable")+shopCard("🏭","Usine de pâtes","2 farines + 1 œuf → 1 pâtes en 2 min 30.",30000,state.level>=17&&state.millBought&&state.coopBought,"buyBuilding('pasta')",state.pastaBought,"Niveau 17 + Moulin + Poulailler")}
-function henPrice(){return Math.floor(600*Math.pow(1.65,state.hens-1))}
-function cowPrice(){return Math.floor(1800*Math.pow(1.7,state.cows-1))}
-function pigPrice(){return Math.floor(1500*Math.pow(1.7,state.pigs-1))}
-function shopAnimals(){return shopCard("🐔","Poule supplémentaire","Accélère les œufs. Tu en as "+state.hens+".",henPrice(),state.coopBought,"buyAnimal('hen')",false,"Poulailler requis")+shopCard("🐄","Vache supplémentaire","Accélère le lait. Tu en as "+state.cows+".",cowPrice(),state.barnBought,"buyAnimal('cow')",false,"Étable requise")+shopCard("🐖","Cochon supplémentaire","Accélère le bacon. Tu en as "+state.pigs+".",pigPrice(),state.barnBought,"buyAnimal('pig')",false,"Étable requise")}
-function shopMachines(){return shopCard("🚜","Tracteur","Récolte toutes les cultures prêtes de la zone affichée.",5000,state.level>=8,"buyTractor()",state.tractor,"Niveau 8")}
-function shopSpaces(){return shopCard("🍎","Verger / zone spéciale","Nouvelle zone avec pommes, riz puis oranges.",20000,state.level>=14,"buyOrchard()",state.orchardBought,"Niveau 14")}
-function workerUpgradeCost(){return [25000,15000,35000,75000][state.workerLevel]||75000}
-function shopAutomation(){
-  let html="";
-  if(state.workerLevel>=4){
-    html+='<div class="shopCard"><b>🤖 Ouvrier agricole niveau maximum.</b><br><small>40 parcelles automatisables.</small></div>';
-  }else{
-    const next=state.workerLevel+1,desc=state.workerLevel===0?"Récolte et replante automatiquement jusqu'à 5 parcelles.":"Passe à "+next+" : jusqu'à "+[0,5,10,20,40][next]+" parcelles automatisables.";
-    html+=shopCard("🤖",state.workerLevel===0?"Ouvrier agricole":"Amélioration ouvrier Niv. "+next,desc,workerUpgradeCost(),state.level>=16,"buyWorkerUpgrade()",false,"Niveau 16");
-  }
-  html+='<div class="boostIntro"><b>🥣 NOURRISSEUR AUTOMATIQUE</b><br>Il utilise automatiquement ton stock pour garder les animaux nourris. Niv.1 : poules • Niv.2 : + vaches • Niv.3 : + cochons • Niv.4 : réserve renforcée.</div>';
-  if(state.feederLevel>=4){
-    html+='<div class="shopCard"><b>🥣 Nourrisseur niveau maximum</b><br><small>Tous les animaux sont gérés avec une réserve renforcée.</small></div>';
-  }else{
-    const need=feederRequiredLevel();
-    const next=state.feederLevel+1;
-    const desc=["","Nourrit automatiquement les poules.","Ajoute l’alimentation automatique des vaches.","Ajoute l’alimentation automatique des cochons.","Augmente fortement la réserve de nourriture maintenue."][next];
-    html+=shopCard("🥣",state.feederLevel===0?"Nourrisseur automatique":"Nourrisseur automatique Niv. "+next,desc,feederUpgradeCost(),state.level>=need,"buyFeederUpgrade()",false,"Niveau "+need);
-  }
-  return html;
-}
-function buyBuilding(type){const cfg={coop:[1000,5,"coopBought","coopLastProduction"],barn:[4000,9,"barnBought","cowLastProduction"],mill:[10000,12,"millBought","millLastProduction"],bakery:[15000,13,"bakeryBought","bakeryLastProduction"],dairy:[18000,15,"dairyBought","dairyLastProduction"],pasta:[30000,17,"pastaBought","pastaLastProduction"]}[type];if(!cfg||state[cfg[2]]||state.level<cfg[1])return;if(type==="bakery"&&!state.millBought)return toast("Il faut d'abord le moulin.");if(type==="dairy"&&!state.barnBought)return toast("Il faut d'abord l'étable.");if(type==="pasta"&&(!state.millBought||!state.coopBought))return toast("Il faut le moulin et le poulailler.");if(state.money<cfg[0])return toast("Pas assez d'argent.");state.money-=cfg[0];state[cfg[2]]=true;state[cfg[3]]=Date.now();if(type==="barn")state.pigLastProduction=Date.now();showFloatingText("🏗️ BÂTIMENT ACHETÉ");tone(450,.1);render();openShop("buildings")}
-function buyAnimal(type){const price=type==="hen"?henPrice():type==="cow"?cowPrice():pigPrice(),allowed=type==="hen"?state.coopBought:state.barnBought;if(!allowed)return;if(state.money<price)return toast("Pas assez d'argent.");state.money-=price;if(type==="hen"){state.hens++;state.coopLastProduction=Date.now()}if(type==="cow"){state.cows++;state.cowLastProduction=Date.now()}if(type==="pig"){state.pigs++;state.pigLastProduction=Date.now()}render();openShop("animals")}
-function buyTractor(){if(state.tractor||state.level<8)return;if(state.money<5000)return toast("Pas assez d'argent.");state.money-=5000;state.tractor=true;render();openShop("machines")}
-function buyOrchard(){if(state.orchardBought||state.level<14)return;if(state.money<20000)return toast("Pas assez d'argent.");state.money-=20000;state.orchardBought=true;state.orchardPlots=Math.max(4,state.orchardPlots);state.currentZone="orchard";showFloatingText("🍎 VERGER DÉBLOQUÉ");render();openShop("spaces")}
-function buyWorkerUpgrade(){if(state.level<16||state.workerLevel>=4)return;const cost=workerUpgradeCost();if(state.money<cost)return toast("Pas assez d'argent.");state.money-=cost;state.workerLevel++;state.workerPlots=Math.min(workerCapacity(),Math.max(5,state.workerPlots));showFloatingText("🤖 OUVRIER NIV. "+state.workerLevel);render();openShop("automation")}
-function renderGoal(){let icon="🌱",title="AGRANDIR LA FERME",text=state.plots+" / 40 parcelles",percent=state.plots/40*100;const steps=[[!state.coopBought,"🐔","OBJECTIF : POULAILLER",5,1000],[state.coopBought&&!state.tractor,"🚜","OBJECTIF : TRACTEUR",8,5000],[state.tractor&&!state.barnBought,"🐄","OBJECTIF : ÉTABLE",9,4000],[state.barnBought&&!state.millBought,"⚙️","OBJECTIF : MOULIN",12,10000],[state.millBought&&!state.bakeryBought,"🥖","OBJECTIF : BOULANGERIE",13,15000],[state.bakeryBought&&!state.orchardBought,"🍎","OBJECTIF : VERGER",14,20000],[state.orchardBought&&!state.dairyBought,"🧀","OBJECTIF : FROMAGERIE",15,18000],[state.dairyBought&&!state.pastaBought,"🏭","OBJECTIF : USINE DE PÂTES",17,30000],[state.pastaBought&&state.workerLevel===0,"🤖","OBJECTIF : AUTOMATISATION",16,25000]];const step=steps.find(x=>x[0]);if(step){icon=step[1];title=step[2];if(state.level<step[3]){text="Niveau "+state.level+"/"+step[3];percent=state.level/step[3]*100}else{text=state.money.toLocaleString("fr-FR")+" / "+step[4].toLocaleString("fr-FR")+" 🪙";percent=state.money/step[4]*100}}else if(state.workerLevel>0){icon="🌟";title="FERME EN EXPANSION";text="Automatisation niv. "+state.workerLevel+" • Verger "+state.orchardPlots+"/20";percent=100}document.getElementById("goalIcon").textContent=icon;document.getElementById("goalTitle").textContent=title;document.getElementById("goalText").textContent=text;document.getElementById("goalFill").style.width=Math.min(100,percent)+"%"}
-function showProgress(){cancelPaintSession();let html="<p><b>Développement de ta ferme</b></p>";[["🌱","Ferme",state.plots+"/40"],["🍎","Verger",state.orchardBought?state.orchardPlots+"/20":"🔒"],["🐔","Poulailler",state.coopBought?"✅":"🔒"],["🐄","Étable",state.barnBought?"✅":"🔒"],["⚙️","Moulin",state.millBought?"✅":"🔒"],["🥖","Boulangerie",state.bakeryBought?"✅":"🔒"],["🧀","Fromagerie",state.dairyBought?"✅":"🔒"],["🏭","Usine de pâtes",state.pastaBought?"✅":"🔒"],["🚜","Tracteur",state.tractor?"✅":"🔒"],["🤖","Ouvrier",state.workerLevel?"Niv. "+state.workerLevel:"🔒"],["🥣","Nourrisseur",state.feederLevel?"Niv. "+state.feederLevel:"🔒"]].forEach(r=>html+='<div class="shopCard"><b>'+r[0]+' '+r[1]+'</b><span style="float:right">'+r[2]+'</span></div>');openModal("⭐ Progression",html)}
-function openModal(title,body){const m=document.getElementById("modal"),s=document.getElementById("modalSheet");s.classList.remove("dragging");s.style.transform="";m.style.background="";s.scrollTop=0;document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=body;m.classList.add("show")}
-function closeModal(clearPending=true){if(clearPending)pendingPlantTarget=null;const m=document.getElementById("modal"),s=document.getElementById("modalSheet");m.classList.remove("show");s.classList.remove("dragging");s.style.transform="";m.style.background=""}
-function modalBackgroundClose(e){if(e.target.id==="modal")closeModal()}
-
-const modalElement=document.getElementById("modal"),modalSheet=document.getElementById("modalSheet");
-let sheetTouchStartY=0,sheetTouchStartX=0,sheetDragDistance=0,sheetCanDrag=false,sheetIsDragging=false,sheetStartTime=0,sheetStartedOnHandle=false;
-
-modalSheet.addEventListener("touchstart",e=>{
-  if(!modalElement.classList.contains("show")||e.touches.length!==1)return;
-  const t=e.touches[0];
-  sheetTouchStartY=t.clientY;
-  sheetTouchStartX=t.clientX;
-  sheetDragDistance=0;
-  sheetStartedOnHandle=!!e.target.closest?.(".sheetHandleArea");
-  sheetCanDrag=sheetStartedOnHandle||modalSheet.scrollTop<=4;
-  sheetIsDragging=false;
-  sheetStartTime=Date.now();
-},{passive:true});
-
-modalSheet.addEventListener("touchmove",e=>{
-  if(!sheetCanDrag||e.touches.length!==1)return;
-  const t=e.touches[0];
-  const dy=t.clientY-sheetTouchStartY;
-  const dx=t.clientX-sheetTouchStartX;
-  if(dy<=0||Math.abs(dx)>Math.abs(dy)*1.15)return;
-  if(!sheetStartedOnHandle&&modalSheet.scrollTop>4){sheetCanDrag=false;resetModalDrag();return;}
-  if(dy<8)return;
-  e.preventDefault();
-  sheetIsDragging=true;
-  sheetDragDistance=dy;
-  modalSheet.classList.add("dragging");
-  modalSheet.style.transform="translateY("+Math.min(dy,420)+"px)";
-  modalElement.style.background="rgba(0,0,0,"+Math.max(0,.53-dy/650)+")";
-},{passive:false});
-
-modalSheet.addEventListener("touchend",()=>{
-  if(!sheetCanDrag){resetModalDrag();return;}
-  const duration=Math.max(1,Date.now()-sheetStartTime);
-  const velocity=sheetDragDistance/duration;
-  const shouldClose=sheetIsDragging&&(sheetDragDistance>75||(sheetDragDistance>38&&velocity>.45));
-  if(shouldClose)animateModalClose();else resetModalDrag();
-});
-
-modalSheet.addEventListener("touchcancel",resetModalDrag);
-
-function resetModalDrag(){
-  sheetIsDragging=false;
-  sheetDragDistance=0;
-  sheetCanDrag=false;
-  sheetStartedOnHandle=false;
-  modalSheet.classList.remove("dragging");
-  modalSheet.style.transform="translateY(0px)";
-  modalElement.style.background="";
-}
-
-function animateModalClose(){
-  sheetIsDragging=false;
-  sheetCanDrag=false;
-  sheetStartedOnHandle=false;
-  modalSheet.classList.remove("dragging");
-  modalSheet.style.transform="translateY(110%)";
-  modalElement.style.background="rgba(0,0,0,0)";
-  setTimeout(()=>closeModal(),180);
-}
-
-function toast(msg){const e=document.getElementById("toast");e.textContent=msg;e.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove("show"),1400)}
-function showFloatingText(text){const e=document.createElement("div");e.className="floatText";e.innerText=text;document.body.appendChild(e);setTimeout(()=>e.remove(),1200)}
-
-/* ======================================================
-   FARM RUSH V1.9.1
-====================================================== */
-
-Object.assign(PRODUCTS,{
-  tomatoSauce:{icon:"🥫",name:"Sauce tomate",sell:380},
-  beef:{icon:"🥩",name:"Bœuf",sell:650},
-  groundSteak:{icon:"🥩",name:"Steak haché",sell:1500},
-  cream:{icon:"🥛",name:"Crème",sell:650},
-  agedCheese:{icon:"🧀",name:"Fromage affiné",sell:1450},
-  blueCheese:{icon:"🧀",name:"Fromage bleu",sell:2100},
-  cake:{icon:"🎂",name:"Gâteau à la crème",sell:2200},
-  strawberryCake:{icon:"🍰",name:"Gâteau aux fraises",sell:3400}
-});
-
-Object.assign(DEFAULT_STATE,{
-  meatBought:false,
-  restaurantBought:false,
-
-  sauceQueue:0,
-  sauceWaiting:0,
-  sauceLastProduction:Date.now(),
-
-  steakQueue:0,
-  steakWaiting:0,
-  steakLastProduction:Date.now(),
-
-  beefQueue:0,
-  beefWaiting:0,
-  beefLastProduction:Date.now(),
-
-  creamQueue:0,
-  creamWaiting:0,
-  creamLastProduction:Date.now(),
-
-  agedCheeseQueue:0,
-  agedCheeseWaiting:0,
-  agedCheeseLastProduction:Date.now(),
-
-  blueCheeseQueue:0,
-  blueCheeseWaiting:0,
-  blueCheeseLastProduction:Date.now(),
-
-  cakeQueue:0,
-  cakeWaiting:0,
-  cakeLastProduction:Date.now(),
-
-  strawberryCakeQueue:0,
-  strawberryCakeWaiting:0,
-  strawberryCakeLastProduction:Date.now(),
-
-  restaurantOrders:[],
-
-  feederLevel:0,
-  feederEnabled:false,
-  feederLastRun:0,
-
-  boosts:{
-    coop:0,
-    barn:0,
-    mill:0,
-    bakery:0,
-    dairy:0,
-    factory:0,
-    meat:0,
-    restaurant:0
-  }
-});
-
-const RESTAURANT_RECIPES={
-  tomatoPasta:{
-    icon:"🍝",name:"Pâtes sauce tomate",minLevel:20,time:120,reward:2600,xp:90,
-    ingredients:{pasta:1,tomatoSauce:1}
-  },
-  creamCake:{
-    icon:"🎂",name:"Part de gâteau à la crème",minLevel:20,time:150,reward:4000,xp:130,
-    ingredients:{cake:1,cream:1}
-  },
-  bolognese:{
-    icon:"🍝",name:"Pâtes bolognaise",minLevel:21,time:180,reward:4800,xp:150,
-    ingredients:{pasta:1,tomatoSauce:1,groundSteak:1}
-  },
-  cheeseburger:{
-    icon:"🍔",name:"Burger fermier",minLevel:22,time:180,reward:5200,xp:165,
-    ingredients:{bread:1,groundSteak:1,cheese:1}
-  },
-  strawberryDessert:{
-    icon:"🍰",name:"Dessert fraise & crème",minLevel:24,time:210,reward:6500,xp:205,
-    ingredients:{strawberryCake:1,cream:1}
-  },
-  cheesePlate:{
-    icon:"🧀",name:"Assiette de fromages",minLevel:25,time:240,reward:7200,xp:225,
-    ingredients:{agedCheese:1,blueCheese:1}
-  }
-};
-
-function ensureV19Dom(){
-  const worker=document.getElementById("workerPanel");
-  if(worker && !document.getElementById("feederPanel")){
-    const feeder=document.createElement("div");
-    feeder.id="feederPanel";
-    feeder.className="panel automationPanel";
-    feeder.style.display="none";
-    worker.insertAdjacentElement("afterend",feeder);
-  }
-
-  const pasta=document.getElementById("pastaPanel");
-  if(pasta && !document.getElementById("meatPanel")){
-    const meat=document.createElement("div");
-    meat.id="meatPanel";
-    meat.className="panel buildingPanel";
-    meat.style.display="none";
-    pasta.insertAdjacentElement("afterend",meat);
-  }
-
-  const meat=document.getElementById("meatPanel");
-  if(meat && !document.getElementById("restaurantPanel")){
-    const restaurant=document.createElement("div");
-    restaurant.id="restaurantPanel";
-    restaurant.className="panel buildingPanel restaurantPanel";
-    restaurant.style.display="none";
-    meat.insertAdjacentElement("afterend",restaurant);
-  }
-}
-
-function normalizeV19State(){
-  state.meatBought=!!state.meatBought;
-  state.restaurantBought=!!state.restaurantBought;
-
-  const numericDefaults=[
-    "sauceQueue","sauceWaiting","steakQueue","steakWaiting","beefQueue","beefWaiting",
-    "creamQueue","creamWaiting","agedCheeseQueue","agedCheeseWaiting","blueCheeseQueue","blueCheeseWaiting",
-    "cakeQueue","cakeWaiting","strawberryCakeQueue","strawberryCakeWaiting"
-  ];
-
-  numericDefaults.forEach(k=>state[k]=Math.max(0,Number(state[k])||0));
-
-  const dateDefaults=[
-    "sauceLastProduction","steakLastProduction","beefLastProduction","creamLastProduction",
-    "agedCheeseLastProduction","blueCheeseLastProduction","cakeLastProduction","strawberryCakeLastProduction"
-  ];
-
-  dateDefaults.forEach(k=>state[k]=Number(state[k])||Date.now());
-
-  const defaults=DEFAULT_STATE.boosts;
-  state.boosts={...defaults,...(state.boosts||{})};
-  Object.keys(defaults).forEach(k=>state.boosts[k]=Math.max(0,Math.min(4,Number(state.boosts[k])||0)));
-
-  state.feederLevel=Math.max(0,Math.min(4,Number(state.feederLevel)||0));
-  state.feederEnabled=!!state.feederEnabled;
-  state.feederLastRun=Number(state.feederLastRun)||0;
-
-  if(!Array.isArray(state.restaurantOrders))state.restaurantOrders=[];
-  normalizeRestaurantOrders();
-}
 
 function saveGame(){
   state.lastSeen=Date.now();
-  localStorage.setItem("farmRushV191",JSON.stringify(state));
+  localStorage.setItem("farmRushV184",JSON.stringify(state))
 }
 
 function loadGame(){
-  const keys=[
-    "farmRushV191","farmRushV19","farmRushV184","farmRushV183","farmRushV182","farmRushV181","farmRushV18",
-    "farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"
-  ];
-
+  const keys=["farmRushV184","farmRushV181","farmRushV18","farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"];
   let raw=null;
 
   for(const key of keys){
     raw=localStorage.getItem(key);
-    if(raw)break;
+    if(raw)break
   }
 
   if(raw){
-    try{state={...DEFAULT_STATE,...JSON.parse(raw)}}
-    catch(e){state={...DEFAULT_STATE}}
-  }else{
-    state={...DEFAULT_STATE};
+    try{
+      state={...DEFAULT_STATE,...JSON.parse(raw)}
+    }catch(e){
+      state={...DEFAULT_STATE}
+    }
   }
 
   state.plots=Math.max(4,Math.min(40,Number(state.plots)||4));
@@ -747,30 +105,33 @@ function loadGame(){
   state.workerLevel=Math.max(0,Math.min(4,Number(state.workerLevel)||0));
 
   if(!CROPS[state.workerCrop]||CROPS[state.workerCrop].zone!=="farm"){
-    state.workerCrop="wheat";
+    state.workerCrop="wheat"
   }
 
   if(!["farm","orchard"].includes(state.currentZone)||(!state.orchardBought&&state.currentZone==="orchard")){
-    state.currentZone="farm";
+    state.currentZone="farm"
   }
 
-  normalizeV19State();
   normalizeOrders();
   processOffline();
   render();
-  saveGame();
+  saveGame()
+}
+
+function xpRequired(){
+  return Math.floor(100*Math.pow(1.28,state.level-1))
 }
 
 function addXP(amount){
   state.xp+=amount;
 
-  while(state.level<30&&state.xp>=xpRequired()){
+  while(state.level<20&&state.xp>=xpRequired()){
     state.xp-=xpRequired();
     state.level++;
-    levelReward(state.level);
+    levelReward(state.level)
   }
 
-  saveGame();
+  saveGame()
 }
 
 function levelReward(level){
@@ -783,2205 +144,717 @@ function levelReward(level){
     7:[350,"🌽 Maïs débloqué"],
     8:[500,"🚜 Tracteur débloqué"],
     9:[700,"🐄 Étable débloquée"],
-    10:[800,"⚡ Boost I (-10 %) débloqué"],
+    10:[600,"🍓 Fraise débloquée"],
     11:[700,"🎃 Citrouille débloquée"],
     12:[900,"⚙️ Moulin débloqué"],
     13:[1000,"🥔 Pomme de terre + 🥖 Boulangerie"],
     14:[1200,"🍎 Verger + pomme"],
     15:[1300,"🍚 Riz + 🧀 Fromagerie"],
-    16:[1500,"🍇 Raisin + 🤖 Ouvrier + Boost II"],
-    17:[1700,"🏭 Usine de transformation"],
-    18:[2000,"🥩 Atelier de viande"],
-    19:[2200,"🌟 Préparation du restaurant"],
-    20:[3000,"🍽️ Restaurant + 🌻 Tournesol"],
-    21:[2500,"🍝 Pâtes bolognaise au restaurant"],
-    22:[2800,"⚡ Boost III (-30 %)"],
-    23:[3000,"⭐ Bonus de progression"],
-    24:[3200,"🍰 Desserts premium"],
-    25:[3500,"🧀 Assiette de fromages"],
-    26:[3800,"⭐ Bonus de production"],
-    27:[4200,"💰 Bonus restaurant"],
-    28:[5000,"⚡ Boost IV (-40 %)"],
-    29:[5500,"🌟 Maître fermier"],
-    30:[7500,"👑 Empire agricole — niveau maximum"]
+    16:[1400,"🍇 Raisin + 🤖 Ouvrier"],
+    17:[1600,"🏭 Usine de pâtes"],
+    18:[1700,"🍊 Orange"],
+    19:[1800,"🌟 Bonus"],
+    20:[2200,"🌻 Tournesol"]
   };
 
-  const reward=rewards[level]||[100+level*60,"Nouveau niveau"];
+  const r=rewards[level]||[100+level*40,"Nouveau niveau"];
 
-  state.money+=reward[0];
+  state.money+=r[0];
 
   document.getElementById("levelUpNumber").textContent=level;
-  document.getElementById("levelUpReward").innerHTML=reward[1]+"<br>+"+reward[0].toLocaleString("fr-FR")+" 🪙";
+
+  document.getElementById("levelUpReward").innerHTML=
+    r[1]+"<br>+"+r[0].toLocaleString("fr-FR")+" 🪙";
+
   document.getElementById("levelUp").classList.add("show");
 
-  tone(1000,.12);
+  tone(1000,.12)
 }
 
-function maxBoostForLevel(){
-  if(state.level>=28)return 4;
-  if(state.level>=22)return 3;
-  if(state.level>=16)return 2;
-  if(state.level>=10)return 1;
-  return 0;
+function closeLevelUp(){
+  document.getElementById("levelUp").classList.remove("show");
+  render()
 }
 
-function boostLevel(key){return Math.max(0,Math.min(4,Number(state.boosts?.[key])||0))}
-function boostReduction(key){return [0,10,20,30,40][boostLevel(key)]||0}
-function boostedTime(key,base){return Math.max(1,base*(1-boostReduction(key)/100))}
-function boostBadge(key){
-  const r=boostReduction(key);
-  return r
-    ?`<span class="boostBadge">⚡ -${r}%</span>`
-    :`<span class="boostBadge muted">⚡ 0%</span>`;
-}
-
-const BOOST_BASE_COST={
-  coop:5000,
-  barn:8000,
-  mill:12000,
-  bakery:15000,
-  dairy:18000,
-  factory:22000,
-  meat:25000,
-  restaurant:30000
-};
-
-const BOOST_LABELS={
-  coop:"🐔 Poulailler",
-  barn:"🐄 Étable",
-  mill:"⚙️ Moulin",
-  bakery:"🥖 Boulangerie",
-  dairy:"🧀 Laiterie / Fromagerie",
-  factory:"🏭 Usine",
-  meat:"🥩 Atelier de viande",
-  restaurant:"🍽️ Restaurant"
-};
-
-function boostCost(key){
-  const current=boostLevel(key);
-  const multipliers=[1,2.5,5,9];
-  return Math.floor((BOOST_BASE_COST[key]||10000)*(multipliers[current]||9));
-}
-
-function buildingOwnedForBoost(key){
-  return ({
-    coop:state.coopBought,
-    barn:state.barnBought,
-    mill:state.millBought,
-    bakery:state.bakeryBought,
-    dairy:state.dairyBought,
-    factory:state.pastaBought,
-    meat:state.meatBought,
-    restaurant:state.restaurantBought
-  })[key];
-}
-
-function resetBoostedTimers(key){
-  const now=Date.now();
-
-  const map={
-    coop:["coopLastProduction"],
-    barn:["cowLastProduction","pigLastProduction"],
-    mill:["millLastProduction"],
-    bakery:["bakeryLastProduction","cakeLastProduction","strawberryCakeLastProduction"],
-    dairy:["dairyLastProduction","creamLastProduction","agedCheeseLastProduction","blueCheeseLastProduction"],
-    factory:["pastaLastProduction","sauceLastProduction","steakLastProduction"],
-    meat:["beefLastProduction"]
-  };
-
-  (map[key]||[]).forEach(k=>state[k]=now);
-}
-
-function buyBoost(key){
-  if(!buildingOwnedForBoost(key))return toast("Bâtiment non acheté.");
-
-  const current=boostLevel(key);
-  const max=maxBoostForLevel();
-
-  if(current>=4)return toast("Boost maximum atteint.");
-  if(current>=max)return toast("Le prochain boost se débloque plus tard.");
-
-  const cost=boostCost(key);
-
-  if(state.money<cost)return toast("Pas assez d'argent.");
-
-  state.money-=cost;
-  state.boosts[key]=current+1;
-
-  resetBoostedTimers(key);
-
-  showFloatingText(`⚡ ${BOOST_LABELS[key]}\n-${boostReduction(key)} % de temps`);
-  tone(1150,.09);
-
-  render();
-  openShop("boosts");
-}
-
-/* STOCK ANIMAUX QUI AUGMENTE AVEC LE NOMBRE D'ANIMAUX */
-
-function eggCapacity(){
-  return 20+Math.max(0,state.hens-1)*10;
-}
-
-function milkCapacity(){
-  return 12+Math.max(0,state.cows-1)*6;
-}
-
-function baconCapacity(){
-  return 12+Math.max(0,state.pigs-1)*6;
-}
-
-/* NOURRISSEUR AUTOMATIQUE */
-
-function feederUpgradeCost(){
-  return [12000,18000,30000,50000][state.feederLevel]||50000;
-}
-
-function feederRequiredLevel(){
-  return [10,14,18,22][state.feederLevel]||22;
-}
-
-function feederReserveTarget(kind){
-  if(state.feederLevel>=4){
-    return kind==="coop"?15:12;
-  }
-
-  return kind==="coop"?5:6;
-}
-
-function feederManagedText(){
-  const parts=[];
-
-  if(state.feederLevel>=1)parts.push("🐔 poules");
-  if(state.feederLevel>=2)parts.push("🐄 vaches");
-  if(state.feederLevel>=3)parts.push("🐖 cochons");
-
-  return parts.length?parts.join(" • "):"Aucun animal";
-}
-
-function toggleFeeder(){
-  if(state.feederLevel<=0)return;
-
-  state.feederEnabled=!state.feederEnabled;
-  state.feederLastRun=0;
-
-  renderFeeder();
-  saveGame();
-}
-
-function buyFeederUpgrade(){
-  if(state.feederLevel>=4)return;
-
-  const needLevel=feederRequiredLevel();
-
-  if(state.level<needLevel){
-    return toast("Déblocage au niveau "+needLevel+".");
-  }
-
-  const cost=feederUpgradeCost();
-
-  if(state.money<cost){
-    return toast("Pas assez d'argent.");
-  }
-
-  state.money-=cost;
-  state.feederLevel++;
-
-  if(state.feederLevel===1){
-    state.feederEnabled=true;
-  }
-
-  state.feederLastRun=0;
-
-  showFloatingText("🥣 NOURRISSEUR NIV. "+state.feederLevel);
-  tone(900,.08);
-
-  render();
-  openShop("automation");
-}
-
-function runAnimalFeeder(){
-  if(!state.feederEnabled||state.feederLevel<=0)return;
-
-  const now=Date.now();
-
-  if(now-(state.feederLastRun||0)<1800)return;
-
-  state.feederLastRun=now;
-
-  let changed=false;
-
-  if(
-    state.feederLevel>=1 &&
-    state.coopBought &&
-    state.coopFeed<feederReserveTarget("coop") &&
-    (state.stock.wheat||0)>=1
-  ){
-    state.stock.wheat--;
-
-    if(state.coopFeed<=0){
-      state.coopLastProduction=now;
-    }
-
-    state.coopFeed+=5;
-    changed=true;
-  }
-
-  if(
-    state.feederLevel>=2 &&
-    state.barnBought &&
-    state.cowFeed<feederReserveTarget("cow") &&
-    (state.stock.wheat||0)>=2
-  ){
-    state.stock.wheat-=2;
-
-    if(state.cowFeed<=0){
-      state.cowLastProduction=now;
-    }
-
-    state.cowFeed+=3;
-    changed=true;
-  }
-
-  if(
-    state.feederLevel>=3 &&
-    state.barnBought &&
-    state.pigFeed<feederReserveTarget("pig") &&
-    (state.stock.carrot||0)>=2
-  ){
-    state.stock.carrot-=2;
-
-    if(state.pigFeed<=0){
-      state.pigLastProduction=now;
-    }
-
-    state.pigFeed+=3;
-    changed=true;
-  }
-
-  if(changed){
-    saveGame();
-
-    if(!paintGesture&&!activeFieldTouch){
-      renderStock();
-      renderBuildings();
-    }
-  }
-}
-
-function renderFeeder(){
-  const p=document.getElementById("feederPanel");
-
-  if(!p)return;
-
-  p.style.display=state.feederLevel>0?"block":"none";
-
-  if(state.feederLevel<=0)return;
-
-  const reserve=
-    state.feederLevel>=4
-      ?"Réserve renforcée : 15 poules / 12 bovins-cochons"
-      :"Réserve automatique standard";
-
-  p.innerHTML=`
-    <div class="panelTitle">
-      <span>🥣 NOURRISSEUR AUTOMATIQUE</span>
-      <span class="tiny">Niv. ${state.feederLevel}/4</span>
-    </div>
-
-    <div class="autoStatus">
-      ${
-        state.feederEnabled
-          ?'<span class="statusOn">● ACTIF</span>'
-          :'<span class="statusOff">● ARRÊTÉ</span>'
-      }
-      — ${feederManagedText()}
-      <br>
-      <span class="tiny">
-        ${reserve}. Il utilise directement le blé et les carottes du stock.
-      </span>
-    </div>
-
-    <div class="actions">
-      <button class="btn blue" onclick="toggleFeeder()">
-        ${state.feederEnabled?'⏸ ARRÊTER':'▶ ACTIVER'}
-      </button>
-
-      <button class="btn dark" onclick="openShop('automation')">
-        ⬆️ AMÉLIORER
-      </button>
-    </div>
-  `;
-}
-
-/* BOOST TEMPS ANIMAUX */
-
-function henInterval(){
-  return boostedTime("coop",Math.max(8,30/state.hens));
-}
-
-function cowInterval(){
-  return boostedTime("barn",Math.max(30,120/state.cows));
-}
-
-function pigInterval(){
-  return boostedTime("barn",Math.max(45,180/state.pigs));
-}
-
-function recipeCardV19({
-  icon,
-  name,
-  description,
-  queue,
-  waiting,
-  cap,
-  last,
-  interval,
-  loadAction,
-  collectAction,
-  loadLabel,
-  collectLabel
-}){
-  const active=queue>0&&waiting<cap;
-
-  return `
-    <div class="recipeCardV19">
-
-      <div class="recipeTitleV19">
-        <span>${icon} ${name}</span>
-        <b>${waiting}/${cap}</b>
-      </div>
-
-      <div class="recipeDescV19">
-        ${description}
-      </div>
-
-      <div class="countdown">
-        ${
-          queue<=0
-            ?"⏸ File vide"
-            :waiting>=cap
-              ?"📦 Stock prêt plein"
-              :"⏱️ "+formatTime(Math.max(0,interval-(Date.now()-last)/1000))
-        }
-      </div>
-
-      <div class="productionBar">
-        <div
-          class="productionFill"
-          style="width:${progressWidth(last,interval,active)}">
-        </div>
-      </div>
-
-      <div class="recipeQueueV19">
-        File : <b>${queue}</b>
-      </div>
-
-      <div class="actions">
-
-        <button
-          class="btn blue small"
-          onclick="${loadAction}">
-          ${loadLabel}
-        </button>
-
-        <button
-          class="btn orange small"
-          onclick="${collectAction}"
-          ${waiting<=0?"disabled":""}>
-          ${collectLabel}
-        </button>
-
-      </div>
-
-    </div>
-  `;
-}
-
-function renderBuildings(){
-  ensureV19Dom();
-
-  renderCoop();
-  renderBarn();
-
-  renderQueuePanel(
-    "millPanel",
-    state.millBought,
-    "⚙️",
-    "MOULIN "+boostBadge("mill"),
-    "2 🌾 → 1 🥣 farine",
-    "flourTimer",
-    "🥣 Prochaine farine : ",
-    state.millLastProduction,
-    boostedTime("mill",60),
-    state.millQueue,
-    state.flourWaiting,
-    15,
-    "millQueue",
-    "flourWaiting",
-    "millFill",
-    "🌾 CHARGER",
-    "loadMill()",
-    "🥣 RÉCUPÉRER",
-    "collectFlour()"
-  );
-
-  renderBakeryV19();
-  renderDairyV19();
-  renderFactoryV19();
-  renderMeatV19();
-  renderRestaurantV19();
-  renderFeeder();
-}
-
-function renderCoop(){
-  const p=document.getElementById("coopPanel");
-
-  p.style.display=state.coopBought?"block":"none";
-
-  if(!state.coopBought)return;
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🐔
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          POULAILLER ${boostBadge("coop")}
-        </div>
-
-        <div class="buildingStats">
-          🐔 ${state.hens} poule(s)
-        </div>
-
-        <div class="countdown">
-          ${nextText(
-            state.coopLastProduction,
-            henInterval(),
-            state.coopFeed,
-            state.eggWaiting,
-            eggCapacity(),
-            "🥚 Prochain œuf : "
-          )}
-        </div>
-
-        <div class="productionBar">
-          <div
-            class="productionFill"
-            style="width:${progressWidth(
-              state.coopLastProduction,
-              henInterval(),
-              state.coopFeed>0&&state.eggWaiting<eggCapacity()
-            )}">
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="resourceBox">
-      <div class="resourceRow">
-        <span>🌾 Nourriture</span>
-        <b>${state.coopFeed}</b>
-      </div>
-    </div>
-
-    <div class="resourceBox">
-      <div class="resourceRow">
-        <span>🥚 Œufs prêts</span>
-        <b>${state.eggWaiting}/${eggCapacity()}</b>
-      </div>
-    </div>
-
-    <div class="actions">
-
-      <button
-        class="btn blue"
-        onclick="feedCoop()">
-        🌾 NOURRIR
-      </button>
-
-      <button
-        class="btn orange"
-        onclick="collectEggs()">
-        🥚 RÉCUPÉRER
-      </button>
-
-    </div>
-  `;
-}
-
-function renderBarn(){
-  const p=document.getElementById("barnPanel");
-
-  p.style.display=state.barnBought?"block":"none";
-
-  if(!state.barnBought)return;
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🐄
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          ÉTABLE ${boostBadge("barn")}
-        </div>
-
-        <div class="buildingStats">
-          🐄 ${state.cows} • 🐖 ${state.pigs}
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="dual">
-
-      <div class="animalCard">
-
-        <div class="animalTitle">
-          🐄 VACHES
-        </div>
-
-        <div class="animalStat">
-          🌾 2 blés → 3 productions de lait
-        </div>
-
-        <div class="countdown">
-          ${nextText(
-            state.cowLastProduction,
-            cowInterval(),
-            state.cowFeed,
-            state.milkWaiting,
-            milkCapacity(),
-            "🥛 Prochain lait : "
-          )}
-        </div>
-
-        <div>
-          🌾 Nourriture :
-          <b>${state.cowFeed}</b>
-        </div>
-
-        <div>
-          🥛
-          <b>${state.milkWaiting}</b>/${milkCapacity()}
-        </div>
-
-        <div class="productionBar">
-          <div
-            class="productionFill"
-            style="width:${progressWidth(
-              state.cowLastProduction,
-              cowInterval(),
-              state.cowFeed>0&&state.milkWaiting<milkCapacity()
-            )}">
-          </div>
-        </div>
-
-        <button
-          class="btn blue full small"
-          style="margin-top:6px"
-          onclick="feedCow()">
-          🌾 NOURRIR
-        </button>
-
-        <button
-          class="btn orange full small"
-          style="margin-top:5px"
-          onclick="collectMilk()">
-          🥛 RÉCUPÉRER
-        </button>
-
-      </div>
-
-      <div class="animalCard">
-
-        <div class="animalTitle">
-          🐖 COCHONS
-        </div>
-
-        <div class="animalStat">
-          🥕 2 carottes → 3 productions
-        </div>
-
-        <div class="countdown">
-          ${nextText(
-            state.pigLastProduction,
-            pigInterval(),
-            state.pigFeed,
-            state.baconWaiting,
-            baconCapacity(),
-            "🥓 Prochain bacon : "
-          )}
-        </div>
-
-        <div>
-          🥕 Nourriture :
-          <b>${state.pigFeed}</b>
-        </div>
-
-        <div>
-          🥓
-          <b>${state.baconWaiting}</b>/${baconCapacity()}
-        </div>
-
-        <div class="productionBar">
-          <div
-            class="productionFill"
-            style="width:${progressWidth(
-              state.pigLastProduction,
-              pigInterval(),
-              state.pigFeed>0&&state.baconWaiting<baconCapacity()
-            )}">
-          </div>
-        </div>
-
-        <button
-          class="btn blue full small"
-          style="margin-top:6px"
-          onclick="feedPig()">
-          🥕 NOURRIR
-        </button>
-
-        <button
-          class="btn orange full small"
-          style="margin-top:5px"
-          onclick="collectBacon()">
-          🥓 RÉCUPÉRER
-        </button>
-
-      </div>
-
-    </div>
-  `;
-}
-
-function renderBakeryV19(){
-  const p=document.getElementById("bakeryPanel");
-
-  p.style.display=state.bakeryBought?"block":"none";
-
-  if(!state.bakeryBought)return;
-
-  const breadTime=boostedTime("bakery",90);
-  const cakeTime=boostedTime("bakery",240);
-  const strawTime=boostedTime("bakery",300);
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🥖
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          BOULANGERIE & PÂTISSERIE ${boostBadge("bakery")}
-        </div>
-
-        <div class="buildingStats">
-          Pain, gâteaux à la crème et desserts aux fraises.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="recipeGridV19">
-
-      ${recipeCardV19({
-        icon:"🥖",
-        name:"Pain",
-        description:"1 🥣 farine → 1 🥖 pain",
-        queue:state.bakeryQueue,
-        waiting:state.breadWaiting,
-        cap:15,
-        last:state.bakeryLastProduction,
-        interval:breadTime,
-        loadAction:"loadBakery()",
-        collectAction:"collectBread()",
-        loadLabel:"🥣 CHARGER",
-        collectLabel:"🥖 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🎂",
-        name:"Gâteau à la crème",
-        description:"2 🥣 + 2 🥚 + 1 🥛 crème",
-        queue:state.cakeQueue,
-        waiting:state.cakeWaiting,
-        cap:10,
-        last:state.cakeLastProduction,
-        interval:cakeTime,
-        loadAction:"loadCake()",
-        collectAction:"collectCake()",
-        loadLabel:"🎂 PRÉPARER",
-        collectLabel:"🎂 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🍰",
-        name:"Gâteau aux fraises",
-        description:"2 🥣 + 2 🥚 + 1 crème + 2 🍓",
-        queue:state.strawberryCakeQueue,
-        waiting:state.strawberryCakeWaiting,
-        cap:8,
-        last:state.strawberryCakeLastProduction,
-        interval:strawTime,
-        loadAction:"loadStrawberryCake()",
-        collectAction:"collectStrawberryCake()",
-        loadLabel:"🍓 PRÉPARER",
-        collectLabel:"🍰 PRENDRE"
-      })}
-
-    </div>
-  `;
-}
-
-function renderDairyV19(){
-  const p=document.getElementById("dairyPanel");
-
-  p.style.display=state.dairyBought?"block":"none";
-
-  if(!state.dairyBought)return;
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🧀
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          LAITERIE & FROMAGERIE ${boostBadge("dairy")}
-        </div>
-
-        <div class="buildingStats">
-          Transforme le lait en crème et fromages de plus en plus précieux.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="recipeGridV19">
-
-      ${recipeCardV19({
-        icon:"🧀",
-        name:"Fromage",
-        description:"2 🥛 lait → 1 🧀",
-        queue:state.dairyQueue,
-        waiting:state.cheeseWaiting,
-        cap:12,
-        last:state.dairyLastProduction,
-        interval:boostedTime("dairy",120),
-        loadAction:"loadDairy()",
-        collectAction:"collectCheese()",
-        loadLabel:"🥛 CHARGER",
-        collectLabel:"🧀 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🥛",
-        name:"Crème",
-        description:"3 🥛 lait → 1 crème",
-        queue:state.creamQueue,
-        waiting:state.creamWaiting,
-        cap:12,
-        last:state.creamLastProduction,
-        interval:boostedTime("dairy",150),
-        loadAction:"loadCream()",
-        collectAction:"collectCream()",
-        loadLabel:"🥛 CHARGER",
-        collectLabel:"🥛 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🧀",
-        name:"Fromage affiné",
-        description:"5 🥛 lait → 1 fromage premium",
-        queue:state.agedCheeseQueue,
-        waiting:state.agedCheeseWaiting,
-        cap:8,
-        last:state.agedCheeseLastProduction,
-        interval:boostedTime("dairy",300),
-        loadAction:"loadAgedCheese()",
-        collectAction:"collectAgedCheese()",
-        loadLabel:"🧀 AFFINER",
-        collectLabel:"🧀 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🧀",
-        name:"Fromage bleu",
-        description:"7 🥛 lait → 1 fromage rare",
-        queue:state.blueCheeseQueue,
-        waiting:state.blueCheeseWaiting,
-        cap:6,
-        last:state.blueCheeseLastProduction,
-        interval:boostedTime("dairy",420),
-        loadAction:"loadBlueCheese()",
-        collectAction:"collectBlueCheese()",
-        loadLabel:"🧀 FABRIQUER",
-        collectLabel:"🧀 PRENDRE"
-      })}
-
-    </div>
-  `;
-}
-
-function renderFactoryV19(){
-  const p=document.getElementById("pastaPanel");
-
-  p.style.display=state.pastaBought?"block":"none";
-
-  if(!state.pastaBought)return;
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🏭
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          USINE DE TRANSFORMATION ${boostBadge("factory")}
-        </div>
-
-        <div class="buildingStats">
-          Pâtes, sauce tomate et steak haché.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="recipeGridV19">
-
-      ${recipeCardV19({
-        icon:"🍝",
-        name:"Pâtes",
-        description:"2 🥣 farine + 1 🥚 → 1 🍝",
-        queue:state.pastaQueue,
-        waiting:state.pastaWaiting,
-        cap:12,
-        last:state.pastaLastProduction,
-        interval:boostedTime("factory",150),
-        loadAction:"loadPasta()",
-        collectAction:"collectPasta()",
-        loadLabel:"🍝 LANCER",
-        collectLabel:"🍝 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🥫",
-        name:"Sauce tomate",
-        description:"4 🍅 tomates → 1 🥫 sauce",
-        queue:state.sauceQueue,
-        waiting:state.sauceWaiting,
-        cap:12,
-        last:state.sauceLastProduction,
-        interval:boostedTime("factory",120),
-        loadAction:"loadSauce()",
-        collectAction:"collectSauce()",
-        loadLabel:"🍅 LANCER",
-        collectLabel:"🥫 PRENDRE"
-      })}
-
-      ${recipeCardV19({
-        icon:"🥩",
-        name:"Steak haché",
-        description:"2 🥩 bœufs → 1 steak haché",
-        queue:state.steakQueue,
-        waiting:state.steakWaiting,
-        cap:10,
-        last:state.steakLastProduction,
-        interval:boostedTime("factory",180),
-        loadAction:"loadSteak()",
-        collectAction:"collectSteak()",
-        loadLabel:"🥩 LANCER",
-        collectLabel:"🥩 PRENDRE"
-      })}
-
-    </div>
-  `;
-}
-
-function renderMeatV19(){
-  const p=document.getElementById("meatPanel");
-
-  if(!p)return;
-
-  p.style.display=state.meatBought?"block":"none";
-
-  if(!state.meatBought)return;
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🥩
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          ATELIER DE VIANDE ${boostBadge("meat")}
-        </div>
-
-        <div class="buildingStats">
-          Prépare du bœuf pour l'usine et le restaurant.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="recipeGridV19">
-
-      ${recipeCardV19({
-        icon:"🥩",
-        name:"Bœuf",
-        description:"3 🌾 blés + 2 🌽 maïs → 1 🥩 bœuf",
-        queue:state.beefQueue,
-        waiting:state.beefWaiting,
-        cap:10,
-        last:state.beefLastProduction,
-        interval:boostedTime("meat",240),
-        loadAction:"loadBeef()",
-        collectAction:"collectBeef()",
-        loadLabel:"🥩 PRÉPARER",
-        collectLabel:"🥩 PRENDRE"
-      })}
-
-    </div>
-  `;
-}
-
-function ingredientLineV19(key,qty){
-  const p=productInfo(key);
-  const have=state.stock[key]||0;
-
-  return `
-    <span class="ingredientChip ${have>=qty?"ok":"missing"}">
-      ${p.icon} ${have}/${qty}
-    </span>
-  `;
-}
-
-function restaurantRecipePool(){
-  return Object.keys(RESTAURANT_RECIPES)
-    .filter(k=>RESTAURANT_RECIPES[k].minLevel<=state.level);
-}
-
-function newRestaurantOrder(exclude=[]){
-  const pool=restaurantRecipePool().filter(k=>!exclude.includes(k));
-  const usable=pool.length?pool:restaurantRecipePool();
-  const recipe=usable[Math.floor(Math.random()*usable.length)]||"tomatoPasta";
-
-  return {
-    recipe,
-    status:"waiting",
-    startedAt:0,
-    readyAt:0
-  };
-}
-
-function normalizeRestaurantOrders(){
-  if(!state.restaurantBought)return;
-
-  const valid=[];
-
-  if(Array.isArray(state.restaurantOrders)){
-
-    for(const order of state.restaurantOrders){
-
-      if(!order||!RESTAURANT_RECIPES[order.recipe]){
-        continue;
-      }
-
-      valid.push({
-        recipe:order.recipe,
-        status:["waiting","cooking","ready"].includes(order.status)
-          ?order.status
-          :"waiting",
-        startedAt:Number(order.startedAt)||0,
-        readyAt:Number(order.readyAt)||0
-      });
-
-      if(valid.length>=3){
-        break;
-      }
-    }
-  }
-
-  while(valid.length<3){
-    valid.push(
-      newRestaurantOrder(
-        valid.map(o=>o.recipe)
-      )
-    );
-  }
-
-  state.restaurantOrders=valid;
-}
-
-function updateRestaurant(now=Date.now()){
-  if(!state.restaurantBought)return;
-
-  normalizeRestaurantOrders();
-
-  state.restaurantOrders.forEach(order=>{
-    if(order.status==="cooking"&&order.readyAt<=now){
-      order.status="ready";
-    }
-  });
-}
-
-function restaurantReward(recipe){
-  const bonus=state.level>=27?1.1:1;
-  return Math.floor(recipe.reward*bonus);
-}
-
-function renderRestaurantV19(){
-  const p=document.getElementById("restaurantPanel");
-
-  if(!p)return;
-
-  p.style.display=state.restaurantBought?"block":"none";
-
-  if(!state.restaurantBought)return;
-
-  updateRestaurant();
-
-  let cards="";
-
-  state.restaurantOrders.forEach((order,index)=>{
-
-    const r=RESTAURANT_RECIPES[order.recipe];
-
-    const ingredients=
-      Object.entries(r.ingredients)
-      .map(([k,q])=>ingredientLineV19(k,q))
-      .join("");
-
-    const canStart=
-      Object.entries(r.ingredients)
-      .every(([k,q])=>(state.stock[k]||0)>=q);
-
-    let action="";
-
-    if(order.status==="waiting"){
-      action=`
-        <button
-          class="btn gold full small"
-          onclick="startRestaurantOrder(${index})"
-          ${canStart?"":"disabled"}>
-          👨‍🍳 PRÉPARER
-        </button>
-      `;
-    }
-
-    if(order.status==="cooking"){
-      action=`
-        <button
-          class="btn dark full small"
-          disabled>
-          ⏱️ ${formatTime((order.readyAt-Date.now())/1000)}
-        </button>
-      `;
-    }
-
-    if(order.status==="ready"){
-      action=`
-        <button
-          class="btn orange full small"
-          onclick="serveRestaurantOrder(${index})">
-          🍽️ SERVIR
-        </button>
-      `;
-    }
-
-    cards+=`
-      <div class="restaurantTable">
-
-        <div class="restaurantTableTop">
-          <b>TABLE ${index+1}</b>
-          <span>${r.icon} ${r.name}</span>
-        </div>
-
-        <div class="ingredientWrap">
-          ${ingredients}
-        </div>
-
-        <div class="restaurantReward">
-          🪙 ${restaurantReward(r).toLocaleString("fr-FR")}
-          • ⭐ ${r.xp} XP
-        </div>
-
-        ${action}
-
-      </div>
-    `;
-  });
-
-  p.innerHTML=`
-    <div class="buildingHeader">
-
-      <div class="buildingIcon">
-        🍽️
-      </div>
-
-      <div class="buildingBody">
-
-        <div class="buildingName">
-          RESTAURANT DE LA FERME ${boostBadge("restaurant")}
-        </div>
-
-        <div class="buildingStats">
-          3 tables • transforme tes productions en plats très rentables.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="restaurantGrid">
-      ${cards}
-    </div>
-  `;
-}
-
-function consumeIngredients(items){
-  for(const [key,qty] of Object.entries(items)){
-    if((state.stock[key]||0)<qty){
-      return false;
-    }
-  }
-
-  for(const [key,qty] of Object.entries(items)){
-    state.stock[key]-=qty;
-  }
-
-  return true;
-}
-
-function startRestaurantOrder(index){
-  if(!state.restaurantBought)return;
-
-  updateRestaurant();
-
-  const order=state.restaurantOrders[index];
-
-  if(!order||order.status!=="waiting")return;
-
-  const r=RESTAURANT_RECIPES[order.recipe];
-
-  if(!consumeIngredients(r.ingredients)){
-    return toast("Il manque des ingrédients.");
-  }
-
-  const seconds=boostedTime("restaurant",r.time);
-
-  order.status="cooking";
-  order.startedAt=Date.now();
-  order.readyAt=Date.now()+seconds*1000;
-
-  tone(720,.05);
-
-  render();
-}
-
-function serveRestaurantOrder(index){
-  updateRestaurant();
-
-  const order=state.restaurantOrders[index];
-
-  if(!order||order.status!=="ready")return;
-
-  const r=RESTAURANT_RECIPES[order.recipe];
-
-  const reward=restaurantReward(r);
-
-  state.money+=reward;
-
-  addXP(r.xp);
-
-  showFloatingText(
-    `${r.icon} SERVI !\n+${reward.toLocaleString("fr-FR")} 🪙`
-  );
-
-  tone(1200,.1);
-
-  state.restaurantOrders[index]=
-    newRestaurantOrder(
-      state.restaurantOrders
-      .filter((_,i)=>i!==index)
-      .map(o=>o.recipe)
-    );
-
-  render();
-}
-
-function queueRecipeV19(requirements,queueKey,lastKey){
-  if(!consumeIngredients(requirements)){
-    return false;
-  }
-
-  if((state[queueKey]||0)<=0){
-    state[lastKey]=Date.now();
-  }
-
-  state[queueKey]=(state[queueKey]||0)+1;
-
-  render();
-
-  return true;
-}
-
-function loadSauce(){
-  if(!queueRecipeV19(
-    {tomato:4},
-    "sauceQueue",
-    "sauceLastProduction"
-  )){
-    toast("Il faut 4 tomates.");
-  }
-}
-
-function loadSteak(){
-  if(!queueRecipeV19(
-    {beef:2},
-    "steakQueue",
-    "steakLastProduction"
-  )){
-    toast("Il faut 2 bœufs.");
-  }
-}
-
-function loadBeef(){
-  if(!queueRecipeV19(
-    {wheat:3,corn:2},
-    "beefQueue",
-    "beefLastProduction"
-  )){
-    toast("Il faut 3 blés + 2 maïs.");
-  }
-}
-
-function loadCream(){
-  if(!queueRecipeV19(
-    {milk:3},
-    "creamQueue",
-    "creamLastProduction"
-  )){
-    toast("Il faut 3 laits.");
-  }
-}
-
-function loadAgedCheese(){
-  if(!queueRecipeV19(
-    {milk:5},
-    "agedCheeseQueue",
-    "agedCheeseLastProduction"
-  )){
-    toast("Il faut 5 laits.");
-  }
-}
-
-function loadBlueCheese(){
-  if(!queueRecipeV19(
-    {milk:7},
-    "blueCheeseQueue",
-    "blueCheeseLastProduction"
-  )){
-    toast("Il faut 7 laits.");
-  }
-}
-
-function loadCake(){
-  if(!queueRecipeV19(
-    {flour:2,egg:2,cream:1},
-    "cakeQueue",
-    "cakeLastProduction"
-  )){
-    toast("Il faut 2 farines + 2 œufs + 1 crème.");
-  }
-}
-
-function loadStrawberryCake(){
-  if(!queueRecipeV19(
-    {flour:2,egg:2,cream:1,strawberry:2},
-    "strawberryCakeQueue",
-    "strawberryCakeLastProduction"
-  )){
-    toast("Il faut 2 farines + 2 œufs + 1 crème + 2 fraises.");
-  }
-}
-
-function collectSauce(){
-  collectWaiting("sauceWaiting","tomatoSauce","🥫");
-}
-
-function collectSteak(){
-  collectWaiting("steakWaiting","groundSteak","🥩");
-}
-
-function collectBeef(){
-  collectWaiting("beefWaiting","beef","🥩");
-}
-
-function collectCream(){
-  collectWaiting("creamWaiting","cream","🥛");
-}
-
-function collectAgedCheese(){
-  collectWaiting("agedCheeseWaiting","agedCheese","🧀");
-}
-
-function collectBlueCheese(){
-  collectWaiting("blueCheeseWaiting","blueCheese","🧀");
-}
-
-function collectCake(){
-  collectWaiting("cakeWaiting","cake","🎂");
-}
-
-function collectStrawberryCake(){
-  collectWaiting("strawberryCakeWaiting","strawberryCake","🍰");
-}
-
-function updateProductions(now=Date.now()){
-
-  runFeedProduction({
-    owned:"coopBought",
-    feed:"coopFeed",
-    wait:"eggWaiting",
-    last:"coopLastProduction",
-    cap:eggCapacity(),
-    interval:henInterval
-  },now);
-
-  runFeedProduction({
-    owned:"barnBought",
-    feed:"cowFeed",
-    wait:"milkWaiting",
-    last:"cowLastProduction",
-    cap:milkCapacity(),
-    interval:cowInterval
-  },now);
-
-  runFeedProduction({
-    owned:"barnBought",
-    feed:"pigFeed",
-    wait:"baconWaiting",
-    last:"pigLastProduction",
-    cap:baconCapacity(),
-    interval:pigInterval
-  },now);
-
-  runQueueProduction({
-    owned:"millBought",
-    queue:"millQueue",
-    wait:"flourWaiting",
-    last:"millLastProduction",
-    cap:15,
-    interval:boostedTime("mill",60)
-  },now);
-
-  runQueueProduction({
-    owned:"bakeryBought",
-    queue:"bakeryQueue",
-    wait:"breadWaiting",
-    last:"bakeryLastProduction",
-    cap:15,
-    interval:boostedTime("bakery",90)
-  },now);
-
-  runQueueProduction({
-    owned:"bakeryBought",
-    queue:"cakeQueue",
-    wait:"cakeWaiting",
-    last:"cakeLastProduction",
-    cap:10,
-    interval:boostedTime("bakery",240)
-  },now);
-
-  runQueueProduction({
-    owned:"bakeryBought",
-    queue:"strawberryCakeQueue",
-    wait:"strawberryCakeWaiting",
-    last:"strawberryCakeLastProduction",
-    cap:8,
-    interval:boostedTime("bakery",300)
-  },now);
-
-  runQueueProduction({
-    owned:"dairyBought",
-    queue:"dairyQueue",
-    wait:"cheeseWaiting",
-    last:"dairyLastProduction",
-    cap:12,
-    interval:boostedTime("dairy",120)
-  },now);
-
-  runQueueProduction({
-    owned:"dairyBought",
-    queue:"creamQueue",
-    wait:"creamWaiting",
-    last:"creamLastProduction",
-    cap:12,
-    interval:boostedTime("dairy",150)
-  },now);
-
-  runQueueProduction({
-    owned:"dairyBought",
-    queue:"agedCheeseQueue",
-    wait:"agedCheeseWaiting",
-    last:"agedCheeseLastProduction",
-    cap:8,
-    interval:boostedTime("dairy",300)
-  },now);
-
-  runQueueProduction({
-    owned:"dairyBought",
-    queue:"blueCheeseQueue",
-    wait:"blueCheeseWaiting",
-    last:"blueCheeseLastProduction",
-    cap:6,
-    interval:boostedTime("dairy",420)
-  },now);
-
-  runQueueProduction({
-    owned:"pastaBought",
-    queue:"pastaQueue",
-    wait:"pastaWaiting",
-    last:"pastaLastProduction",
-    cap:12,
-    interval:boostedTime("factory",150)
-  },now);
-
-  runQueueProduction({
-    owned:"pastaBought",
-    queue:"sauceQueue",
-    wait:"sauceWaiting",
-    last:"sauceLastProduction",
-    cap:12,
-    interval:boostedTime("factory",120)
-  },now);
-
-  runQueueProduction({
-    owned:"pastaBought",
-    queue:"steakQueue",
-    wait:"steakWaiting",
-    last:"steakLastProduction",
-    cap:10,
-    interval:boostedTime("factory",180)
-  },now);
-
-  runQueueProduction({
-    owned:"meatBought",
-    queue:"beefQueue",
-    wait:"beefWaiting",
-    last:"beefLastProduction",
-    cap:10,
-    interval:boostedTime("meat",240)
-  },now);
-
-  updateRestaurant(now);
-}
-
-function processOffline(){
-  const now=Date.now();
-  const last=Number(state.lastSeen)||now;
-  const effective=Math.min(now,last+7200000);
-
-  updateProductions(effective);
-
-  [
-    "coopLastProduction",
-    "cowLastProduction",
-    "pigLastProduction",
-    "millLastProduction",
-    "bakeryLastProduction",
-    "dairyLastProduction",
-    "pastaLastProduction",
-    "sauceLastProduction",
-    "steakLastProduction",
-    "beefLastProduction",
-    "creamLastProduction",
-    "agedCheeseLastProduction",
-    "blueCheeseLastProduction",
-    "cakeLastProduction",
-    "strawberryCakeLastProduction"
-  ].forEach(k=>{
-    state[k]=now;
-  });
-
-  updateRestaurant(effective);
-}
-
-function availableOrderProducts(){
-  const list=[];
-
-  for(const key in CROPS){
-    if(unlocked(key)){
-      list.push({
-        key,
-        sell:CROPS[key].sell
-      });
-    }
-  }
-
-  if(state.coopBought){
-    list.push({
-      key:"egg",
-      sell:PRODUCTS.egg.sell
-    });
-  }
-
-  if(state.barnBought){
-    list.push(
-      {
-        key:"milk",
-        sell:PRODUCTS.milk.sell
-      },
-      {
-        key:"bacon",
-        sell:PRODUCTS.bacon.sell
-      }
-    );
-  }
-
-  if(state.millBought){
-    list.push({
-      key:"flour",
-      sell:PRODUCTS.flour.sell
-    });
-  }
-
-  if(state.bakeryBought){
-    list.push({
-      key:"bread",
-      sell:PRODUCTS.bread.sell
-    });
-  }
-
-  if(state.dairyBought){
-    list.push(
-      {
-        key:"cheese",
-        sell:PRODUCTS.cheese.sell
-      },
-      {
-        key:"cream",
-        sell:PRODUCTS.cream.sell
-      },
-      {
-        key:"agedCheese",
-        sell:PRODUCTS.agedCheese.sell
-      },
-      {
-        key:"blueCheese",
-        sell:PRODUCTS.blueCheese.sell
-      }
-    );
-  }
-
-  if(state.bakeryBought&&state.dairyBought){
-    list.push(
-      {
-        key:"cake",
-        sell:PRODUCTS.cake.sell
-      },
-      {
-        key:"strawberryCake",
-        sell:PRODUCTS.strawberryCake.sell
-      }
-    );
-  }
-
-  if(state.pastaBought){
-    list.push(
-      {
-        key:"pasta",
-        sell:PRODUCTS.pasta.sell
-      },
-      {
-        key:"tomatoSauce",
-        sell:PRODUCTS.tomatoSauce.sell
-      }
-    );
-  }
-
-  if(state.meatBought){
-    list.push({
-      key:"beef",
-      sell:PRODUCTS.beef.sell
-    });
-  }
-
-  if(state.pastaBought&&state.meatBought){
-    list.push({
-      key:"groundSteak",
-      sell:PRODUCTS.groundSteak.sell
-    });
-  }
-
-  return list;
-}
-
-function shopBuildings(){
-  return (
-    shopCard(
-      "🐔",
-      "Poulailler",
-      "Produit des œufs.",
-      1000,
-      state.level>=5,
-      "buyBuilding('coop')",
-      state.coopBought,
-      "Niveau 5"
-    )
-    +
-    shopCard(
-      "🐄",
-      "Étable",
-      "Vaches + cochons.",
-      4000,
-      state.level>=9,
-      "buyBuilding('barn')",
-      state.barnBought,
-      "Niveau 9"
-    )
-    +
-    shopCard(
-      "⚙️",
-      "Moulin",
-      "2 blés → 1 farine.",
-      10000,
-      state.level>=12,
-      "buyBuilding('mill')",
-      state.millBought,
-      "Niveau 12"
-    )
-    +
-    shopCard(
-      "🥖",
-      "Boulangerie & pâtisserie",
-      "Pain puis gâteaux à la crème et aux fraises.",
-      15000,
-      state.level>=13&&state.millBought,
-      "buyBuilding('bakery')",
-      state.bakeryBought,
-      "Niveau 13 + Moulin"
-    )
-    +
-    shopCard(
-      "🧀",
-      "Laiterie & fromagerie",
-      "Fromage, crème, fromage affiné et fromage bleu.",
-      18000,
-      state.level>=15&&state.barnBought,
-      "buyBuilding('dairy')",
-      state.dairyBought,
-      "Niveau 15 + Étable"
-    )
-    +
-    shopCard(
-      "🏭",
-      "Usine de transformation",
-      "Pâtes, sauce tomate et steak haché.",
-      30000,
-      state.level>=17&&state.millBought&&state.coopBought,
-      "buyBuilding('pasta')",
-      state.pastaBought,
-      "Niveau 17 + Moulin + Poulailler"
-    )
-    +
-    shopCard(
-      "🥩",
-      "Atelier de viande",
-      "Prépare le bœuf utilisé par l'usine et le restaurant.",
-      35000,
-      state.level>=18&&state.barnBought,
-      "buyBuilding('meat')",
-      state.meatBought,
-      "Niveau 18 + Étable"
-    )
-    +
-    shopCard(
-      "🍽️",
-      "Restaurant de la ferme",
-      "3 tables avec plats complets et grosses récompenses.",
-      60000,
-      state.level>=20&&
-      state.pastaBought&&
-      state.bakeryBought&&
-      state.dairyBought&&
-      state.meatBought,
-      "buyBuilding('restaurant')",
-      state.restaurantBought,
-      "Niveau 20 + Usine + Boulangerie + Fromagerie + Atelier"
-    )
-  );
-}
-
-function buyBuilding(type){
-  const cfg={
-    coop:[1000,5,"coopBought","coopLastProduction"],
-    barn:[4000,9,"barnBought","cowLastProduction"],
-    mill:[10000,12,"millBought","millLastProduction"],
-    bakery:[15000,13,"bakeryBought","bakeryLastProduction"],
-    dairy:[18000,15,"dairyBought","dairyLastProduction"],
-    pasta:[30000,17,"pastaBought","pastaLastProduction"],
-    meat:[35000,18,"meatBought","beefLastProduction"],
-    restaurant:[60000,20,"restaurantBought",null]
-  }[type];
-
-  if(!cfg||state[cfg[2]]||state.level<cfg[1]){
-    return;
-  }
-
-  if(type==="bakery"&&!state.millBought){
-    return toast("Il faut d'abord le moulin.");
-  }
-
-  if(type==="dairy"&&!state.barnBought){
-    return toast("Il faut d'abord l'étable.");
-  }
-
-  if(type==="pasta"&&(!state.millBought||!state.coopBought)){
-    return toast("Il faut le moulin et le poulailler.");
-  }
-
-  if(type==="meat"&&!state.barnBought){
-    return toast("Il faut d'abord l'étable.");
-  }
-
-  if(
-    type==="restaurant"&&
+function unlocked(key){
+  const c=CROPS[key];
+
+  return !!(
+    c&&
+    state.level>=c.level&&
     (
-      !state.pastaBought||
-      !state.bakeryBought||
-      !state.dairyBought||
-      !state.meatBought
+      c.zone!=="orchard"||
+      state.orchardBought
     )
-  ){
-    return toast("Il manque des bâtiments de production.");
-  }
-
-  if(state.money<cfg[0]){
-    return toast("Pas assez d'argent.");
-  }
-
-  state.money-=cfg[0];
-
-  state[cfg[2]]=true;
-
-  if(cfg[3]){
-    state[cfg[3]]=Date.now();
-  }
-
-  if(type==="barn"){
-    state.pigLastProduction=Date.now();
-  }
-
-  if(type==="restaurant"){
-    normalizeRestaurantOrders();
-  }
-
-  showFloatingText("🏗️ BÂTIMENT ACHETÉ");
-
-  tone(450,.1);
-
-  render();
-  openShop("buildings");
+  )
 }
 
-function shopBoosts(){
-  const max=maxBoostForLevel();
+function formatTime(s){
+  s=Math.max(0,Math.ceil(s));
 
-  let html=`
-    <div class="boostIntro">
-      <b>⚡ BOOSTS DE PRODUCTION</b>
-      <br>
-      Chaque niveau réduit définitivement les temps du bâtiment de
-      <b>10 %</b>.
-      <br>
-      Palier disponible :
-      <b>${max}/4</b>
-      ${max===0?"• premier palier au niveau 10":""}
-    </div>
-  `;
-
-  for(const key of Object.keys(BOOST_LABELS)){
-
-    if(!buildingOwnedForBoost(key)){
-      continue;
-    }
-
-    const level=boostLevel(key);
-    const reduction=boostReduction(key);
-
-    let action="";
-
-    if(level>=4){
-      action=
-        '<button class="btn dark full" disabled>'+
-        '✅ MAXIMUM -40 %'+
-        '</button>';
-    }
-    else if(level>=max){
-      action=
-        '<button class="btn dark full" disabled>'+
-        '🔒 PROCHAIN PALIER PLUS TARD'+
-        '</button>';
-    }
-    else{
-      action=`
-        <button
-          class="btn gold full"
-          onclick="buyBoost('${key}')">
-          ⚡ AMÉLIORER —
-          ${boostCost(key).toLocaleString("fr-FR")} 🪙
-        </button>
-      `;
-    }
-
-    html+=`
-      <div class="shopCard">
-
-        <div class="shopHeader">
-
-          <div class="shopIcon">
-            ⚡
-          </div>
-
-          <div class="shopInfo">
-
-            <div class="shopName">
-              ${BOOST_LABELS[key]}
-            </div>
-
-            <div class="shopDescription">
-              Boost ${level}/4
-              • réduction actuelle :
-              ${reduction} %
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="boostMeter">
-          <div style="width:${level/4*100}%"></div>
-        </div>
-
-        ${action}
-
-      </div>
-    `;
-  }
-
-  if(
-    Object.keys(BOOST_LABELS)
-      .every(k=>!buildingOwnedForBoost(k))
-  ){
-    html+=
-      '<div class="shopCard">'+
-      'Achète d’abord un bâtiment de production.'+
-      '</div>';
-  }
-
-  return html;
+  return s<60
+    ?s+"s"
+    :Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s"
 }
 
-function renderShop(){
-  let html=
-    '<div class="shopTabs">'+
-    shopTab("fields","🌱","CHAMPS")+
-    shopTab("buildings","🏗️","BÂTIMENTS")+
-    shopTab("animals","🐔","ANIMAUX")+
-    shopTab("machines","🚜","MACHINES")+
-    shopTab("spaces","🗺️","ESPACES")+
-    shopTab("automation","🤖","AUTO")+
-    shopTab("boosts","⚡","BOOSTS")+
-    '</div>';
+function initAudio(){
+  if(!audioCtx){
+    try{
+      const A=window.AudioContext||window.webkitAudioContext;
 
-  if(shopCategory==="fields"){
-    html+=shopFields();
+      if(A){
+        audioCtx=new A()
+      }
+    }catch(e){}
   }
 
-  if(shopCategory==="buildings"){
-    html+=shopBuildings();
+  if(audioCtx?.state==="suspended"){
+    audioCtx.resume()
   }
-
-  if(shopCategory==="animals"){
-    html+=shopAnimals();
-  }
-
-  if(shopCategory==="machines"){
-    html+=shopMachines();
-  }
-
-  if(shopCategory==="spaces"){
-    html+=shopSpaces();
-  }
-
-  if(shopCategory==="automation"){
-    html+=shopAutomation();
-  }
-
-  if(shopCategory==="boosts"){
-    html+=shopBoosts();
-  }
-
-  openModal("🛒 Shop",html);
 }
 
-function renderGoal(){
-  let icon="🌱";
-  let title="AGRANDIR LA FERME";
-  let text=state.plots+" / 40 parcelles";
-  let percent=state.plots/40*100;
+function tone(freq=520,d=.05){
+  if(!soundOn)return;
 
-  const steps=[
-    [!state.coopBought,"🐔","OBJECTIF : POULAILLER",5,1000],
-    [state.coopBought&&!state.tractor,"🚜","OBJECTIF : TRACTEUR",8,5000],
-    [state.tractor&&!state.barnBought,"🐄","OBJECTIF : ÉTABLE",9,4000],
-    [state.barnBought&&!state.millBought,"⚙️","OBJECTIF : MOULIN",12,10000],
-    [state.millBought&&!state.bakeryBought,"🥖","OBJECTIF : BOULANGERIE",13,15000],
-    [state.bakeryBought&&!state.orchardBought,"🍎","OBJECTIF : VERGER",14,20000],
-    [state.orchardBought&&!state.dairyBought,"🧀","OBJECTIF : FROMAGERIE",15,18000],
-    [state.dairyBought&&state.workerLevel===0,"🤖","OBJECTIF : AUTOMATISATION",16,25000],
-    [state.workerLevel>0&&!state.pastaBought,"🏭","OBJECTIF : USINE",17,30000],
-    [state.pastaBought&&!state.meatBought,"🥩","OBJECTIF : ATELIER DE VIANDE",18,35000],
-    [state.meatBought&&!state.restaurantBought,"🍽️","OBJECTIF : RESTAURANT",20,60000]
-  ];
+  initAudio();
 
-  const step=steps.find(x=>x[0]);
+  if(!audioCtx)return;
 
-  if(step){
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
 
-    icon=step[1];
-    title=step[2];
+  o.frequency.value=freq;
 
-    if(state.level<step[3]){
+  g.gain.setValueAtTime(.001,audioCtx.currentTime);
 
-      text=
-        "Niveau "+
-        state.level+
-        "/"+
-        step[3];
+  g.gain.exponentialRampToValueAtTime(
+    .05,
+    audioCtx.currentTime+.01
+  );
 
-      percent=
-        state.level/
-        step[3]*
-        100;
+  g.gain.exponentialRampToValueAtTime(
+    .001,
+    audioCtx.currentTime+d
+  );
 
-    }else{
+  o.connect(g);
+  g.connect(audioCtx.destination);
 
-      text=
-        state.money.toLocaleString("fr-FR")+
-        " / "+
-        step[4].toLocaleString("fr-FR")+
-        " 🪙";
+  o.start();
 
-      percent=
-        state.money/
-        step[4]*
-        100;
-    }
-
-  }else if(maxBoostForLevel()>0){
-
-    const candidates=
-      Object.keys(BOOST_LABELS)
-        .filter(
-          k=>
-          buildingOwnedForBoost(k)&&
-          boostLevel(k)<maxBoostForLevel()
-        );
-
-    if(candidates.length){
-
-      const k=candidates[0];
-
-      icon="⚡";
-
-      title=
-        "OBJECTIF : BOOST "+
-        BOOST_LABELS[k];
-
-      text=
-        `Boost ${boostLevel(k)}/${maxBoostForLevel()} • `+
-        `${boostCost(k).toLocaleString("fr-FR")} 🪙`;
-
-      percent=
-        Math.min(
-          100,
-          state.money/
-          boostCost(k)*
-          100
-        );
-
-    }else{
-
-      icon="👑";
-
-      title="EMPIRE AGRICOLE";
-
-      text=
-        `Niveau ${state.level}/30 • `+
-        `tous les boosts disponibles sont installés`;
-
-      percent=
-        state.level/
-        30*
-        100;
-    }
-  }
-
-  document.getElementById("goalIcon").textContent=icon;
-  document.getElementById("goalTitle").textContent=title;
-  document.getElementById("goalText").textContent=text;
-  document.getElementById("goalFill").style.width=
-    Math.min(100,percent)+"%";
+  o.stop(
+    audioCtx.currentTime+d+.02
+  )
 }
 
-function showProgress(){
+function toggleSound(){
+  soundOn=!soundOn;
+
+  localStorage.setItem(
+    "farmRushSound",
+    soundOn?"1":"0"
+  );
+
+  document.getElementById("soundHome").textContent=
+    soundOn?"🔊":"🔇";
+
+  if(soundOn){
+    tone()
+  }
+}
+
+function startGame(){
+  document.getElementById("home").style.display="none";
+  document.getElementById("game").style.display="block";
+  render()
+}
+
+function render(){
+  document.getElementById("money").textContent=
+    Math.floor(state.money).toLocaleString("fr-FR");
+
+  document.getElementById("level").textContent=
+    state.level;
+
+  document.getElementById("xp").textContent=
+    state.xp;
+
+  document.getElementById("xpNeed").textContent=
+    xpRequired();
+
+  document.getElementById("xpFill").style.width=
+    Math.min(
+      100,
+      state.xp/xpRequired()*100
+    )+"%";
+
+  renderZone();
+  renderPaintStatus();
+  renderFields();
+  renderOrders();
+  renderStock();
+  renderBuildings();
+  renderWorker();
+  renderGoal();
+
+  saveGame()
+}
+
+function switchZone(zone){
   cancelPaintSession();
 
-  let html=
-    `<p><b>Développement de ta ferme — Niveau ${state.level}/30</b></p>`;
+  if(zone==="orchard"&&!state.orchardBought){
+    openShop("spaces");
+    return
+  }
 
-  const rows=[
-    ["🌱","Ferme",state.plots+"/40"],
-    ["🍎","Verger",state.orchardBought?state.orchardPlots+"/20":"🔒"],
-    ["🐔","Poulailler",state.coopBought?"✅":"🔒"],
-    ["🐄","Étable",state.barnBought?"✅":"🔒"],
-    ["⚙️","Moulin",state.millBought?"✅":"🔒"],
-    ["🥖","Boulangerie",state.bakeryBought?"✅":"🔒"],
-    ["🧀","Laiterie / Fromagerie",state.dairyBought?"✅":"🔒"],
-    ["🏭","Usine de transformation",state.pastaBought?"✅":"🔒"],
-    ["🥩","Atelier de viande",state.meatBought?"✅":"🔒"],
-    ["🍽️","Restaurant",state.restaurantBought?"✅":"🔒"],
-    ["🚜","Tracteur",state.tractor?"✅":"🔒"],
-    ["🤖","Ouvrier",state.workerLevel?"Niv. "+state.workerLevel:"🔒"],
-    ["🥣","Nourrisseur",state.feederLevel?"Niv. "+state.feederLevel:"🔒"]
-  ];
+  state.currentZone=zone;
 
-  rows.forEach(r=>{
-    html+=`
-      <div class="shopCard">
-        <b>${r[0]} ${r[1]}</b>
-        <span style="float:right">
-          ${r[2]}
-        </span>
-      </div>
-    `;
-  });
-
-  html+='<p><b>⚡ Boosts</b></p>';
-
-  Object.keys(BOOST_LABELS)
-    .filter(buildingOwnedForBoost)
-    .forEach(k=>{
-      html+=`
-        <div class="shopCard">
-          <b>${BOOST_LABELS[k]}</b>
-          <span style="float:right">
-            ${boostLevel(k)}/4
-            • -${boostReduction(k)}%
-          </span>
-        </div>
-      `;
-    });
-
-  openModal(
-    "⭐ Progression",
-    html
-  );
+  render()
 }
 
-ensureV19Dom();
+function renderZone(){
+  const orchard=state.currentZone==="orchard";
 
-bindFieldArea(
-  "farmArea",
-  "farm"
-);
+  document.getElementById("farmArea").style.display=
+    orchard?"none":"block";
 
-bindFieldArea(
-  "orchardArea",
-  "orchard"
-);
+  document.getElementById("orchardArea").style.display=
+    orchard?"block":"none";
 
-setInterval(()=>{
+  document.getElementById("zoneFarmBtn").classList.toggle(
+    "active",
+    !orchard
+  );
 
-  updateProductions();
+  document.getElementById("zoneOrchardBtn").classList.toggle(
+    "active",
+    orchard
+  );
 
-  runWorker();
+  document.getElementById("zoneOrchardBtn").textContent=
+    state.orchardBought
+      ?"🍎 VERGER"
+      :"🔒 VERGER"
+}
 
-  runAnimalFeeder();
+function fieldsForZone(z){
+  return z==="farm"
+    ?state.fields
+    :state.orchardFields
+}
+
+function plotsForZone(z){
+  return z==="farm"
+    ?state.plots
+    :state.orchardPlots
+}
+
+function currentFields(){
+  return fieldsForZone(
+    state.currentZone
+  )
+}
+
+function currentPlots(){
+  return plotsForZone(
+    state.currentZone
+  )
+}
+
+function currentFieldContainer(){
+  return document.getElementById(
+    state.currentZone==="farm"
+      ?"fields"
+      :"orchardFields"
+  )
+}
+
+function renderPaintStatus(){
+  const bar=document.getElementById("paintBar");
+  const farm=document.getElementById("farmArea");
+  const orchard=document.getElementById("orchardArea");
+
+  bar.classList.toggle(
+    "show",
+    !!paintSession
+  );
+
+  farm.classList.toggle(
+    "paintActive",
+    !!paintSession&&paintSession.zone==="farm"
+  );
+
+  orchard.classList.toggle(
+    "paintActive",
+    !!paintSession&&paintSession.zone==="orchard"
+  );
+
+  if(paintSession){
+    const c=CROPS[paintSession.crop];
+
+    document.getElementById("paintCropLabel").textContent=
+      c.icon+" "+c.name+" — glisse maintenant"
+  }
+}
+
+function renderFields(){
+  const arr=currentFields();
+  const plots=currentPlots();
+  const container=currentFieldContainer();
+
+  container.innerHTML="";
+
+  let ready=0;
+
+  arr.forEach((field,index)=>{
+
+    const plot=document.createElement("div");
+
+    plot.className="plot";
+    plot.dataset.index=index;
+
+    if(index>=plots){
+      plot.classList.add("locked");
+      plot.textContent="🔒";
+      container.appendChild(plot);
+      return
+    }
+
+    if(!field){
+      plot.classList.add("empty");
+      plot.textContent="🌱";
+      container.appendChild(plot);
+      return
+    }
+
+    const crop=CROPS[field.crop];
+
+    if(!crop){
+      arr[index]=null;
+      container.appendChild(plot);
+      return
+    }
+
+    const remaining=
+      (field.ready-Date.now())/1000;
+
+    const progress=
+      Math.min(
+        1,
+        Math.max(
+          0,
+          (
+            crop.time-
+            Math.max(0,remaining)
+          )/
+          crop.time
+        )
+      );
+
+    if(remaining<=0){
+
+      ready++;
+
+      plot.classList.add("readyPlot");
+
+      plot.innerHTML=
+        '<div class="ready">'+
+        crop.icon+
+        ' RÉCOLTER</div>';
+
+    }else{
+
+      let stage=crop.seed;
+
+      if(progress>.33){
+        stage=crop.sprout
+      }
+
+      if(progress>.7){
+        stage=crop.icon
+      }
+
+      plot.innerHTML=
+        '<div class="cropStage">'+
+        stage+
+        '</div>'+
+        '<div class="timer">'+
+        formatTime(remaining)+
+        '</div>'
+    }
+
+    container.appendChild(plot)
+  });
+
+  document.getElementById("ready").textContent=
+    "("+ready+")"
+}
+
+function openPlantPicker(index,zone){
+
+  cancelPaintSession();
+
+  const arr=fieldsForZone(zone);
 
   if(
-    document.getElementById("game").style.display==="block"
+    index<0||
+    index>=plotsForZone(zone)||
+    arr[index]
   ){
-
-    if(
-      !paintGesture&&
-      !activeFieldTouch
-    ){
-      renderFields();
-    }
-
-    renderBuildings();
-    renderGoal();
+    return
   }
 
-},500);
+  pendingPlantTarget={
+    index,
+    zone
+  };
 
-window.addEventListener(
-  "beforeunload",
-  saveGame
-);
+  let html=
+    '<div class="plantPrompt">'+
+    'Choisis une culture. La première case se plante tout de suite, puis pose ton doigt sur une autre case et glisse. <b>Relâcher = fin.</b>'+
+    '</div>'+
+    '<div class="crops">';
 
-document.addEventListener(
-  "visibilitychange",
-  ()=>{
+  for(const key in CROPS){
 
-    if(
-      document.visibilityState==="hidden"
-    ){
-      saveGame();
+    const c=CROPS[key];
+
+    if(c.zone!==zone){
+      continue
     }
 
+    const ok=unlocked(key);
+
+    html+=
+      '<button type="button" class="cropButton" data-crop="'+
+      key+
+      '" '+
+      (
+        ok
+          ?
+        'onclick="chooseCropForPaint(\''+
+        key+
+        '\')"'
+          :
+        'disabled'
+      )+
+      '>'+
+      c.icon+
+      ' '+
+      c.name+
+      '<div class="cropInfo">'+
+      formatTime(c.time)+
+      ' • '+
+      c.cost+
+      ' 🪙'+
+      (
+        ok
+          ?
+        ''
+          :
+        ' • Niv. '+
+        c.level
+      )+
+      '</div>'+
+      '</button>'
   }
-);
 
-document.getElementById("soundHome").textContent=
-  soundOn
-    ?"🔊"
-    :"🔇";
+  html+='</div>';
 
-loadGame();
+  openModal(
+    "🌱 Que veux-tu planter ?",
+    html
+  );
 
-</script>
-</body>
-</html>
+  document.querySelectorAll(
+    '#modalBody .cropButton[data-crop]'
+  ).forEach(button=>{
+
+    button.addEventListener(
+      'touchend',
+      event=>{
+
+        if(
+          button.disabled||
+          !pendingPlantTarget
+        ){
+          return
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        chooseCropForPaint(
+          button.dataset.crop
+        )
+
+      },
+      {
+        passive:false
+      }
+    )
+  })
+}
+
+function chooseCropForPaint(key){
+
+  if(
+    !pendingPlantTarget||
+    !CROPS[key]
+  ){
+    return
+  }
+
+  const {
+    index,
+    zone
+  }=pendingPlantTarget;
+
+  const c=CROPS[key];
+
+  if(
+    c.zone!==zone||
+    !unlocked(key)
+  ){
+    return
+  }
+
+  if(state.money<c.cost){
+    toast("Pas assez d'argent.");
+    return
+  }
+
+  if(
+    !plantAt(
+      index,
+      key,
+      zone
+    )
+  ){
+    return
+  }
+
+  paintSession={
+    zone,
+    crop:key
+  };
+
+  pendingPlantTarget=null;
+
+  closeModal(false);
+
+  suppressFieldClickUntil=
+    Date.now()+500;
+
+  tone(700,.05);
+
+  render();
+
+  toast(
+    c.icon+
+    " "+
+    c.name+
+    " : glisse puis relâche"
+  )
+}
+
+function plantAt(index,key,zone){
+
+  const arr=fieldsForZone(zone);
+  const c=CROPS[key];
+
+  if(
+    index<0||
+    index>=plotsForZone(zone)||
+    arr[index]||
+    !c||
+    c.zone!==zone||
+    !unlocked(key)||
+    state.money<c.cost
+  ){
+    return false
+  }
+
+  state.money-=c.cost;
+
+  arr[index]={
+    crop:key,
+    ready:
+      Date.now()+
+      c.time*
+      1000
+  };
+
+  return true
+}
+
+function handleNormalPlot(index,zone){
+
+  if(
+    Date.now()<suppressFieldClickUntil||
+    paintSession
+  ){
+    return
+  }
+
+  const arr=fieldsForZone(zone);
+  const field=arr[index];
+
+  if(
+    index<0||
+    index>=plotsForZone(zone)
+  ){
+    return
+  }
+
+  if(
+    field&&
+    field.ready<=Date.now()
+  ){
+    harvest(
+      index,
+      true,
+      zone
+    );
+
+    return
+  }
+
+  if(!field){
+    openPlantPicker(
+      index,
+      zone
+    )
+  }
+}
+
+let activeFieldTouch=null;
+
+let harvestVisited=
+new Set();
+
+let gestureHarvestCount=0;
+
+let gestureHarvestXP=0;
+
+function cancelPaintSession(){
+
+  paintSession=null;
+
+  paintGesture=false;
+
+  paintVisited.clear();
+
+  harvestVisited.clear();
+
+  paintOutOfMoneyShown=false;
+
+  pendingPlantTarget=null;
+
+  lastPaintPoint=null;
+
+  activeFieldTouch=null;
+
+  document
+    .getElementById("farmArea")
+    ?.classList
+    .remove("paintActive");
+
+  document
+    .getElementById("orchardArea")
+    ?.classList
+    .remove("paintActive");
+
+  document
+    .getElementById("paintBar")
+    ?.classList
+    .remove("show")
+}
+
+function finishPaintGesture(){
+
+  const wasPlanting=
+    !!paintSession;
+
+  const hadHarvests=
+    gestureHarvestCount>0;
+
+  paintGesture=false;
+
+  paintVisited.clear();
+
+  harvestVisited.clear();
+
+  paintOutOfMoneyShown=false;
+
+  paintSession=null;
+
+  lastPaintPoint=null;
+
+  activeFieldTouch=null;
+
+  suppressFieldClickUntil=
+    Date.now()+700;
+
+  renderPaintStatus();
+
+  renderFields();
+
+  renderStock();
+
+  document.getElementById("money").textContent=
+    Math.floor(state.money).toLocaleString("fr-FR");
+
+  if(hadHarvests){
+
+    showFloatingText(
+      "🌾 "+
+      gestureHarvestCount+
+      " récolte"+
+      (
+        gestureHarvestCount>1
+          ?"s"
+          :""
+      )+
+      "\n+"+
+      gestureHarvestXP+
+      " XP"
+    );
+
+    tone(
+      900,
+      .06
+    )
+
+  }else if(wasPlanting){
+
+    tone(
+      620,
+      .035
+    )
+  }
+
+  gestureHarvestCount=0;
+
+  gestureHarvestXP=0;
+
+  saveGame()
+}
+
+function updatePlantedPlotElement(plot,crop){
+
+  if(!plot){
+    return
+  }
+
+  plot.className="plot";
+
+  plot.innerHTML=
+    '<div class="cropStage">'+
+    crop.seed+
+    '</div>'+
+    '<div class="timer">'+
+    formatTime(crop.time)+
+    '</div>'
+}
