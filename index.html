@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.2</title>
+<title>Farm Rush V2.2.1</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -187,7 +187,7 @@
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.2 — Bergerie, moutons, laine & fumier • Vignoble et Cave</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.2.1 — Progression rééquilibrée • Vignoble Niv.25 • Bergerie Niv.27</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -2861,7 +2861,7 @@ Object.assign(RESTAURANT_RECIPES,{
   vineyardDinner:{
     icon:"🍷",
     name:"Menu du vigneron",
-    minLevel:43,
+    minLevel:27,
     time:240,
     reward:13500,
     xp:390,
@@ -2876,7 +2876,7 @@ Object.assign(RESTAURANT_RECIPES,{
   premiumTasting:{
     icon:"🍾",
     name:"Dégustation grand cru",
-    minLevel:45,
+    minLevel:28,
     time:300,
     reward:22000,
     xp:620,
@@ -2917,24 +2917,24 @@ const VINEYARD_PRICE=100000;
 const CELLAR_PRICE=150000;
 
 function vineyardPlotLimit(){
-  if(state.level>=45)return 24;
-  if(state.level>=44)return 18;
-  if(state.level>=43)return 12;
-  if(state.level>=42)return 8;
+  if(state.level>=28)return 24;
+  if(state.level>=27)return 18;
+  if(state.level>=26)return 12;
+  if(state.level>=25)return 8;
   return 0;
 }
 
 function nextVineyardExpansionLevel(){
   const limit=vineyardPlotLimit();
-  if(limit<8)return 42;
-  if(limit<12)return 43;
-  if(limit<18)return 44;
-  if(limit<24)return 45;
+  if(limit<8)return 25;
+  if(limit<12)return 26;
+  if(limit<18)return 27;
+  if(limit<24)return 28;
   return null;
 }
 
 function vineYield(){
-  return state.level>=45?3:2;
+  return state.level>=28?3:2;
 }
 
 function vinePlotCost(){
@@ -3150,7 +3150,7 @@ function renderVineyard(){
     document.getElementById("ready").textContent="(0)";
     if(info){
       info.innerHTML=
-        "🔒 Le vignoble se débloque au niveau 42.";
+        "🔒 Le vignoble se débloque au niveau 25.";
     }
     return;
   }
@@ -3563,10 +3563,10 @@ function buyVineyard(){
   }
 
   if(
-    state.level<42
+    state.level<25
   ){
     return toast(
-      "Le vignoble se débloque au niveau 42."
+      "Le vignoble se débloque au niveau 25."
     );
   }
 
@@ -3687,10 +3687,10 @@ shopSpaces=function(){
     "Vignoble",
     "Une zone de vignes permanentes. Récolte les raisins puis transforme-les à la Cave.",
     VINEYARD_PRICE,
-    state.level>=42,
+    state.level>=25,
     "buyVineyard()",
     state.vineyardBought,
-    "Niveau 42"
+    "Niveau 25"
   );
 
   return html;
@@ -3750,11 +3750,11 @@ shopBuildings=function(){
     "Cave du vignoble",
     "Produit du jus de raisin, du vin et des grands crus pour le marché et le restaurant.",
     CELLAR_PRICE,
-    state.level>=43&&
+    state.level>=26&&
     state.vineyardBought,
     "buyBuilding('cellar')",
     state.cellarBought,
-    "Niveau 43 + Vignoble"
+    "Niveau 26 + Vignoble"
   );
 
   return html;
@@ -3775,10 +3775,10 @@ buyBuilding=function(type){
   }
 
   if(
-    state.level<43
+    state.level<26
   ){
     return toast(
-      "La Cave se débloque au niveau 43."
+      "La Cave se débloque au niveau 26."
     );
   }
 
@@ -3886,10 +3886,10 @@ function loadPremiumWine(){
   }
 
   if(
-    state.level<45
+    state.level<28
   ){
     return toast(
-      "Le Grand cru se débloque au niveau 45."
+      "Le Grand cru se débloque au niveau 28."
     );
   }
 
@@ -3987,7 +3987,7 @@ function renderCellarV21(){
     });
 
   if(
-    state.level>=45
+    state.level>=28
   ){
     recipes+=
       recipeCardV19({
@@ -4007,7 +4007,7 @@ function renderCellarV21(){
   }else{
     recipes+=
       lockedRecipeCard(
-        45,
+        28,
         "🍾",
         "Grand cru",
         "6 🍇 raisins + 1 🍷 vin → 1 grand cru"
@@ -4068,7 +4068,7 @@ availableOrderProducts=function(){
     );
 
     if(
-      state.level>=45
+      state.level>=28
     ){
       list.push({
         key:"premiumWine",
@@ -4533,7 +4533,7 @@ renderGoal=function(){
   renderGoalV20FinalBase();
 
   if(
-    state.level>=42&&
+    state.level>=25&&
     !state.vineyardBought
   ){
     document.getElementById("goalIcon").textContent=
@@ -4558,7 +4558,7 @@ renderGoal=function(){
   }
 
   if(
-    state.level>=43&&
+    state.level>=26&&
     state.vineyardBought&&
     !state.cellarBought
   ){
@@ -4648,7 +4648,7 @@ showProgress=function(){
           ${
             state.vineyardBought
               ?state.vineyardPlots+"/"+vineyardPlotLimit()+" • max 24"
-              :"🔒 Niv. 42"
+              :"🔒 Niv. 25"
           }
         </span>
       </div>
@@ -4659,7 +4659,7 @@ showProgress=function(){
           ${
             state.cellarBought
               ?"✅"
-              :"🔒 Niv. 43"
+              :"🔒 Niv. 26"
           }
         </span>
       </div>
@@ -4733,8 +4733,8 @@ BOOST_LABELS.sheepfold="🐑 Bergerie";
 const SHEEPFOLD_PRICE=180000;
 
 function sheepMax(){
-  if(state.level>=48)return 10;
-  if(state.level>=47)return 6;
+  if(state.level>=30)return 10;
+  if(state.level>=28)return 6;
   return 3;
 }
 
@@ -4976,10 +4976,10 @@ shopBuildings=function(){
     "Bergerie",
     "Élève des moutons. Ils produisent automatiquement de la laine et du fumier lorsqu'ils sont nourris.",
     SHEEPFOLD_PRICE,
-    state.level>=46&&state.barnBought,
+    state.level>=27&&state.barnBought,
     "buyBuilding('sheepfold')",
     state.sheepfoldBought,
-    "Niveau 46 + Étable"
+    "Niveau 27 + Étable"
   );
 
   return html;
@@ -4995,9 +4995,9 @@ buyBuilding=function(type){
 
   if(state.sheepfoldBought)return;
 
-  if(state.level<46){
+  if(state.level<27){
     return toast(
-      "La Bergerie se débloque au niveau 46."
+      "La Bergerie se débloque au niveau 27."
     );
   }
 
@@ -5049,10 +5049,10 @@ shopAnimals=function(){
     state.sheep>=max
   ){
     const next=
-      state.level<47
-        ?47
-        :state.level<48
-        ?48
+      state.level<28
+        ?28
+        :state.level<30
+        ?30
         :null;
 
     html+=`
@@ -5110,10 +5110,10 @@ buyAnimal=function(type){
 
   if(state.sheep>=max){
     const next=
-      state.level<47
-        ?47
-        :state.level<48
-        ?48
+      state.level<28
+        ?28
+        :state.level<30
+        ?30
         :null;
 
     return toast(
@@ -5220,8 +5220,8 @@ feederRequiredLevel=function(){
     14,
     18,
     22,
-    47
-  ][state.feederLevel]||47;
+    29
+  ][state.feederLevel]||29;
 };
 
 feederReserveTarget=function(kind){
@@ -5512,7 +5512,7 @@ shopAutomation=function(){
       "buyFeederUpgrade()",
       false,
       next===5
-        ?"Niveau 47 + Bergerie"
+        ?"Niveau 29 + Bergerie"
         :"Niveau "+need
     );
   }
@@ -5586,13 +5586,14 @@ saveGame=function(){
   state.lastSeen=Date.now();
 
   localStorage.setItem(
-    "farmRushV22",
+    "farmRushV221",
     JSON.stringify(state)
   );
 };
 
 loadGame=function(){
   const keys=[
+    "farmRushV221",
     "farmRushV22",
     "farmRushV21",
     "farmRushV20",
@@ -5782,7 +5783,7 @@ renderGoal=function(){
   renderGoalV21FinalBase();
 
   if(
-    state.level>=46&&
+    state.level>=27&&
     state.vineyardBought&&
     state.cellarBought&&
     !state.sheepfoldBought
@@ -5837,7 +5838,7 @@ showProgress=function(){
       <div class="shopCard">
         <b>🐑 Bergerie</b>
         <span style="float:right">
-          ${state.sheepfoldBought?"✅":"🔒 Niv. 46"}
+          ${state.sheepfoldBought?"✅":"🔒 Niv. 27"}
         </span>
       </div>
 
@@ -5886,6 +5887,51 @@ render=function(){
   ensureV22Dom();
   renderV21FinalBase();
   renderSheepfoldV22();
+};
+
+
+/* ======================================================
+   FARM RUSH V2.2.1 — PROGRESSION RÉÉQUILIBRÉE
+   Vignoble : Niv.25 • Cave : Niv.26 • Bergerie : Niv.27
+====================================================== */
+
+const levelRewardV221Base=levelReward;
+levelReward=function(level){
+  if(level<=40){
+    levelRewardV221Base(level);
+
+    const extra={
+      25:"<br><b>🍇 Nouveau :</b> Vignoble débloqué • jusqu'à 8 pieds de vigne.",
+      26:"<br><b>🍷 Nouveau :</b> Cave débloquée • vignoble jusqu'à 12 pieds.",
+      27:"<br><b>🐑 Nouveau :</b> Bergerie débloquée • jusqu'à 3 moutons • vignoble jusqu'à 18 pieds • Menu du vigneron.",
+      28:"<br><b>🍾 Nouveau :</b> Grand cru • vignoble jusqu'à 24 pieds • troupeau jusqu'à 6 moutons.",
+      29:"<br><b>🥣 Nouveau :</b> Nourrisseur automatique Niv.5 pour les moutons.",
+      30:"<br><b>🐑 Nouveau :</b> Bergerie jusqu'à 10 moutons."
+    }[level];
+
+    if(extra){
+      document.getElementById("levelUpReward").innerHTML+=extra;
+    }
+    return;
+  }
+
+  const rewards={
+    41:[45000,"🌟 Expansion de l'empire agricole"],
+    42:[60000,"🍇 Expertise viticole"],
+    43:[75000,"🍷 Domaine reconnu"],
+    44:[90000,"🏆 Prestige agricole"],
+    45:[120000,"🍾 Domaine d'exception"],
+    46:[130000,"🐑 Élevage expert"],
+    47:[150000,"🧶 Production lainière avancée"],
+    48:[180000,"🏆 Maître éleveur"]
+  };
+
+  const reward=rewards[level]||[100+level*100,"Nouveau niveau"];
+  state.money+=reward[0];
+  document.getElementById("levelUpNumber").textContent=level;
+  document.getElementById("levelUpReward").innerHTML=reward[1]+"<br>+"+reward[0].toLocaleString("fr-FR")+" 🪙";
+  document.getElementById("levelUp").classList.add("show");
+  tone(1000,.12);
 };
 
 ensureV22Dom();
