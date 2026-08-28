@@ -7831,6 +7831,781 @@ showProgress=function(){
   `);
 };
 
+
+/* ======================================================
+   FARM RUSH V2.4 — ÉTANG, PÊCHE & BOUTIQUE DE RÉCOLTES
+   Étape 5 : poissons + recettes restaurant + achat des cultures
+====================================================== */
+
+(function(){
+  const style=document.createElement("style");
+  style.textContent=`
+    .pondFarm{
+      min-height:470px;
+      height:auto;
+      position:relative;
+      overflow:hidden;
+      border:3px solid #4e8e9f;
+      border-radius:19px;
+      background:linear-gradient(#98d9ec 0 22%,#68b9d1 22% 76%,#77b55e 76% 100%);
+      padding:122px 10px 18px;
+    }
+    .pondDecor{position:absolute;inset:12px 14px auto;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+    .pondDecor span{font-size:48px;filter:drop-shadow(0 4px 2px #0002)}
+    .pondBoard{position:absolute;top:72px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#3e6f78;color:white;border:2px solid #2d565e;border-radius:10px;padding:6px 10px;font-size:10px;font-weight:1000;box-shadow:0 3px #2d565e}
+    .pondFishGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .pondFishTile{background:#ffffffdd;border:1px solid #6ca7b4;border-radius:13px;padding:10px;text-align:center;font-size:10px;line-height:1.45}
+    .pondFishIcon{font-size:34px;display:block;margin-bottom:4px}
+    .pondLocked{opacity:.55;filter:grayscale(.35)}
+    .pondInfo{margin-top:10px;background:#eefaff;border:1px solid #90bfca;border-radius:11px;padding:9px;font-size:10px;line-height:1.5}
+    .pondPanel{background:linear-gradient(135deg,#e9f8ff,#cceaf2);border-color:#6e9fa9}
+    .pondBadge{display:inline-block;background:#337787;color:#fff;border-radius:999px;padding:2px 6px;font-size:8px}
+    .cropBuyIntro{background:#fff5c7;border:1px solid #dab85d;border-radius:12px;padding:10px;margin-bottom:10px;font-size:10px;line-height:1.5}
+    .cropBuyCard{background:white;border:1px solid #d8c79f;border-radius:13px;padding:10px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center}
+    .cropBuyIcon{font-size:34px}
+    .cropBuyName{font-weight:1000;font-size:12px}
+    .cropBuyMeta{font-size:9px;color:#726954;line-height:1.45}
+    .cropBuyPrice{font-weight:1000;color:#9b6500;font-size:11px;text-align:right}
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title="Farm Rush V2.4";
+const v24VersionEl=document.querySelector(".version");
+if(v24VersionEl){
+  v24VersionEl.textContent="V2.4 — Étang, pêche & boutique de récoltes • Vignoble Niv.25 • Bergerie Niv.27";
+}
+
+/* -------------------------
+   POISSONS / ÉTANG
+------------------------- */
+
+Object.assign(PRODUCTS,{
+  trout:{icon:"🐟",name:"Truite",sell:1800},
+  carp:{icon:"🐠",name:"Carpe",sell:3000},
+  perch:{icon:"🐟",name:"Perche",sell:4500},
+  salmon:{icon:"🐟",name:"Saumon",sell:7000}
+});
+
+Object.assign(DEFAULT_STATE,{
+  pondBought:false,
+
+  troutQueue:0,
+  troutWaiting:0,
+  troutLastProduction:Date.now(),
+
+  carpQueue:0,
+  carpWaiting:0,
+  carpLastProduction:Date.now(),
+
+  perchQueue:0,
+  perchWaiting:0,
+  perchLastProduction:Date.now(),
+
+  salmonQueue:0,
+  salmonWaiting:0,
+  salmonLastProduction:Date.now()
+});
+
+const POND_PRICE=280000;
+
+DEFAULT_STATE.boosts.pond=0;
+BOOST_BASE_COST.pond=45000;
+BOOST_LABELS.pond="🎣 Étang & pêche";
+
+if(!STORAGE_KEYS.includes("pond"))STORAGE_KEYS.push("pond");
+STORAGE_LABELS.pond="🎣 Étang & pêche";
+STORAGE_BASE_COST.pond=35000;
+DEFAULT_STATE.storageLevels.pond=0;
+STORAGE_PANEL_MAP.pond="pondPanel";
+
+WAIT_STORAGE.troutWaiting=["pond",12];
+WAIT_STORAGE.carpWaiting=["pond",10];
+WAIT_STORAGE.perchWaiting=["pond",8];
+WAIT_STORAGE.salmonWaiting=["pond",6];
+
+RECIPE_STORAGE_BY_NAME["Truite"]=["pond",12];
+RECIPE_STORAGE_BY_NAME["Carpe"]=["pond",10];
+RECIPE_STORAGE_BY_NAME["Perche"]=["pond",8];
+RECIPE_STORAGE_BY_NAME["Saumon"]=["pond",6];
+
+const storageOwnedV24Base=storageOwned;
+storageOwned=function(key){
+  if(key==="pond")return !!state.pondBought;
+  return storageOwnedV24Base(key);
+};
+
+const storageSummaryAtV24Base=storageSummaryAt;
+storageSummaryAt=function(key,level=storageLevel(key)){
+  if(key==="pond"){
+    const c=base=>storageCapAt("pond",base,level);
+    return `🐟 Truite ${c(12)} • 🐠 Carpe ${c(10)} • 🐟 Perche ${c(8)} • 🐟 Saumon ${c(6)}`;
+  }
+  return storageSummaryAtV24Base(key,level);
+};
+
+const buildingOwnedForBoostV24Base=buildingOwnedForBoost;
+buildingOwnedForBoost=function(key){
+  if(key==="pond")return !!state.pondBought;
+  return buildingOwnedForBoostV24Base(key);
+};
+
+/* -------------------------
+   DOM : ZONE ÉTANG + PRODUCTEUR
+------------------------- */
+
+function ensureV24Dom(){
+  ensureV23Dom();
+
+  const tabs=document.querySelector(".zoneTabs");
+  if(tabs&&!document.getElementById("zonePondBtn")){
+    tabs.style.gridTemplateColumns="repeat(4,1fr)";
+    const button=document.createElement("button");
+    button.id="zonePondBtn";
+    button.className="zoneTab";
+    button.type="button";
+    button.textContent="🔒 ÉTANG";
+    button.onclick=()=>switchZone("pond");
+    tabs.appendChild(button);
+  }
+
+  const vineyard=document.getElementById("vineyardArea");
+  const orchard=document.getElementById("orchardArea");
+  const zoneAnchor=vineyard||orchard;
+
+  if(zoneAnchor&&!document.getElementById("pondArea")){
+    const area=document.createElement("div");
+    area.id="pondArea";
+    area.className="pondFarm";
+    area.style.display="none";
+    area.innerHTML=`
+      <div class="pondDecor"><span>🌳🎣</span><span>🛶🌾</span></div>
+      <div class="pondBoard">🎣 ÉTANG DE LA FERME</div>
+      <div id="pondFishGrid" class="pondFishGrid"></div>
+      <div id="pondInfo" class="pondInfo"></div>
+    `;
+    zoneAnchor.insertAdjacentElement("afterend",area);
+  }
+
+  const textile=document.getElementById("textilePanel");
+  const restaurant=document.getElementById("restaurantPanel");
+  const panelAnchor=textile||restaurant;
+
+  if(panelAnchor&&!document.getElementById("pondPanel")){
+    const panel=document.createElement("div");
+    panel.id="pondPanel";
+    panel.className="panel buildingPanel pondPanel";
+    panel.style.display="none";
+    panelAnchor.insertAdjacentElement("afterend",panel);
+  }
+}
+
+const renderZoneV24Base=renderZone;
+renderZone=function(){
+  ensureV24Dom();
+  renderZoneV24Base();
+
+  const pond=state.currentZone==="pond";
+  const area=document.getElementById("pondArea");
+  const btn=document.getElementById("zonePondBtn");
+  const tools=document.querySelector(".farmTools");
+
+  if(area)area.style.display=pond?"block":"none";
+  if(btn){
+    btn.classList.toggle("active",pond);
+    btn.textContent=state.pondBought?"🎣 ÉTANG":"🔒 ÉTANG";
+  }
+  if(tools)tools.style.display=pond?"none":"block";
+};
+
+const switchZoneV24Base=switchZone;
+switchZone=function(zone){
+  if(zone==="pond"){
+    cancelPaintSession();
+    if(!state.pondBought){
+      openShop("spaces");
+      return;
+    }
+    state.currentZone="pond";
+    render();
+    return;
+  }
+  return switchZoneV24Base(zone);
+};
+
+function fishUnlockLevel(key){
+  return ({trout:34,carp:35,perch:36,salmon:37})[key]||99;
+}
+
+function renderPondZoneV24(){
+  ensureV24Dom();
+
+  const grid=document.getElementById("pondFishGrid");
+  const info=document.getElementById("pondInfo");
+  if(!grid)return;
+
+  const defs=[
+    ["trout","🐟","Truite",120,"1 🌽 appât"],
+    ["carp","🐠","Carpe",180,"1 🌾 + 1 🌽"],
+    ["perch","🐟","Perche",240,"2 🌽"],
+    ["salmon","🐟","Saumon",360,"2 🌽 + 1 🌾"]
+  ];
+
+  grid.innerHTML=defs.map(([key,icon,name,time,bait])=>{
+    const level=fishUnlockLevel(key);
+    const unlocked=state.level>=level;
+    const waiting=state[key+"Waiting"]||0;
+    const queue=state[key+"Queue"]||0;
+    return `
+      <div class="pondFishTile ${unlocked?"":"pondLocked"}">
+        <span class="pondFishIcon">${unlocked?icon:"🔒"}</span>
+        <b>${name}</b><br>
+        ${unlocked?`⏱️ ${formatTime(boostedTime("pond",time))}<br>🎣 ${bait}<br>⚙️ File ${queue} • 📦 ${waiting}`:`Niveau ${level}`}
+      </div>
+    `;
+  }).join("");
+
+  if(info){
+    info.innerHTML=state.pondBought
+      ?`<b>🎣 Pêche active</b> • Utilise du blé et du maïs comme appâts. Choisis la quantité exacte dans les cartes de production plus bas.<br>📦 ${storageSummaryAt("pond")}`
+      :"🔒 L'étang se débloque au niveau 34.";
+  }
+
+  const ready=defs.reduce((n,[key])=>n+(Number(state[key+"Waiting"])||0),0);
+  document.getElementById("ready").textContent="("+ready+")";
+}
+
+const renderFieldsV24Base=renderFields;
+renderFields=function(){
+  if(state.currentZone==="pond"){
+    renderPondZoneV24();
+    return;
+  }
+  return renderFieldsV24Base();
+};
+
+/* -------------------------
+   PÊCHE : QUANTITÉS EXACTES
+------------------------- */
+
+Object.assign(EXACT_PRODUCTION_CONFIG,{
+  trout:{
+    title:"🐟 Truite",
+    owned:"pondBought",
+    minLevel:34,
+    req:{corn:1},
+    queue:"troutQueue",
+    last:"troutLastProduction",
+    output:"trout"
+  },
+  carp:{
+    title:"🐠 Carpe",
+    owned:"pondBought",
+    minLevel:35,
+    req:{wheat:1,corn:1},
+    queue:"carpQueue",
+    last:"carpLastProduction",
+    output:"carp"
+  },
+  perch:{
+    title:"🐟 Perche",
+    owned:"pondBought",
+    minLevel:36,
+    req:{corn:2},
+    queue:"perchQueue",
+    last:"perchLastProduction",
+    output:"perch"
+  },
+  salmon:{
+    title:"🐟 Saumon",
+    owned:"pondBought",
+    minLevel:37,
+    req:{corn:2,wheat:1},
+    queue:"salmonQueue",
+    last:"salmonLastProduction",
+    output:"salmon"
+  }
+});
+
+function loadTrout(){openExactProduction("trout")}
+function loadCarp(){openExactProduction("carp")}
+function loadPerch(){openExactProduction("perch")}
+function loadSalmon(){openExactProduction("salmon")}
+
+function collectTrout(){collectWaiting("troutWaiting","trout","🐟")}
+function collectCarp(){collectWaiting("carpWaiting","carp","🐠")}
+function collectPerch(){collectWaiting("perchWaiting","perch","🐟")}
+function collectSalmon(){collectWaiting("salmonWaiting","salmon","🐟")}
+
+function renderPondProducerV24(){
+  ensureV24Dom();
+  const panel=document.getElementById("pondPanel");
+  if(!panel)return;
+
+  panel.style.display=state.pondBought?"block":"none";
+  if(!state.pondBought)return;
+
+  let recipes="";
+
+  recipes+=recipeCardV19({
+    icon:"🐟",name:"Truite",description:"1 🌽 maïs d'appât → 1 🐟 truite",
+    queue:state.troutQueue,waiting:state.troutWaiting,cap:12,last:state.troutLastProduction,
+    interval:boostedTime("pond",120),loadAction:"loadTrout()",collectAction:"collectTrout()",
+    loadLabel:"🎣 PÊCHER",collectLabel:"🐟 PRENDRE"
+  });
+
+  recipes+=state.level>=35
+    ?recipeCardV19({
+      icon:"🐠",name:"Carpe",description:"1 🌾 blé + 1 🌽 maïs → 1 🐠 carpe",
+      queue:state.carpQueue,waiting:state.carpWaiting,cap:10,last:state.carpLastProduction,
+      interval:boostedTime("pond",180),loadAction:"loadCarp()",collectAction:"collectCarp()",
+      loadLabel:"🎣 PÊCHER",collectLabel:"🐠 PRENDRE"
+    })
+    :lockedRecipeCard(35,"🐠","Carpe","1 🌾 blé + 1 🌽 maïs → 1 carpe");
+
+  recipes+=state.level>=36
+    ?recipeCardV19({
+      icon:"🐟",name:"Perche",description:"2 🌽 maïs → 1 🐟 perche",
+      queue:state.perchQueue,waiting:state.perchWaiting,cap:8,last:state.perchLastProduction,
+      interval:boostedTime("pond",240),loadAction:"loadPerch()",collectAction:"collectPerch()",
+      loadLabel:"🎣 PÊCHER",collectLabel:"🐟 PRENDRE"
+    })
+    :lockedRecipeCard(36,"🐟","Perche","2 🌽 maïs → 1 perche");
+
+  recipes+=state.level>=37
+    ?recipeCardV19({
+      icon:"🐟",name:"Saumon",description:"2 🌽 maïs + 1 🌾 blé → 1 🐟 saumon",
+      queue:state.salmonQueue,waiting:state.salmonWaiting,cap:6,last:state.salmonLastProduction,
+      interval:boostedTime("pond",360),loadAction:"loadSalmon()",collectAction:"collectSalmon()",
+      loadLabel:"🎣 PÊCHER",collectLabel:"🐟 PRENDRE"
+    })
+    :lockedRecipeCard(37,"🐟","Saumon","2 🌽 maïs + 1 🌾 blé → 1 saumon");
+
+  panel.innerHTML=`
+    <div class="buildingHeader">
+      <div class="buildingIcon">🎣</div>
+      <div class="buildingBody">
+        <div class="buildingName">ÉTANG & CABANE DE PÊCHE ${boostBadge("pond")}</div>
+        <div class="buildingStats">Pêche plusieurs espèces avec tes récoltes comme appâts. <span class="pondBadge">V2.4</span></div>
+      </div>
+    </div>
+    <div class="pondInfo">🔢 Toutes les espèces utilisent la <b>quantité exacte</b> : tu peux lancer 3, 17, 50 pêches d'un coup si tu as assez d'appâts.</div>
+    <div class="recipeGridV19">${recipes}</div>
+  `;
+}
+
+const renderBuildingsV24Base=renderBuildings;
+renderBuildings=function(){
+  ensureV24Dom();
+  renderBuildingsV24Base();
+  renderPondProducerV24();
+  decorateStoragePanels();
+};
+
+/* -------------------------
+   ACHAT DE L'ÉTANG
+------------------------- */
+
+const shopSpacesV24Base=shopSpaces;
+shopSpaces=function(){
+  let html=shopSpacesV24Base();
+  html+=shopCard(
+    "🎣",
+    "Étang de pêche",
+    "Nouvelle zone de pêche : truite, carpe, perche et saumon. Les récoltes servent d'appâts.",
+    POND_PRICE,
+    state.level>=34,
+    "buyPond()",
+    state.pondBought,
+    "Niveau 34"
+  );
+  return html;
+};
+
+function buyPond(){
+  if(state.pondBought)return;
+  if(state.level<34)return toast("L'étang se débloque au niveau 34.");
+  if(state.money<POND_PRICE)return toast("Pas assez d'argent.");
+
+  state.money-=POND_PRICE;
+  state.pondBought=true;
+  state.currentZone="pond";
+
+  const now=Date.now();
+  ["troutLastProduction","carpLastProduction","perchLastProduction","salmonLastProduction"].forEach(k=>state[k]=now);
+
+  showFloatingText("🎣 ÉTANG DÉBLOQUÉ\n🐟 Truite disponible");
+  tone(690,.12);
+  render();
+  openShop("spaces");
+}
+
+/* -------------------------
+   RESTAURANT : RECETTES DE POISSON
+------------------------- */
+
+Object.assign(RESTAURANT_RECIPES,{
+  grilledTrout:{
+    icon:"🐟",name:"Truite du potager",minLevel:34,time:210,reward:11000,xp:320,
+    ingredients:{trout:1,lettuce:1,tomato:1}
+  },
+  fishAndChips:{
+    icon:"🍟",name:"Fish & chips fermier",minLevel:35,time:240,reward:14500,xp:410,
+    ingredients:{carp:1,fries:1}
+  },
+  salmonRice:{
+    icon:"🍣",name:"Saumon crémeux au riz",minLevel:37,time:300,reward:19500,xp:560,
+    ingredients:{salmon:1,rice:1,cream:1}
+  }
+});
+
+const restaurantRecipePoolV24Base=restaurantRecipePool;
+restaurantRecipePool=function(){
+  let pool=restaurantRecipePoolV24Base();
+  if(!state.pondBought){
+    pool=pool.filter(k=>!["grilledTrout","fishAndChips","salmonRice"].includes(k));
+  }
+  return pool;
+};
+
+/* -------------------------
+   COMMANDES / MARCHÉ
+------------------------- */
+
+const availableOrderProductsV24Base=availableOrderProducts;
+availableOrderProducts=function(){
+  const list=availableOrderProductsV24Base();
+  if(state.pondBought){
+    if(state.level>=34)list.push({key:"trout",sell:PRODUCTS.trout.sell});
+    if(state.level>=35)list.push({key:"carp",sell:PRODUCTS.carp.sell});
+    if(state.level>=36)list.push({key:"perch",sell:PRODUCTS.perch.sell});
+    if(state.level>=37)list.push({key:"salmon",sell:PRODUCTS.salmon.sell});
+  }
+  return list;
+};
+
+/* -------------------------
+   BOUTIQUE : ACHETER LES RÉCOLTES
+------------------------- */
+
+function cropBuyPrice(key){
+  const crop=CROPS[key];
+  if(!crop)return 0;
+  return Math.max(
+    Math.ceil(crop.sell*2.2),
+    Math.ceil(crop.cost*3)
+  );
+}
+
+function shopCropPurchases(){
+  let html=`
+    <div class="cropBuyIntro">
+      <b>🌾 BOUTIQUE DE RÉCOLTES</b><br>
+      Achète directement les cultures déjà débloquées pour dépanner tes productions. Le prix d'achat est volontairement supérieur au prix de vente pour éviter de gagner de l'argent en achetant puis revendant.<br><b>Tu choisis toi-même la quantité exacte.</b>
+    </div>
+  `;
+
+  const sorted=Object.entries(CROPS).sort((a,b)=>a[1].level-b[1].level);
+
+  sorted.forEach(([key,crop])=>{
+    const canBuy=state.level>=crop.level&&(crop.zone!=="orchard"||state.orchardBought);
+    const price=cropBuyPrice(key);
+    const have=state.stock[key]||0;
+
+    html+=`
+      <div class="cropBuyCard ${canBuy?"":"pondLocked"}">
+        <div class="cropBuyIcon">${canBuy?crop.icon:"🔒"}</div>
+        <div>
+          <div class="cropBuyName">${crop.name}</div>
+          <div class="cropBuyMeta">Stock : ${have} • Vente : ${crop.sell.toLocaleString("fr-FR")} 🪙/u${canBuy?"":` • Niv. ${crop.level}`}</div>
+        </div>
+        <div>
+          <div class="cropBuyPrice">${price.toLocaleString("fr-FR")} 🪙/u</div>
+          <button class="btn gold small" ${canBuy?`onclick="openCropPurchase('${key}')"`:"disabled"}>ACHETER</button>
+        </div>
+      </div>
+    `;
+  });
+
+  return html;
+}
+
+let activeCropPurchase=null;
+
+function openCropPurchase(key){
+  const crop=CROPS[key];
+  if(!crop)return;
+  if(state.level<crop.level)return toast("Culture pas encore débloquée.");
+  if(crop.zone==="orchard"&&!state.orchardBought)return toast("Il faut d'abord le Jardin & Verger.");
+
+  activeCropPurchase=key;
+  const price=cropBuyPrice(key);
+
+  openModal("🌾 Acheter "+crop.name,`
+    <div class="exactQtyBox">
+      <div class="exactQtyRecipe">${crop.icon} ${crop.name}<br><span class="tiny">Prix : ${price.toLocaleString("fr-FR")} 🪙 par unité • Stock actuel : ${state.stock[key]||0}</span></div>
+      <label class="exactQtyLabel" for="cropPurchaseQty">Quantité exacte à acheter</label>
+      <input id="cropPurchaseQty" class="exactQtyInput" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" value="1" oninput="updateCropPurchasePreview()">
+      <div id="cropPurchasePreview" class="exactQtySummary"></div>
+      <button id="cropPurchaseConfirm" class="btn gold full" style="margin-top:10px" onclick="confirmCropPurchase()">🛒 ACHETER</button>
+    </div>
+  `);
+
+  updateCropPurchasePreview();
+  const input=document.getElementById("cropPurchaseQty");
+  if(input){input.focus();input.select()}
+}
+
+function updateCropPurchasePreview(){
+  const key=activeCropPurchase;
+  const crop=CROPS[key];
+  const input=document.getElementById("cropPurchaseQty");
+  const preview=document.getElementById("cropPurchasePreview");
+  const confirm=document.getElementById("cropPurchaseConfirm");
+  if(!crop||!input||!preview||!confirm)return;
+
+  const qty=Math.max(0,Math.floor(Number(input.value)||0));
+  const price=cropBuyPrice(key);
+  const total=qty*price;
+  const max=Math.floor(state.money/price);
+  const ok=qty>=1&&state.money>=total;
+
+  preview.innerHTML=`
+    <div class="exactQtyIngredient"><span>${crop.icon} Quantité</span><b>${qty}</b></div>
+    <div class="exactQtyIngredient"><span>🪙 Coût total</span><span class="${ok?"exactQtyOk":"exactQtyMissing"}">${total.toLocaleString("fr-FR")} / ${Math.floor(state.money).toLocaleString("fr-FR")}</span></div>
+    <div class="exactQtyResult">📦 Stock après achat : ${(state.stock[key]||0)+qty}<br>💰 Maximum achetable maintenant : ${max}</div>
+  `;
+
+  confirm.disabled=!ok;
+  confirm.textContent=qty>=1?`🛒 ACHETER ${qty} ${crop.name.toUpperCase()}`:"🛒 ACHETER";
+}
+
+function confirmCropPurchase(){
+  const key=activeCropPurchase;
+  const crop=CROPS[key];
+  const input=document.getElementById("cropPurchaseQty");
+  if(!crop||!input)return;
+
+  const qty=Math.floor(Number(input.value)||0);
+  if(qty<1)return toast("Entre une quantité valide.");
+
+  const price=cropBuyPrice(key);
+  const total=qty*price;
+  if(state.money<total){
+    updateCropPurchasePreview();
+    return toast("Pas assez d'argent.");
+  }
+
+  state.money-=total;
+  state.stock[key]=(state.stock[key]||0)+qty;
+  closeModal();
+  activeCropPurchase=null;
+  showFloatingText(`${crop.icon} +${qty}\n-${total.toLocaleString("fr-FR")} 🪙`);
+  tone(780,.06);
+  render();
+}
+
+renderShop=function(){
+  let html='<div class="shopTabs">'+
+    shopTab("fields","🌱","CHAMPS")+
+    shopTab("buildings","🏗️","BÂTIMENTS")+
+    shopTab("animals","🐔","ANIMAUX")+
+    shopTab("machines","🚜","MACHINES")+
+    shopTab("spaces","🗺️","ESPACES")+
+    shopTab("buycrops","🌾","ACHATS")+
+    shopTab("automation","🤖","AUTO")+
+    shopTab("boosts","⚡","BOOSTS")+
+    shopTab("storage","📦","STOCKAGE")+
+    '</div>';
+
+  if(shopCategory==="fields")html+=shopFields();
+  if(shopCategory==="buildings")html+=shopBuildings();
+  if(shopCategory==="animals")html+=shopAnimals();
+  if(shopCategory==="machines")html+=shopMachines();
+  if(shopCategory==="spaces")html+=shopSpaces();
+  if(shopCategory==="buycrops")html+=shopCropPurchases();
+  if(shopCategory==="automation")html+=shopAutomation();
+  if(shopCategory==="boosts")html+=shopBoosts();
+  if(shopCategory==="storage")html+=shopStorageUpgrades();
+
+  openModal("🛒 Shop",html);
+};
+
+/* -------------------------
+   PRODUCTION / HORS-LIGNE
+------------------------- */
+
+const updateProductionsV24Base=updateProductions;
+updateProductions=function(now=Date.now()){
+  updateProductionsV24Base(now);
+
+  [
+    ["troutQueue","troutWaiting","troutLastProduction",12,120],
+    ["carpQueue","carpWaiting","carpLastProduction",10,180],
+    ["perchQueue","perchWaiting","perchLastProduction",8,240],
+    ["salmonQueue","salmonWaiting","salmonLastProduction",6,360]
+  ].forEach(([queue,wait,last,cap,time])=>{
+    runQueueProduction({
+      owned:"pondBought",
+      queue,wait,last,cap,
+      interval:boostedTime("pond",time)
+    },now);
+  });
+};
+
+const processOfflineV24Base=processOffline;
+processOffline=function(){
+  processOfflineV24Base();
+  const now=Date.now();
+  ["troutLastProduction","carpLastProduction","perchLastProduction","salmonLastProduction"].forEach(k=>state[k]=now);
+};
+
+/* -------------------------
+   NORMALISATION / MIGRATION V2.4
+------------------------- */
+
+function normalizeV24State(){
+  state.pondBought=!!state.pondBought;
+
+  ["troutQueue","carpQueue","perchQueue","salmonQueue"].forEach(k=>{
+    state[k]=Math.max(0,Math.floor(Number(state[k])||0));
+  });
+
+  const caps={
+    troutWaiting:storageCapAt("pond",12),
+    carpWaiting:storageCapAt("pond",10),
+    perchWaiting:storageCapAt("pond",8),
+    salmonWaiting:storageCapAt("pond",6)
+  };
+
+  Object.entries(caps).forEach(([k,cap])=>{
+    state[k]=Math.max(0,Math.min(cap,Math.floor(Number(state[k])||0)));
+  });
+
+  ["troutLastProduction","carpLastProduction","perchLastProduction","salmonLastProduction"].forEach(k=>{
+    state[k]=Number(state[k])||Date.now();
+  });
+
+  ["trout","carp","perch","salmon"].forEach(k=>{
+    state.stock[k]=Math.max(0,Math.floor(Number(state.stock[k])||0));
+  });
+
+  if(!state.pondBought&&state.currentZone==="pond")state.currentZone="farm";
+  normalizeStorageLevels();
+}
+
+function restoreV24Waiting(raw){
+  if(!raw||typeof raw!=="object")return;
+  const caps={
+    troutWaiting:storageCapAt("pond",12),
+    carpWaiting:storageCapAt("pond",10),
+    perchWaiting:storageCapAt("pond",8),
+    salmonWaiting:storageCapAt("pond",6)
+  };
+  Object.entries(caps).forEach(([k,cap])=>{
+    if(raw[k]!==undefined)state[k]=Math.max(0,Math.min(cap,Math.floor(Number(raw[k])||0)));
+  });
+}
+
+saveGame=function(){
+  state.lastSeen=Date.now();
+  normalizeV24State();
+  localStorage.setItem("farmRushV24",JSON.stringify(state));
+};
+
+let v24LoadCandidate=null;
+const v223FindBestSaveV24Base=v223FindBestSave;
+v223FindBestSave=function(){
+  const current=v223ParseSave("farmRushV24");
+  if(current&&!v223LooksReset(current.data)){
+    v24LoadCandidate=current;
+    return current;
+  }
+  const best=v223FindBestSaveV24Base();
+  v24LoadCandidate=best;
+  return best;
+};
+
+const loadGameV24Base=loadGame;
+loadGame=function(){
+  v24LoadCandidate=null;
+  loadGameV24Base();
+  normalizeV24State();
+  if(v24LoadCandidate?.data)restoreV24Waiting(v24LoadCandidate.data);
+  ensureV24Dom();
+  render();
+  saveGame();
+};
+
+recoverPreviousSave=function(){
+  const keys=[
+    "farmRushV23","farmRushV224","farmRushV223","farmRushV222","farmRushV221","farmRushV22","farmRushV21","farmRushV20",
+    "farmRushV192","farmRushV191","farmRushV19","farmRushV184","farmRushV183","farmRushV182","farmRushV181","farmRushV18",
+    "farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"
+  ];
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return toast("Aucune ancienne sauvegarde trouvée.");
+  saves.forEach(s=>s.score=v223ProgressScore(s.data));
+  saves.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("farmRushV24",saves[0].raw);
+  location.reload();
+};
+
+/* -------------------------
+   OBJECTIFS / NIVEAUX / PROGRESSION
+------------------------- */
+
+const renderGoalV24Base=renderGoal;
+renderGoal=function(){
+  renderGoalV24Base();
+
+  if(state.level>=34&&!state.pondBought){
+    document.getElementById("goalIcon").textContent="🎣";
+    document.getElementById("goalTitle").textContent="OBJECTIF : ÉTANG DE PÊCHE";
+    document.getElementById("goalText").textContent=`${state.money.toLocaleString("fr-FR")} / ${POND_PRICE.toLocaleString("fr-FR")} 🪙`;
+    document.getElementById("goalFill").style.width=Math.min(100,state.money/POND_PRICE*100)+"%";
+  }
+};
+
+const levelRewardV24Base=levelReward;
+levelReward=function(level){
+  levelRewardV24Base(level);
+  const extra={
+    34:"<br><b>🎣 Nouveau :</b> Étang de pêche + Truite débloqués.",
+    35:"<br><b>🐠 Pêche :</b> Carpe + Fish & chips fermier débloqués.",
+    36:"<br><b>🐟 Pêche :</b> Perche débloquée.",
+    37:"<br><b>🐟 Pêche :</b> Saumon + Saumon crémeux au riz débloqués."
+  }[level];
+  if(extra&&document.getElementById("levelUpReward")){
+    document.getElementById("levelUpReward").innerHTML+=extra;
+  }
+};
+
+const showProgressV24Base=showProgress;
+showProgress=function(){
+  showProgressV24Base();
+  document.getElementById("modalTitle").textContent="⭐ Progression V2.4";
+  const body=document.getElementById("modalBody");
+  if(!body)return;
+
+  body.innerHTML=body.innerHTML
+    .replace(/Farm Rush V2\.3/g,"Farm Rush V2.4")
+    .replace(/Farm Rush V2\.2\.4/g,"Farm Rush V2.4");
+
+  body.insertAdjacentHTML("beforeend",`
+    <p><b>🎣 Étang & pêche</b></p>
+    <div class="shopCard"><b>🎣 Étang</b><span style="float:right">${state.pondBought?"✅":"🔒 Niv. 34"}</span><br><small>${state.pondBought?storageSummaryAt("pond"):"280 000 🪙"}</small></div>
+    <div class="shopCard"><b>🐟 Truite</b><span style="float:right">${state.stock.trout||0}</span></div>
+    <div class="shopCard"><b>🐠 Carpe</b><span style="float:right">${state.stock.carp||0}</span></div>
+    <div class="shopCard"><b>🐟 Perche</b><span style="float:right">${state.stock.perch||0}</span></div>
+    <div class="shopCard"><b>🐟 Saumon</b><span style="float:right">${state.stock.salmon||0}</span></div>
+    <p><b>🌾 Boutique de récoltes</b></p>
+    <div class="shopCard"><b>🛒 Achat direct des cultures</b><span style="float:right">✅</span><br><small>Quantité exacte • toutes les cultures débloquées • prix d'achat supérieur au prix de vente.</small></div>
+  `);
+};
+
+ensureV24Dom();
+
 ensureV23Dom();
 
 
