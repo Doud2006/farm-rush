@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.2.1</title>
+<title>Farm Rush V2.2.2</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -187,7 +187,7 @@
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.2.1 — Progression rééquilibrée • Vignoble Niv.25 • Bergerie Niv.27</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.2.3 — Récupération sauvegarde + quantités exactes • Vignoble Niv.25 • Bergerie Niv.27</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -5933,6 +5933,920 @@ levelReward=function(level){
   document.getElementById("levelUp").classList.add("show");
   tone(1000,.12);
 };
+
+
+/* ======================================================
+   FARM RUSH V2.2.3 — QUANTITÉS EXACTES + RÉCUPÉRATION
+   Saisie libre pour toutes les productions et nourritures
+====================================================== */
+
+(function(){
+  const style=document.createElement("style");
+  style.textContent=`
+    .exactQtyBox{
+      background:#fffdf5;
+      border:1px solid #d7c59a;
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .exactQtyRecipe{
+      font-size:12px;
+      font-weight:1000;
+      margin-bottom:9px;
+    }
+    .exactQtyLabel{
+      display:block;
+      font-size:10px;
+      font-weight:1000;
+      color:#675b45;
+      margin-bottom:5px;
+    }
+    .exactQtyInput{
+      width:100%;
+      border:2px solid #8faf75;
+      border-radius:12px;
+      background:white;
+      color:#26351e;
+      font-size:22px;
+      font-weight:1000;
+      padding:12px;
+      text-align:center;
+      outline:none;
+      -moz-appearance:textfield;
+    }
+    .exactQtyInput::-webkit-inner-spin-button,
+    .exactQtyInput::-webkit-outer-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
+    .exactQtySummary{
+      margin-top:10px;
+      padding:9px;
+      background:#f3f6e9;
+      border:1px solid #c7d4ad;
+      border-radius:10px;
+      font-size:10px;
+      line-height:1.55;
+    }
+    .exactQtyIngredient{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:4px 0;
+      border-bottom:1px dashed #d8ddc9;
+    }
+    .exactQtyIngredient:last-child{border-bottom:0}
+    .exactQtyOk{color:#39733a;font-weight:1000}
+    .exactQtyMissing{color:#b34e3b;font-weight:1000}
+    .exactQtyResult{
+      margin-top:8px;
+      padding-top:8px;
+      border-top:1px solid #d7cfb7;
+      font-weight:1000;
+      font-size:11px;
+    }
+    .exactQtyHint{
+      font-size:9px;
+      color:#776d5c;
+      margin-top:7px;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title="Farm Rush V2.2.3";
+const v222VersionEl=document.querySelector(".version");
+if(v222VersionEl){
+  v222VersionEl.textContent="V2.2.3 — Récupération sauvegarde + quantités exactes • Vignoble Niv.25 • Bergerie Niv.27";
+}
+
+const EXACT_PRODUCTION_CONFIG={
+  mill:{
+    title:"🥣 Farine",
+    owned:"millBought",
+    req:{wheat:2},
+    queue:"millQueue",
+    last:"millLastProduction",
+    output:"flour"
+  },
+  bakery:{
+    title:"🥖 Pain",
+    owned:"bakeryBought",
+    req:{flour:1},
+    queue:"bakeryQueue",
+    last:"bakeryLastProduction",
+    output:"bread"
+  },
+  dairy:{
+    title:"🧀 Fromage",
+    owned:"dairyBought",
+    req:{milk:2},
+    queue:"dairyQueue",
+    last:"dairyLastProduction",
+    output:"cheese"
+  },
+  pasta:{
+    title:"🍝 Pâtes",
+    owned:"pastaBought",
+    req:{flour:2,egg:1},
+    queue:"pastaQueue",
+    last:"pastaLastProduction",
+    output:"pasta"
+  },
+  sauce:{
+    title:"🥫 Sauce tomate",
+    owned:"pastaBought",
+    req:{tomato:4},
+    queue:"sauceQueue",
+    last:"sauceLastProduction",
+    output:"tomatoSauce"
+  },
+  steak:{
+    title:"🥩 Steak haché",
+    owned:"pastaBought",
+    req:{beef:2},
+    queue:"steakQueue",
+    last:"steakLastProduction",
+    output:"groundSteak"
+  },
+  beef:{
+    title:"🥩 Bœuf",
+    owned:"meatBought",
+    req:{wheat:3,corn:2},
+    queue:"beefQueue",
+    last:"beefLastProduction",
+    output:"beef"
+  },
+  cream:{
+    title:"🥛 Crème",
+    owned:"dairyBought",
+    req:{milk:3},
+    queue:"creamQueue",
+    last:"creamLastProduction",
+    output:"cream"
+  },
+  cake:{
+    title:"🎂 Gâteau à la crème",
+    owned:"bakeryBought",
+    req:{flour:2,egg:2,cream:1},
+    queue:"cakeQueue",
+    last:"cakeLastProduction",
+    output:"cake"
+  },
+  strawberryCake:{
+    title:"🍰 Gâteau aux fraises",
+    owned:"bakeryBought",
+    req:{flour:2,egg:2,cream:1,strawberry:2},
+    queue:"strawberryCakeQueue",
+    last:"strawberryCakeLastProduction",
+    output:"strawberryCake"
+  },
+  mozzarella:{
+    title:"⚪ Mozzarella",
+    owned:"dairyBought",
+    minLevel:18,
+    req:{milk:4},
+    queue:"mozzarellaQueue",
+    last:"mozzarellaLastProduction",
+    output:"mozzarella"
+  },
+  parmesan:{
+    title:"🧀 Parmesan",
+    owned:"dairyBought",
+    minLevel:20,
+    req:{milk:7},
+    queue:"parmesanQueue",
+    last:"parmesanLastProduction",
+    output:"parmesan"
+  },
+  blueCheese:{
+    title:"🔵 Fromage bleu",
+    owned:"dairyBought",
+    minLevel:23,
+    req:{milk:8},
+    queue:"blueCheeseQueue",
+    last:"blueCheeseLastProduction",
+    output:"blueCheese"
+  },
+  oil:{
+    title:"🫙 Huile de tournesol",
+    owned:"pastaBought",
+    minLevel:20,
+    req:{sunflower:3},
+    queue:"oilQueue",
+    last:"oilLastProduction",
+    output:"sunflowerOil"
+  },
+  fries:{
+    title:"🍟 Frites",
+    owned:"pastaBought",
+    minLevel:21,
+    req:{potato:2,sunflowerOil:1},
+    queue:"friesQueue",
+    last:"friesLastProduction",
+    output:"fries"
+  },
+  pesto:{
+    title:"🫙 Pesto",
+    owned:"pastaBought",
+    minLevel:22,
+    req:{basil:3,sunflowerOil:1,parmesan:1},
+    queue:"pestoQueue",
+    last:"pestoLastProduction",
+    output:"pesto"
+  },
+  fertilizer:{
+    title:"🧪 Engrais agricole",
+    owned:"pastaBought",
+    req:{manure:5},
+    queue:"fertilizerQueue",
+    last:"fertilizerLastProduction",
+    output:"fertilizer"
+  },
+  grapeJuice:{
+    title:"🧃 Jus de raisin",
+    owned:"cellarBought",
+    req:{grape:3},
+    queue:"grapeJuiceQueue",
+    last:"grapeJuiceLastProduction",
+    output:"grapeJuice"
+  },
+  wine:{
+    title:"🍷 Vin",
+    owned:"cellarBought",
+    req:{grape:5},
+    queue:"wineQueue",
+    last:"wineLastProduction",
+    output:"wine"
+  },
+  premiumWine:{
+    title:"🍾 Grand cru",
+    owned:"cellarBought",
+    minLevel:28,
+    req:{grape:6,wine:1},
+    queue:"premiumWineQueue",
+    last:"premiumWineLastProduction",
+    output:"premiumWine"
+  }
+};
+
+let activeExactProduction=null;
+
+function exactInfo(key){
+  const p=productInfo(key);
+  return{
+    icon:p.icon||"📦",
+    name:p.name||key
+  };
+}
+
+function exactMaxFromRequirements(req){
+  let max=Infinity;
+  for(const [key,perUnit] of Object.entries(req)){
+    const have=Math.max(0,Math.floor(Number(state.stock[key])||0));
+    max=Math.min(max,Math.floor(have/perUnit));
+  }
+  return Number.isFinite(max)?Math.max(0,max):0;
+}
+
+function openExactProduction(id){
+  const cfg=EXACT_PRODUCTION_CONFIG[id];
+  if(!cfg)return;
+
+  if(cfg.owned&&!state[cfg.owned]){
+    return toast("Bâtiment non acheté.");
+  }
+
+  if(cfg.minLevel&&state.level<cfg.minLevel){
+    return toast("Déblocage au niveau "+cfg.minLevel+".");
+  }
+
+  activeExactProduction=id;
+
+  const max=exactMaxFromRequirements(cfg.req);
+  const output=exactInfo(cfg.output);
+
+  let recipeText="";
+  Object.entries(cfg.req).forEach(([key,n],i)=>{
+    const item=exactInfo(key);
+    recipeText+=(i?" + ":"")+n+" "+item.icon+" "+item.name;
+  });
+
+  const html=`
+    <div class="exactQtyBox">
+      <div class="exactQtyRecipe">
+        ${cfg.title}<br>
+        <span class="tiny">${recipeText} → 1 ${output.icon} ${output.name}</span>
+      </div>
+
+      <label class="exactQtyLabel" for="exactProductionQty">
+        Quantité exacte à produire
+      </label>
+
+      <input
+        id="exactProductionQty"
+        class="exactQtyInput"
+        type="number"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="1"
+        step="1"
+        value="1"
+        oninput="updateExactProductionPreview()"
+      >
+
+      <div class="exactQtyHint">
+        Tu peux écrire directement 3, 17, 42, 100… Le jeu calcule automatiquement toutes les ressources nécessaires.
+      </div>
+
+      <div id="exactProductionPreview" class="exactQtySummary"></div>
+
+      <button
+        id="exactProductionConfirm"
+        class="btn gold full"
+        style="margin-top:10px"
+        onclick="confirmExactProduction()"
+      >
+        ▶ LANCER
+      </button>
+    </div>
+  `;
+
+  openModal("🔢 Choisir la quantité",html);
+  updateExactProductionPreview();
+
+  const input=document.getElementById("exactProductionQty");
+  if(input){
+    input.focus();
+    input.select();
+  }
+}
+
+function updateExactProductionPreview(){
+  const cfg=EXACT_PRODUCTION_CONFIG[activeExactProduction];
+  const input=document.getElementById("exactProductionQty");
+  const preview=document.getElementById("exactProductionPreview");
+  const confirm=document.getElementById("exactProductionConfirm");
+
+  if(!cfg||!input||!preview||!confirm)return;
+
+  const raw=Number(input.value);
+  const qty=Number.isFinite(raw)?Math.floor(raw):0;
+  const max=exactMaxFromRequirements(cfg.req);
+
+  let ok=qty>=1;
+  let html="";
+
+  for(const [key,perUnit] of Object.entries(cfg.req)){
+    const item=exactInfo(key);
+    const have=Math.max(0,Math.floor(Number(state.stock[key])||0));
+    const need=Math.max(0,qty)*perUnit;
+    const enough=qty>=1&&have>=need;
+
+    if(!enough)ok=false;
+
+    html+=`
+      <div class="exactQtyIngredient">
+        <span>${item.icon} ${item.name}</span>
+        <span class="${enough?"exactQtyOk":"exactQtyMissing"}">
+          ${have} / ${need}
+        </span>
+      </div>
+    `;
+  }
+
+  const output=exactInfo(cfg.output);
+
+  html+=`
+    <div class="exactQtyResult">
+      ${qty>=1
+        ?`${output.icon} Production demandée : ${qty}`
+        :"Entre une quantité supérieure à 0."
+      }<br>
+      ⚙️ File actuelle : ${Math.max(0,Number(state[cfg.queue])||0)}
+      ${max>0?`<br>📦 Maximum possible avec ton stock : ${max}`:"<br>❌ Pas assez de ressources pour lancer une production."}
+    </div>
+  `;
+
+  preview.innerHTML=html;
+  confirm.disabled=!ok;
+  confirm.textContent=qty>=1
+    ?`▶ LANCER ${qty} PRODUCTION${qty>1?"S":""}`
+    :"▶ LANCER";
+}
+
+function confirmExactProduction(){
+  const cfg=EXACT_PRODUCTION_CONFIG[activeExactProduction];
+  const input=document.getElementById("exactProductionQty");
+
+  if(!cfg||!input)return;
+
+  const qty=Math.floor(Number(input.value)||0);
+
+  if(qty<1){
+    return toast("Entre une quantité valide.");
+  }
+
+  for(const [key,perUnit] of Object.entries(cfg.req)){
+    const need=perUnit*qty;
+    if((state.stock[key]||0)<need){
+      updateExactProductionPreview();
+      return toast("Pas assez de ressources.");
+    }
+  }
+
+  for(const [key,perUnit] of Object.entries(cfg.req)){
+    state.stock[key]-=perUnit*qty;
+  }
+
+  if((state[cfg.queue]||0)<=0){
+    state[cfg.last]=Date.now();
+  }
+
+  state[cfg.queue]=(Number(state[cfg.queue])||0)+qty;
+
+  const output=exactInfo(cfg.output);
+
+  closeModal();
+  activeExactProduction=null;
+
+  showFloatingText(
+    `${output.icon} x${qty}\n⚙️ AJOUTÉ À LA FILE`
+  );
+
+  tone(760,.06);
+  render();
+}
+
+const EXACT_FEED_CONFIG={
+  coop:{
+    title:"🐔 Nourrir les poules",
+    owned:"coopBought",
+    ingredient:"wheat",
+    ingredientPerBatch:1,
+    feedKey:"coopFeed",
+    feedPerBatch:5,
+    last:"coopLastProduction"
+  },
+  cow:{
+    title:"🐄 Nourrir les vaches",
+    owned:"barnBought",
+    ingredient:"wheat",
+    ingredientPerBatch:2,
+    feedKey:"cowFeed",
+    feedPerBatch:3,
+    last:"cowLastProduction"
+  },
+  pig:{
+    title:"🐖 Nourrir les cochons",
+    owned:"barnBought",
+    ingredient:"carrot",
+    ingredientPerBatch:2,
+    feedKey:"pigFeed",
+    feedPerBatch:3,
+    last:"pigLastProduction"
+  },
+  sheep:{
+    title:"🐑 Nourrir les moutons",
+    owned:"sheepfoldBought",
+    ingredient:"wheat",
+    ingredientPerBatch:2,
+    feedKey:"sheepFeed",
+    feedPerBatch:3,
+    last:"sheepLastProduction"
+  }
+};
+
+let activeExactFeed=null;
+
+function openExactFeed(id){
+  const cfg=EXACT_FEED_CONFIG[id];
+  if(!cfg)return;
+
+  if(cfg.owned&&!state[cfg.owned]){
+    return toast("Élevage non acheté.");
+  }
+
+  activeExactFeed=id;
+
+  const ingredient=exactInfo(cfg.ingredient);
+  const have=Math.max(0,Math.floor(Number(state.stock[cfg.ingredient])||0));
+  const max=Math.floor(have/cfg.ingredientPerBatch);
+
+  const html=`
+    <div class="exactQtyBox">
+      <div class="exactQtyRecipe">
+        ${cfg.title}<br>
+        <span class="tiny">
+          1 chargement = ${cfg.ingredientPerBatch} ${ingredient.icon} ${ingredient.name}
+          → +${cfg.feedPerBatch} nourriture
+        </span>
+      </div>
+
+      <label class="exactQtyLabel" for="exactFeedQty">
+        Nombre exact de chargements
+      </label>
+
+      <input
+        id="exactFeedQty"
+        class="exactQtyInput"
+        type="number"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="1"
+        step="1"
+        value="1"
+        oninput="updateExactFeedPreview()"
+      >
+
+      <div class="exactQtyHint">
+        Exemple : 17 chargements consommeront exactement ${17*cfg.ingredientPerBatch} ${ingredient.icon} et ajouteront ${17*cfg.feedPerBatch} nourriture.
+      </div>
+
+      <div id="exactFeedPreview" class="exactQtySummary"></div>
+
+      <button
+        id="exactFeedConfirm"
+        class="btn gold full"
+        style="margin-top:10px"
+        onclick="confirmExactFeed()"
+      >
+        🥣 NOURRIR
+      </button>
+    </div>
+  `;
+
+  openModal("🔢 Quantité de nourriture",html);
+  updateExactFeedPreview();
+
+  const input=document.getElementById("exactFeedQty");
+  if(input){
+    input.focus();
+    input.select();
+  }
+}
+
+function updateExactFeedPreview(){
+  const cfg=EXACT_FEED_CONFIG[activeExactFeed];
+  const input=document.getElementById("exactFeedQty");
+  const preview=document.getElementById("exactFeedPreview");
+  const confirm=document.getElementById("exactFeedConfirm");
+
+  if(!cfg||!input||!preview||!confirm)return;
+
+  const raw=Number(input.value);
+  const qty=Number.isFinite(raw)?Math.floor(raw):0;
+
+  const ingredient=exactInfo(cfg.ingredient);
+  const have=Math.max(0,Math.floor(Number(state.stock[cfg.ingredient])||0));
+  const needed=Math.max(0,qty)*cfg.ingredientPerBatch;
+  const added=Math.max(0,qty)*cfg.feedPerBatch;
+  const max=Math.floor(have/cfg.ingredientPerBatch);
+  const ok=qty>=1&&have>=needed;
+
+  preview.innerHTML=`
+    <div class="exactQtyIngredient">
+      <span>${ingredient.icon} ${ingredient.name}</span>
+      <span class="${ok?"exactQtyOk":"exactQtyMissing"}">
+        ${have} / ${needed}
+      </span>
+    </div>
+
+    <div class="exactQtyResult">
+      🥣 Nourriture ajoutée : +${added}<br>
+      📦 Nourriture actuelle : ${Math.max(0,Number(state[cfg.feedKey])||0)}
+      ${max>0?`<br>Maximum possible : ${max} chargement${max>1?"s":""}`:"<br>❌ Pas assez de ressources."}
+    </div>
+  `;
+
+  confirm.disabled=!ok;
+  confirm.textContent=qty>=1
+    ?`🥣 AJOUTER ${added} NOURRITURE`
+    :"🥣 NOURRIR";
+}
+
+function confirmExactFeed(){
+  const cfg=EXACT_FEED_CONFIG[activeExactFeed];
+  const input=document.getElementById("exactFeedQty");
+
+  if(!cfg||!input)return;
+
+  const qty=Math.floor(Number(input.value)||0);
+
+  if(qty<1){
+    return toast("Entre une quantité valide.");
+  }
+
+  const needed=cfg.ingredientPerBatch*qty;
+
+  if((state.stock[cfg.ingredient]||0)<needed){
+    updateExactFeedPreview();
+    return toast("Pas assez de ressources.");
+  }
+
+  state.stock[cfg.ingredient]-=needed;
+
+  if((state[cfg.feedKey]||0)<=0){
+    state[cfg.last]=Date.now();
+  }
+
+  const added=cfg.feedPerBatch*qty;
+  state[cfg.feedKey]=(Number(state[cfg.feedKey])||0)+added;
+
+  closeModal();
+  activeExactFeed=null;
+
+  showFloatingText(
+    `🥣 +${added} nourriture`
+  );
+
+  tone(650,.05);
+  render();
+}
+
+/* Les boutons existants ouvrent maintenant le sélecteur exact. */
+loadMill=()=>openExactProduction("mill");
+loadBakery=()=>openExactProduction("bakery");
+loadDairy=()=>openExactProduction("dairy");
+loadPasta=()=>openExactProduction("pasta");
+
+loadSauce=()=>openExactProduction("sauce");
+loadSteak=()=>openExactProduction("steak");
+loadBeef=()=>openExactProduction("beef");
+loadCream=()=>openExactProduction("cream");
+loadCake=()=>openExactProduction("cake");
+loadStrawberryCake=()=>openExactProduction("strawberryCake");
+
+loadMozzarella=()=>openExactProduction("mozzarella");
+loadParmesan=()=>openExactProduction("parmesan");
+loadBlueCheese=()=>openExactProduction("blueCheese");
+loadOil=()=>openExactProduction("oil");
+loadFries=()=>openExactProduction("fries");
+loadPesto=()=>openExactProduction("pesto");
+
+loadFertilizer=()=>openExactProduction("fertilizer");
+
+loadGrapeJuice=()=>openExactProduction("grapeJuice");
+loadWine=()=>openExactProduction("wine");
+loadPremiumWine=()=>openExactProduction("premiumWine");
+
+feedCoop=()=>openExactFeed("coop");
+feedCow=()=>openExactFeed("cow");
+feedPig=()=>openExactFeed("pig");
+feedSheep=()=>openExactFeed("sheep");
+
+/* Sauvegarde V2.2.3 : on n'écrase PLUS les anciennes sauvegardes. */
+saveGame=function(){
+  state.lastSeen=Date.now();
+  localStorage.setItem("farmRushV223",JSON.stringify(state));
+};
+
+const showProgressV222Base=showProgress;
+showProgress=function(){
+  showProgressV222Base();
+
+  document.getElementById("modalTitle").textContent=
+    "⭐ Progression V2.2.3";
+
+  const body=document.getElementById("modalBody");
+  if(!body)return;
+
+  body.innerHTML=
+    body.innerHTML
+      .replace(
+        /Farm Rush V2\.2 — Niveau (\d+)\/48/,
+        `Farm Rush V2.2.3 — Niveau ${state.level}/48`
+      )
+      .replace(
+        /Farm Rush V2\.1 — Niveau (\d+)\/45/,
+        `Farm Rush V2.2.3 — Niveau ${state.level}/48`
+      );
+
+  body.insertAdjacentHTML(
+    "beforeend",
+    `
+      <p><b>🔢 Quantités exactes</b></p>
+      <div class="shopCard">
+        <b>🏭 Productions</b>
+        <span style="float:right">✅ Saisie libre</span>
+        <br><small>
+          Farine, pain, pâtes, fromages, sauces, viande, huile, frites,
+          pesto, engrais, jus, vin et grand cru.
+        </small>
+      </div>
+      <div class="shopCard">
+        <b>🥣 Nourriture animaux</b>
+        <span style="float:right">✅ Saisie libre</span>
+        <br><small>
+          Choisis exactement le nombre de chargements pour poules, vaches,
+          cochons et moutons.
+        </small>
+      </div>
+    `
+  );
+};
+
+
+/* ======================================================
+   FARM RUSH V2.2.3 — RÉCUPÉRATION AUTOMATIQUE
+   Corrige le bug V2.2.2 qui sauvegardait AVANT le chargement.
+   Les anciennes clés sont conservées et la meilleure sauvegarde
+   disponible est automatiquement récupérée.
+====================================================== */
+
+const loadGameV223Base=loadGame;
+
+function v223ParseSave(key){
+  const raw=localStorage.getItem(key);
+  if(!raw)return null;
+  try{
+    const data=JSON.parse(raw);
+    if(!data||typeof data!=="object")return null;
+    return {key,raw,data};
+  }catch(e){
+    return null;
+  }
+}
+
+function v223OwnedCount(d){
+  const keys=[
+    "coopBought","barnBought","millBought","bakeryBought",
+    "dairyBought","pastaBought","meatBought","restaurantBought",
+    "orchardBought","vineyardBought","cellarBought","sheepfoldBought",
+    "tractor"
+  ];
+  return keys.reduce((n,k)=>n+(d[k]?1:0),0);
+}
+
+function v223StockCount(d){
+  if(!d.stock||typeof d.stock!=="object")return 0;
+  return Object.values(d.stock).reduce((sum,v)=>{
+    const n=Number(v)||0;
+    return sum+Math.max(0,Math.min(100000,n));
+  },0);
+}
+
+function v223ProgressScore(d){
+  const level=Math.max(1,Number(d.level)||1);
+  const xp=Math.max(0,Number(d.xp)||0);
+  const plots=Math.max(0,Number(d.plots)||0);
+  const orchardPlots=Math.max(0,Number(d.orchardPlots)||0);
+  const vineyardPlots=Math.max(0,Number(d.vineyardPlots)||0);
+  const sheep=Math.max(0,Number(d.sheep)||0);
+  const worker=Math.max(0,Number(d.workerLevel)||0);
+  const feeder=Math.max(0,Number(d.feederLevel)||0);
+  const money=Math.max(0,Math.min(1000000000,Number(d.money)||0));
+  const owned=v223OwnedCount(d);
+  const stock=v223StockCount(d);
+
+  /* Le niveau domine volontairement : une vieille sauvegarde avancée
+     doit battre une sauvegarde V2.2.2 remise accidentellement à zéro. */
+  return (
+    level*1e15+
+    xp*1e9+
+    owned*1e11+
+    plots*1e8+
+    orchardPlots*1e8+
+    vineyardPlots*1e8+
+    sheep*1e8+
+    worker*1e10+
+    feeder*1e10+
+    money*10+
+    stock
+  );
+}
+
+function v223LooksReset(d){
+  return (
+    (Number(d.level)||1)<=1&&
+    (Number(d.xp)||0)<=0&&
+    (Number(d.plots)||4)<=4&&
+    (Number(d.money)||100)<=150&&
+    v223OwnedCount(d)===0
+  );
+}
+
+function v223FindBestSave(){
+  const keys=[
+    "farmRushV223",
+    "farmRushV222",
+    "farmRushV221",
+    "farmRushV22",
+    "farmRushV21",
+    "farmRushV20",
+    "farmRushV192",
+    "farmRushV191",
+    "farmRushV19",
+    "farmRushV184",
+    "farmRushV183",
+    "farmRushV182",
+    "farmRushV181",
+    "farmRushV18",
+    "farmRushV173",
+    "farmRushV172",
+    "farmRushV171",
+    "farmRushV17",
+    "farmRushV161",
+    "farmRushV16",
+    "farmRushV15"
+  ];
+
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return null;
+
+  saves.forEach(s=>s.score=v223ProgressScore(s.data));
+  saves.sort((a,b)=>b.score-a.score);
+
+  return saves[0];
+}
+
+loadGame=function(){
+  const best=v223FindBestSave();
+
+  if(!best){
+    loadGameV223Base();
+    saveGame();
+    return;
+  }
+
+  /* L'ancien chargeur V2.2.1 sait déjà migrer toutes les structures.
+     On lui présente temporairement la meilleure sauvegarde sous sa clé
+     attendue, sans détruire la vraie sauvegarde précédente. */
+  const oldV221=localStorage.getItem("farmRushV221");
+
+  try{
+    localStorage.setItem("farmRushV221",best.raw);
+    loadGameV223Base();
+  }finally{
+    if(oldV221===null){
+      localStorage.removeItem("farmRushV221");
+    }else{
+      localStorage.setItem("farmRushV221",oldV221);
+    }
+  }
+
+  saveGame();
+
+  const bad222=v223ParseSave("farmRushV222");
+  const bad221=v223ParseSave("farmRushV221");
+  const recoveredFromOlder=
+    best.key!=="farmRushV223"&&
+    best.key!=="farmRushV222"&&
+    best.key!=="farmRushV221";
+  const resetDetected=
+    (bad222&&v223LooksReset(bad222.data))||
+    (bad221&&v223LooksReset(bad221.data));
+
+  if(recoveredFromOlder||resetDetected){
+    setTimeout(()=>{
+      toast(
+        "✅ Progression récupérée depuis "+
+        best.key.replace("farmRush","")
+      );
+    },250);
+  }
+};
+
+/* Bouton manuel de secours : recharge la meilleure sauvegarde ancienne
+   en ignorant V2.2.2/V2.2.1 si l'utilisateur veut forcer la récupération. */
+function recoverPreviousSave(){
+  const keys=[
+    "farmRushV22","farmRushV21","farmRushV20","farmRushV192",
+    "farmRushV191","farmRushV19","farmRushV184","farmRushV183",
+    "farmRushV182","farmRushV181","farmRushV18","farmRushV173",
+    "farmRushV172","farmRushV171","farmRushV17","farmRushV161",
+    "farmRushV16","farmRushV15"
+  ];
+
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return toast("Aucune ancienne sauvegarde trouvée.");
+
+  saves.forEach(s=>s.score=v223ProgressScore(s.data));
+  saves.sort((a,b)=>b.score-a.score);
+  const best=saves[0];
+
+  localStorage.setItem("farmRushV223",best.raw);
+  location.reload();
+}
+
+/* Ajoute un bouton de récupération sur l'écran d'accueil. */
+(function(){
+  const actions=document.querySelector(".homeActions");
+  if(actions&&!document.getElementById("recoverSaveBtn")){
+    const btn=document.createElement("button");
+    btn.id="recoverSaveBtn";
+    btn.className="roundBtn";
+    btn.title="Récupérer une ancienne sauvegarde";
+    btn.textContent="💾";
+    btn.onclick=()=>{
+      if(confirm("Rechercher et restaurer la meilleure ancienne sauvegarde ?")){
+        recoverPreviousSave();
+      }
+    };
+    actions.appendChild(btn);
+  }
+})();
 
 ensureV22Dom();
 
