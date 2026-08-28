@@ -6848,6 +6848,229 @@ function recoverPreviousSave(){
   }
 })();
 
+
+/* ======================================================
+   FARM RUSH V2.2.4 — STOCKAGE AMÉLIORABLE DES PRODUCTEURS
+   5 niveaux par producteur • +50 % de capacité par niveau
+====================================================== */
+
+(function(){
+  const style=document.createElement("style");
+  style.textContent=`
+    .storageUpgradeBar{margin-top:9px;padding:9px;border:1px solid #baa978;border-radius:11px;background:#fffdf4;display:flex;gap:8px;align-items:center}
+    .storageUpgradeInfo{flex:1;min-width:0;font-size:9px;line-height:1.45;color:#665d4b}
+    .storageUpgradeInfo b{display:block;font-size:11px;color:#3d4d32}
+    .storageLevelBadge{display:inline-block;border-radius:999px;background:#e8f2dd;border:1px solid #a9c28d;padding:2px 6px;margin-left:4px;font-size:8px;color:#426236}
+    .storageShopIntro{background:#eef6e7;border:1px solid #a8c08d;border-radius:12px;padding:10px;margin-bottom:10px;font-size:10px;line-height:1.5}
+    .storageCapList{margin:7px 0;padding:7px 8px;background:#f8f5eb;border:1px solid #ddd2b7;border-radius:9px;font-size:9px;line-height:1.5}
+    .storageNext{margin-top:5px;font-weight:1000;color:#557b3b}
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title="Farm Rush V2.2.4";
+const v224VersionEl=document.querySelector(".version");
+if(v224VersionEl)v224VersionEl.textContent="V2.2.4 — Stockages améliorables + quantités exactes • Vignoble Niv.25 • Bergerie Niv.27";
+
+const STORAGE_KEYS=["coop","barn","mill","bakery","dairy","factory","meat","cellar","sheepfold"];
+const STORAGE_LABELS={coop:"🐔 Poulailler",barn:"🐄 Étable",mill:"⚙️ Moulin",bakery:"🥖 Boulangerie & pâtisserie",dairy:"🧀 Laiterie & fromagerie",factory:"🏭 Usine de transformation",meat:"🥩 Atelier de viande",cellar:"🍷 Cave du vignoble",sheepfold:"🐑 Bergerie"};
+const STORAGE_BASE_COST={coop:3000,barn:7000,mill:8000,bakery:10000,dairy:12000,factory:15000,meat:18000,cellar:25000,sheepfold:20000};
+DEFAULT_STATE.storageLevels={coop:0,barn:0,mill:0,bakery:0,dairy:0,factory:0,meat:0,cellar:0,sheepfold:0};
+
+function normalizeStorageLevels(){
+  state.storageLevels={...DEFAULT_STATE.storageLevels,...(state.storageLevels||{})};
+  STORAGE_KEYS.forEach(key=>state.storageLevels[key]=Math.max(0,Math.min(5,Math.floor(Number(state.storageLevels[key])||0))));
+}
+function storageLevel(key){return Math.max(0,Math.min(5,Math.floor(Number(state.storageLevels?.[key])||0)))}
+function storageMultiplierAt(level){return 1+Math.max(0,Math.min(5,level))*.5}
+function storageCapAt(key,base,level=storageLevel(key)){return Math.max(1,Math.round(base*storageMultiplierAt(level)))}
+function storageUpgradeCost(key){const m=[1,2,4,7,11];return Math.floor((STORAGE_BASE_COST[key]||10000)*(m[storageLevel(key)]||11))}
+function storageOwned(key){return ({coop:state.coopBought,barn:state.barnBought,mill:state.millBought,bakery:state.bakeryBought,dairy:state.dairyBought,factory:state.pastaBought,meat:state.meatBought,cellar:state.cellarBought,sheepfold:state.sheepfoldBought})[key]}
+
+function rawEggCapacity(){return 20+Math.max(0,state.hens-1)*10}
+function rawMilkCapacity(){return 12+Math.max(0,state.cows-1)*6}
+function rawBaconCapacity(){return 12+Math.max(0,state.pigs-1)*6}
+function rawCoopManureCapacity(){return 30+state.hens*5}
+function rawCowManureCapacity(){return 40+state.cows*10}
+function rawPigManureCapacity(){return 40+state.pigs*10}
+function rawWoolCapacity(){return 12+Math.max(0,(Number(state.sheep)||1)-1)*6}
+function rawSheepManureCapacity(){return 40+Math.max(1,Number(state.sheep)||1)*8}
+
+eggCapacity=function(){return storageCapAt("coop",rawEggCapacity())};
+milkCapacity=function(){return storageCapAt("barn",rawMilkCapacity())};
+baconCapacity=function(){return storageCapAt("barn",rawBaconCapacity())};
+coopManureCapacity=function(){return storageCapAt("coop",rawCoopManureCapacity())};
+cowManureCapacity=function(){return storageCapAt("barn",rawCowManureCapacity())};
+pigManureCapacity=function(){return storageCapAt("barn",rawPigManureCapacity())};
+woolCapacity=function(){return storageCapAt("sheepfold",rawWoolCapacity())};
+sheepManureCapacity=function(){return storageCapAt("sheepfold",rawSheepManureCapacity())};
+
+const WAIT_STORAGE={
+  flourWaiting:["mill",15],breadWaiting:["bakery",15],cakeWaiting:["bakery",10],strawberryCakeWaiting:["bakery",8],
+  cheeseWaiting:["dairy",12],creamWaiting:["dairy",12],mozzarellaWaiting:["dairy",12],parmesanWaiting:["dairy",8],blueCheeseWaiting:["dairy",6],
+  pastaWaiting:["factory",12],sauceWaiting:["factory",12],steakWaiting:["factory",10],oilWaiting:["factory",12],friesWaiting:["factory",12],pestoWaiting:["factory",10],fertilizerWaiting:["factory",20],
+  beefWaiting:["meat",10],grapeJuiceWaiting:["cellar",15],wineWaiting:["cellar",10],premiumWineWaiting:["cellar",6]
+};
+function upgradedWaitCap(waitKey,fallback){const cfg=WAIT_STORAGE[waitKey];return cfg?storageCapAt(cfg[0],cfg[1]):fallback}
+
+const runQueueProductionV224Base=runQueueProduction;
+runQueueProduction=function(o,now=Date.now()){
+  return runQueueProductionV224Base({...o,cap:upgradedWaitCap(o.wait,o.cap)},now);
+};
+
+const runAnimalProductionV224Base=runAnimalProductionV20;
+runAnimalProductionV20=function(o,now=Date.now()){
+  let cap=o.cap,manureCap=o.manureCap;
+  if(o.wait==="eggWaiting")cap=eggCapacity();
+  if(o.wait==="milkWaiting")cap=milkCapacity();
+  if(o.wait==="baconWaiting")cap=baconCapacity();
+  if(o.wait==="woolWaiting")cap=woolCapacity();
+  if(o.manureWait==="coopManureWaiting")manureCap=coopManureCapacity();
+  if(o.manureWait==="cowManureWaiting")manureCap=cowManureCapacity();
+  if(o.manureWait==="pigManureWaiting")manureCap=pigManureCapacity();
+  if(o.manureWait==="sheepManureWaiting")manureCap=sheepManureCapacity();
+  return runAnimalProductionV224Base({...o,cap,manureCap},now);
+};
+
+const RECIPE_STORAGE_BY_NAME={
+  "Pain":["bakery",15],"Gâteau crème":["bakery",10],"Gâteau à la crème":["bakery",10],"Gâteau fraises":["bakery",8],"Gâteau aux fraises":["bakery",8],
+  "Fromage":["dairy",12],"Crème":["dairy",12],"Mozzarella":["dairy",12],"Parmesan":["dairy",8],"Fromage bleu":["dairy",6],
+  "Pâtes":["factory",12],"Sauce tomate":["factory",12],"Steak haché":["factory",10],"Huile de tournesol":["factory",12],"Frites":["factory",12],"Pesto":["factory",10],"Engrais agricole":["factory",20],
+  "Bœuf":["meat",10],"Jus de raisin":["cellar",15],"Vin":["cellar",10],"Grand cru":["cellar",6]
+};
+const recipeCardV224Base=recipeCardV19;
+recipeCardV19=function(o){
+  const cfg=RECIPE_STORAGE_BY_NAME[o.name];
+  return recipeCardV224Base(cfg?{...o,cap:storageCapAt(cfg[0],cfg[1])}:o);
+};
+
+const renderQueuePanelV224Base=renderQueuePanel;
+renderQueuePanel=function(id,owned,icon,name,recipe,timerId,label,last,interval,queue,waiting,cap,queueId,waitingId,fillId,loadLabel,loadAction,collectLabel,collectAction){
+  if(id==="millPanel")cap=storageCapAt("mill",15);
+  return renderQueuePanelV224Base(id,owned,icon,name,recipe,timerId,label,last,interval,queue,waiting,cap,queueId,waitingId,fillId,loadLabel,loadAction,collectLabel,collectAction);
+};
+
+function storageSummaryAt(key,level=storageLevel(key)){
+  const c=base=>storageCapAt(key,base,level);
+  if(key==="coop")return `🥚 ${c(rawEggCapacity())} • 💩 ${c(rawCoopManureCapacity())}`;
+  if(key==="barn")return `🥛 ${c(rawMilkCapacity())} • 🥓 ${c(rawBaconCapacity())} • 💩 ${c(rawCowManureCapacity())}/${c(rawPigManureCapacity())}`;
+  if(key==="mill")return `🥣 Farine ${c(15)}`;
+  if(key==="bakery")return `🥖 ${c(15)} • 🎂 ${c(10)} • 🍰 ${c(8)}`;
+  if(key==="dairy")return `🧀 ${c(12)} • 🥛 ${c(12)} • ⚪ ${c(12)} • Parmesan ${c(8)} • 🔵 ${c(6)}`;
+  if(key==="factory")return `🍝 ${c(12)} • 🥫 ${c(12)} • 🥩 ${c(10)} • 🫙 ${c(12)} • 🍟 ${c(12)} • Pesto ${c(10)} • 🧪 ${c(20)}`;
+  if(key==="meat")return `🥩 Bœuf ${c(10)}`;
+  if(key==="cellar")return `🧃 ${c(15)} • 🍷 ${c(10)} • 🍾 ${c(6)}`;
+  if(key==="sheepfold")return `🧶 ${c(rawWoolCapacity())} • 💩 ${c(rawSheepManureCapacity())}`;
+  return "";
+}
+
+function buyStorageUpgrade(key){
+  if(!STORAGE_KEYS.includes(key)||!storageOwned(key))return toast("Producteur non acheté.");
+  normalizeStorageLevels();
+  const level=storageLevel(key);
+  if(level>=5)return toast("Stockage maximum atteint.");
+  const cost=storageUpgradeCost(key);
+  if(state.money<cost)return toast("Pas assez d'argent.");
+  state.money-=cost;
+  state.storageLevels[key]=level+1;
+  showFloatingText(`📦 ${STORAGE_LABELS[key]}\nSTOCKAGE NIV. ${level+1}`);
+  tone(820,.07);
+  render();
+  openShop("storage");
+}
+
+function shopStorageUpgrades(){
+  normalizeStorageLevels();
+  let html=`<div class="storageShopIntro"><b>📦 STOCKAGE DES PRODUCTEURS</b><br>Chaque niveau ajoute <b>+50 %</b> à la capacité des produits terminés. Niv.5 = <b>x3,5</b>. Les files de production restent disponibles : le bâtiment s'arrête seulement lorsque son stockage de produits prêts est plein.</div>`;
+  const owned=STORAGE_KEYS.filter(storageOwned);
+  if(!owned.length)return html+`<div class="shopCard"><b>🔒 Aucun producteur disponible</b><br><small>Construis d'abord un bâtiment producteur.</small></div>`;
+  owned.forEach(key=>{
+    const level=storageLevel(key),next=Math.min(5,level+1),max=level>=5;
+    html+=`<div class="shopCard"><div class="shopHeader"><div class="shopIcon">📦</div><div class="shopInfo"><div class="shopName">${STORAGE_LABELS[key]} — Niv. ${level}/5</div><div class="shopDescription">Capacité x${storageMultiplierAt(level).toFixed(1).replace('.0','')}</div></div></div><div class="storageCapList"><b>Actuel :</b> ${storageSummaryAt(key,level)}${max?'':`<div class="storageNext">Après amélioration : ${storageSummaryAt(key,next)}</div>`}</div>${max?'<button class="btn dark full" disabled>✅ STOCKAGE MAXIMUM</button>':`<button class="btn gold full" onclick="buyStorageUpgrade('${key}')">⬆️ AMÉLIORER — ${storageUpgradeCost(key).toLocaleString('fr-FR')} 🪙</button>`}</div>`;
+  });
+  return html;
+}
+
+renderShop=function(){
+  let html='<div class="shopTabs">'+shopTab("fields","🌱","CHAMPS")+shopTab("buildings","🏗️","BÂTIMENTS")+shopTab("animals","🐔","ANIMAUX")+shopTab("machines","🚜","MACHINES")+shopTab("spaces","🗺️","ESPACES")+shopTab("automation","🤖","AUTO")+shopTab("boosts","⚡","BOOSTS")+shopTab("storage","📦","STOCKAGE")+'</div>';
+  if(shopCategory==="fields")html+=shopFields();
+  if(shopCategory==="buildings")html+=shopBuildings();
+  if(shopCategory==="animals")html+=shopAnimals();
+  if(shopCategory==="machines")html+=shopMachines();
+  if(shopCategory==="spaces")html+=shopSpaces();
+  if(shopCategory==="automation")html+=shopAutomation();
+  if(shopCategory==="boosts")html+=shopBoosts();
+  if(shopCategory==="storage")html+=shopStorageUpgrades();
+  openModal("🛒 Shop",html);
+};
+
+const STORAGE_PANEL_MAP={coop:"coopPanel",barn:"barnPanel",mill:"millPanel",bakery:"bakeryPanel",dairy:"dairyPanel",factory:"pastaPanel",meat:"meatPanel",cellar:"cellarPanel",sheepfold:"sheepfoldPanel"};
+function decorateStoragePanels(){
+  normalizeStorageLevels();
+  STORAGE_KEYS.forEach(key=>{
+    if(!storageOwned(key))return;
+    const panel=document.getElementById(STORAGE_PANEL_MAP[key]);
+    if(!panel||panel.style.display==="none"||panel.querySelector(".storageUpgradeBar"))return;
+    const level=storageLevel(key);
+    panel.insertAdjacentHTML("beforeend",`<div class="storageUpgradeBar"><div class="storageUpgradeInfo"><b>📦 Stockage <span class="storageLevelBadge">Niv. ${level}/5 • x${storageMultiplierAt(level).toFixed(1).replace('.0','')}</span></b>${storageSummaryAt(key,level)}</div><button class="btn dark small" onclick="openShop('storage')">⬆️ AMÉLIORER</button></div>`);
+  });
+}
+const renderBuildingsV224Base=renderBuildings;
+renderBuildings=function(){renderBuildingsV224Base();decorateStoragePanels()};
+
+const normalizeV22StateV224Base=normalizeV22State;
+normalizeV22State=function(){normalizeV22StateV224Base();normalizeStorageLevels()};
+
+function restoreV224Waiting(raw){
+  if(!raw||typeof raw!=="object")return;
+  const caps={
+    eggWaiting:eggCapacity(),milkWaiting:milkCapacity(),baconWaiting:baconCapacity(),coopManureWaiting:coopManureCapacity(),cowManureWaiting:cowManureCapacity(),pigManureWaiting:pigManureCapacity(),
+    flourWaiting:upgradedWaitCap("flourWaiting",15),breadWaiting:upgradedWaitCap("breadWaiting",15),cakeWaiting:upgradedWaitCap("cakeWaiting",10),strawberryCakeWaiting:upgradedWaitCap("strawberryCakeWaiting",8),
+    cheeseWaiting:upgradedWaitCap("cheeseWaiting",12),creamWaiting:upgradedWaitCap("creamWaiting",12),mozzarellaWaiting:upgradedWaitCap("mozzarellaWaiting",12),parmesanWaiting:upgradedWaitCap("parmesanWaiting",8),blueCheeseWaiting:upgradedWaitCap("blueCheeseWaiting",6),
+    pastaWaiting:upgradedWaitCap("pastaWaiting",12),sauceWaiting:upgradedWaitCap("sauceWaiting",12),steakWaiting:upgradedWaitCap("steakWaiting",10),oilWaiting:upgradedWaitCap("oilWaiting",12),friesWaiting:upgradedWaitCap("friesWaiting",12),pestoWaiting:upgradedWaitCap("pestoWaiting",10),fertilizerWaiting:upgradedWaitCap("fertilizerWaiting",20),
+    beefWaiting:upgradedWaitCap("beefWaiting",10),grapeJuiceWaiting:upgradedWaitCap("grapeJuiceWaiting",15),wineWaiting:upgradedWaitCap("wineWaiting",10),premiumWineWaiting:upgradedWaitCap("premiumWineWaiting",6),woolWaiting:woolCapacity(),sheepManureWaiting:sheepManureCapacity()
+  };
+  Object.entries(caps).forEach(([key,cap])=>{if(raw[key]!==undefined)state[key]=Math.max(0,Math.min(cap,Number(raw[key])||0))});
+}
+
+saveGame=function(){state.lastSeen=Date.now();normalizeStorageLevels();localStorage.setItem("farmRushV224",JSON.stringify(state))};
+
+let v224LoadCandidate=null;
+const v223FindBestSaveV224Base=v223FindBestSave;
+v223FindBestSave=function(){
+  const current=v223ParseSave("farmRushV224");
+  if(current&&!v223LooksReset(current.data)){v224LoadCandidate=current;return current}
+  const best=v223FindBestSaveV224Base();v224LoadCandidate=best;return best;
+};
+
+const loadGameV224Base=loadGame;
+loadGame=function(){
+  v224LoadCandidate=null;
+  loadGameV224Base();
+  normalizeStorageLevels();
+  if(v224LoadCandidate?.data)restoreV224Waiting(v224LoadCandidate.data);
+  render();
+  saveGame();
+};
+
+recoverPreviousSave=function(){
+  const keys=["farmRushV223","farmRushV222","farmRushV221","farmRushV22","farmRushV21","farmRushV20","farmRushV192","farmRushV191","farmRushV19","farmRushV184","farmRushV183","farmRushV182","farmRushV181","farmRushV18","farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"];
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return toast("Aucune ancienne sauvegarde trouvée.");
+  saves.forEach(s=>s.score=v223ProgressScore(s.data));saves.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("farmRushV224",saves[0].raw);location.reload();
+};
+
+const showProgressV224Base=showProgress;
+showProgress=function(){
+  showProgressV224Base();
+  document.getElementById("modalTitle").textContent="⭐ Progression V2.2.4";
+  const body=document.getElementById("modalBody");if(!body)return;
+  body.innerHTML=body.innerHTML.replace(/Farm Rush V2\.2\.3/g,"Farm Rush V2.2.4").replace(/Farm Rush V2\.2\.2/g,"Farm Rush V2.2.4");
+  body.insertAdjacentHTML("beforeend",`<p><b>📦 Stockage des producteurs</b></p>${STORAGE_KEYS.filter(storageOwned).map(key=>`<div class="shopCard"><b>${STORAGE_LABELS[key]}</b><span style="float:right">Niv. ${storageLevel(key)}/5 • x${storageMultiplierAt(storageLevel(key)).toFixed(1).replace('.0','')}</span><br><small>${storageSummaryAt(key)}</small></div>`).join("")}`);
+};
+
+
 ensureV22Dom();
 
 ensureV20Dom();
