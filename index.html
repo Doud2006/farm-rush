@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.2.2</title>
+<title>Farm Rush V2.5</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -187,7 +187,7 @@
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.2.3 — Récupération sauvegarde + quantités exactes • Vignoble Niv.25 • Bergerie Niv.27</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.5 — Forêt, bois & scierie • Étang Niv.34 • Forêt Niv.38</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -8603,6 +8603,918 @@ showProgress=function(){
     <div class="shopCard"><b>🛒 Achat direct des cultures</b><span style="float:right">✅</span><br><small>Quantité exacte • toutes les cultures débloquées • prix d'achat supérieur au prix de vente.</small></div>
   `);
 };
+
+/* ======================================================
+   FARM RUSH V2.5 — FORÊT & SCIERIE
+   Étape 6 : forêt permanente + bois + transformation
+====================================================== */
+
+(function(){
+  const style=document.createElement("style");
+  style.textContent=`
+    .forestFarm{
+      min-height:500px;
+      height:auto;
+      position:relative;
+      overflow:hidden;
+      border:3px solid #557648;
+      border-radius:19px;
+      background:linear-gradient(#b7df8d 0 19%,#6fa657 19% 100%);
+      padding:120px 10px 18px;
+    }
+    .forestDecor{position:absolute;inset:12px 14px auto;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+    .forestDecor span{font-size:49px;filter:drop-shadow(0 4px 2px #0002)}
+    .forestBoard{position:absolute;top:72px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#5d4328;color:#fff6df;border:2px solid #3f2d1c;border-radius:10px;padding:6px 10px;font-size:10px;font-weight:1000;box-shadow:0 3px #3f2d1c}
+    .forestGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .forestTree{
+      min-height:76px;
+      position:relative;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      border:2px solid #5c4b2d;
+      border-radius:12px;
+      background:linear-gradient(#7fb75d,#628f49);
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action:manipulation;
+    }
+    .forestTree.locked{background:#77776d;border-color:#595950;opacity:.8}
+    .forestTree.readyTree{box-shadow:inset 0 0 0 3px #f0cf57;background:linear-gradient(#89bd62,#668e48)}
+    .forestTreeIcon{font-size:38px;pointer-events:none}
+    .forestTimer{position:absolute;top:3px;left:3px;right:3px;background:#fff;color:#3e362a;border-radius:6px;padding:2px;font-size:8px;font-weight:1000;text-align:center;pointer-events:none}
+    .forestReady{background:#f0cb45;color:#4d3614;border:1px solid #fff1a6;border-radius:8px;padding:6px 5px;font-size:8px;font-weight:1000;text-align:center;pointer-events:none}
+    .forestInfo{margin-top:10px;background:#f5f1df;border:1px solid #b6a273;border-radius:11px;padding:9px;font-size:10px;line-height:1.5}
+    .sawmillPanel{background:linear-gradient(135deg,#f2e8d6,#dfc9a8);border-color:#96754a}
+    .woodBadge{display:inline-block;background:#6d4b2c;color:#fff;border-radius:999px;padding:2px 6px;font-size:8px}
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title="Farm Rush V2.5";
+const v25VersionEl=document.querySelector(".version");
+if(v25VersionEl){
+  v25VersionEl.textContent="V2.5 — Forêt, bois & scierie • Étang Niv.34 • Forêt Niv.38";
+}
+
+/* -------------------------
+   PRODUITS / ÉTAT
+------------------------- */
+
+Object.assign(PRODUCTS,{
+  log:{icon:"🪵",name:"Bois brut",sell:2600},
+  plank:{icon:"🪚",name:"Planche",sell:7600},
+  woodCrate:{icon:"📦",name:"Caisse en bois",sell:18500},
+  furniture:{icon:"🪑",name:"Meuble",sell:36000}
+});
+
+Object.assign(DEFAULT_STATE,{
+  forestBought:false,
+  forestPlots:0,
+  forestTrees:Array(18).fill(null),
+
+  sawmillBought:false,
+
+  plankQueue:0,
+  plankWaiting:0,
+  plankLastProduction:Date.now(),
+
+  woodCrateQueue:0,
+  woodCrateWaiting:0,
+  woodCrateLastProduction:Date.now(),
+
+  furnitureQueue:0,
+  furnitureWaiting:0,
+  furnitureLastProduction:Date.now()
+});
+
+const FOREST_PRICE=360000;
+const SAWMILL_PRICE=320000;
+const FOREST_GROW_TIME=600;
+
+DEFAULT_STATE.boosts.sawmill=0;
+BOOST_BASE_COST.sawmill=55000;
+BOOST_LABELS.sawmill="🪚 Scierie";
+
+/* -------------------------
+   STOCKAGE AMÉLIORABLE
+------------------------- */
+
+if(!STORAGE_KEYS.includes("sawmill"))STORAGE_KEYS.push("sawmill");
+STORAGE_LABELS.sawmill="🪚 Scierie";
+STORAGE_BASE_COST.sawmill=50000;
+DEFAULT_STATE.storageLevels.sawmill=0;
+STORAGE_PANEL_MAP.sawmill="sawmillPanel";
+
+WAIT_STORAGE.plankWaiting=["sawmill",15];
+WAIT_STORAGE.woodCrateWaiting=["sawmill",10];
+WAIT_STORAGE.furnitureWaiting=["sawmill",6];
+
+RECIPE_STORAGE_BY_NAME["Planche"]=["sawmill",15];
+RECIPE_STORAGE_BY_NAME["Caisse en bois"]=["sawmill",10];
+RECIPE_STORAGE_BY_NAME["Meuble"]=["sawmill",6];
+
+const storageOwnedV25Base=storageOwned;
+storageOwned=function(key){
+  if(key==="sawmill")return !!state.sawmillBought;
+  return storageOwnedV25Base(key);
+};
+
+const storageSummaryAtV25Base=storageSummaryAt;
+storageSummaryAt=function(key,level=storageLevel(key)){
+  if(key==="sawmill"){
+    const c=base=>storageCapAt("sawmill",base,level);
+    return `🪚 Planches ${c(15)} • 📦 Caisses ${c(10)} • 🪑 Meubles ${c(6)}`;
+  }
+  return storageSummaryAtV25Base(key,level);
+};
+
+const buildingOwnedForBoostV25Base=buildingOwnedForBoost;
+buildingOwnedForBoost=function(key){
+  if(key==="sawmill")return !!state.sawmillBought;
+  return buildingOwnedForBoostV25Base(key);
+};
+
+/* -------------------------
+   FORÊT : LIMITES / RENDEMENT
+------------------------- */
+
+function forestPlotLimit(){
+  if(state.level>=41)return 18;
+  if(state.level>=40)return 14;
+  if(state.level>=39)return 10;
+  if(state.level>=38)return 6;
+  return 0;
+}
+
+function nextForestExpansionLevel(){
+  const limit=forestPlotLimit();
+  if(limit<6)return 38;
+  if(limit<10)return 39;
+  if(limit<14)return 40;
+  if(limit<18)return 41;
+  return null;
+}
+
+function forestYield(){
+  return state.level>=41?3:2;
+}
+
+function forestTreeCost(){
+  const owned=Math.max(4,Number(state.forestPlots)||4);
+  return Math.floor(24000*Math.pow(1.21,Math.max(0,owned-4)));
+}
+
+function ensureForestTree(index){
+  if(!state.forestBought||index<0||index>=state.forestPlots)return null;
+
+  if(!state.forestTrees[index]||typeof state.forestTrees[index]!=="object"){
+    state.forestTrees[index]={ready:Date.now()+FOREST_GROW_TIME*1000};
+  }
+
+  state.forestTrees[index].ready=Number(state.forestTrees[index].ready)||(Date.now()+FOREST_GROW_TIME*1000);
+  return state.forestTrees[index];
+}
+
+/* -------------------------
+   DOM : FORÊT + SCIERIE
+------------------------- */
+
+function ensureV25Dom(){
+  ensureV24Dom();
+
+  const tabs=document.querySelector(".zoneTabs");
+  if(tabs&&!document.getElementById("zoneForestBtn")){
+    const button=document.createElement("button");
+    button.id="zoneForestBtn";
+    button.className="zoneTab";
+    button.type="button";
+    button.textContent="🔒 FORÊT";
+    button.onclick=()=>switchZone("forest");
+    tabs.appendChild(button);
+  }
+  if(tabs)tabs.style.gridTemplateColumns="repeat(5,1fr)";
+
+  const pond=document.getElementById("pondArea");
+  const vineyard=document.getElementById("vineyardArea");
+  const anchor=pond||vineyard||document.getElementById("orchardArea");
+
+  if(anchor&&!document.getElementById("forestArea")){
+    const area=document.createElement("div");
+    area.id="forestArea";
+    area.className="forestFarm";
+    area.style.display="none";
+    area.innerHTML=`
+      <div class="forestDecor"><span>🌲🦌</span><span>🪵🪓</span></div>
+      <div class="forestBoard">🌲 FORÊT DE LA FERME</div>
+      <div id="forestTreeGrid" class="forestGrid"></div>
+      <div id="forestInfo" class="forestInfo"></div>
+    `;
+    anchor.insertAdjacentElement("afterend",area);
+  }
+
+  const pondPanel=document.getElementById("pondPanel");
+  const textilePanel=document.getElementById("textilePanel");
+  const panelAnchor=pondPanel||textilePanel||document.getElementById("restaurantPanel");
+
+  if(panelAnchor&&!document.getElementById("sawmillPanel")){
+    const panel=document.createElement("div");
+    panel.id="sawmillPanel";
+    panel.className="panel buildingPanel sawmillPanel";
+    panel.style.display="none";
+    panelAnchor.insertAdjacentElement("afterend",panel);
+  }
+}
+
+const renderZoneV25Base=renderZone;
+renderZone=function(){
+  ensureV25Dom();
+  renderZoneV25Base();
+
+  const forest=state.currentZone==="forest";
+  const area=document.getElementById("forestArea");
+  const button=document.getElementById("zoneForestBtn");
+  const tabs=document.querySelector(".zoneTabs");
+  const tools=document.querySelector(".farmTools");
+
+  if(tabs)tabs.style.gridTemplateColumns="repeat(5,1fr)";
+  if(area)area.style.display=forest?"block":"none";
+
+  if(button){
+    button.classList.toggle("active",forest);
+    button.textContent=state.forestBought?"🌲 FORÊT":"🔒 FORÊT";
+  }
+
+  if(tools&&forest)tools.style.display="none";
+};
+
+const switchZoneV25Base=switchZone;
+switchZone=function(zone){
+  if(zone==="forest"){
+    cancelPaintSession();
+    if(!state.forestBought){
+      openShop("spaces");
+      return;
+    }
+    state.currentZone="forest";
+    render();
+    return;
+  }
+  return switchZoneV25Base(zone);
+};
+
+/* -------------------------
+   AFFICHAGE / RÉCOLTE FORÊT
+------------------------- */
+
+function renderForestV25(){
+  ensureV25Dom();
+
+  const grid=document.getElementById("forestTreeGrid");
+  const info=document.getElementById("forestInfo");
+  if(!grid)return;
+
+  grid.innerHTML="";
+
+  if(!state.forestBought){
+    if(info)info.innerHTML="🔒 La forêt se débloque au niveau 38.";
+    return;
+  }
+
+  const limit=forestPlotLimit();
+  let readyCount=0;
+
+  for(let index=0;index<limit;index++){
+    const tile=document.createElement("div");
+    tile.className="forestTree";
+    tile.dataset.index=index;
+
+    if(index>=state.forestPlots){
+      tile.classList.add("locked");
+      tile.innerHTML="🔒";
+      grid.appendChild(tile);
+      continue;
+    }
+
+    const tree=ensureForestTree(index);
+    const remaining=(tree.ready-Date.now())/1000;
+
+    if(remaining<=0){
+      readyCount++;
+      tile.classList.add("readyTree");
+      tile.innerHTML=`<div class="forestReady">🌲 COUPER<br>🪵 +${forestYield()} bois</div>`;
+    }else{
+      const progress=Math.min(1,Math.max(0,(FOREST_GROW_TIME-Math.max(0,remaining))/FOREST_GROW_TIME));
+      const icon=progress>.72?"🌲":progress>.35?"🌳":"🌱";
+      tile.innerHTML=`<div class="forestTreeIcon">${icon}</div><div class="forestTimer">${formatTime(remaining)}</div>`;
+    }
+
+    tile.addEventListener("click",()=>handleForestTree(index));
+    grid.appendChild(tile);
+  }
+
+  if(info){
+    const next=nextForestExpansionLevel();
+    info.innerHTML=`<b>🌲 ${state.forestPlots}/${limit} arbres</b> • ${readyCount} prêt(s) • rendement : <b>${forestYield()} 🪵/arbre</b><br>Les arbres repoussent automatiquement après la coupe en ${formatTime(FOREST_GROW_TIME)}.${state.forestPlots>=limit&&next?`<br>🔒 Extension suivante au niveau ${next}.`:""}`;
+  }
+}
+
+const renderFieldsV25Base=renderFields;
+renderFields=function(){
+  if(state.currentZone==="forest"){
+    renderForestV25();
+    return;
+  }
+  return renderFieldsV25Base();
+};
+
+function handleForestTree(index){
+  if(!state.forestBought||index<0||index>=state.forestPlots)return;
+  const tree=ensureForestTree(index);
+
+  if(tree.ready<=Date.now()){
+    harvestForestTree(index,true);
+    return;
+  }
+
+  openForestFertilizerMenu(index);
+}
+
+function harvestForestTree(index,doRender=true){
+  const tree=ensureForestTree(index);
+  if(!tree||tree.ready>Date.now())return false;
+
+  const qty=forestYield();
+  state.stock.log=(state.stock.log||0)+qty;
+  tree.ready=Date.now()+FOREST_GROW_TIME*1000;
+
+  addXP(18+qty*3);
+
+  if(doRender){
+    showFloatingText(`🪵 +${qty} bois\n🌱 L'arbre repousse`);
+    tone(650,.07);
+    render();
+  }
+
+  return true;
+}
+
+function harvestAllForest(){
+  const ready=[];
+
+  for(let i=0;i<state.forestPlots;i++){
+    const tree=ensureForestTree(i);
+    if(tree&&tree.ready<=Date.now())ready.push(i);
+  }
+
+  if(!ready.length)return toast("Aucun arbre prêt à couper.");
+
+  if(!state.tractor){
+    harvestForestTree(ready[0],true);
+    return;
+  }
+
+  let logs=0;
+  let xp=0;
+  ready.forEach(index=>{
+    const tree=ensureForestTree(index);
+    const qty=forestYield();
+    logs+=qty;
+    xp+=18+qty*3;
+    tree.ready=Date.now()+FOREST_GROW_TIME*1000;
+  });
+
+  state.stock.log=(state.stock.log||0)+logs;
+  addXP(xp);
+  showFloatingText(`🚜 ${ready.length} arbres\n🪵 +${logs}`);
+  tone(720,.09);
+  render();
+}
+
+const harvestAllV25Base=harvestAll;
+harvestAll=function(){
+  if(state.currentZone==="forest"){
+    harvestAllForest();
+    return;
+  }
+  return harvestAllV25Base();
+};
+
+/* -------------------------
+   ENGRAIS SUR LES ARBRES
+------------------------- */
+
+function openForestFertilizerMenu(index){
+  const tree=ensureForestTree(index);
+  if(!tree||tree.ready<=Date.now())return;
+
+  const stock=fertilizerStock();
+  const remaining=Math.max(1,(tree.ready-Date.now())/1000);
+
+  const button=(bags,reduction,label)=>`
+    <button class="btn ${bags===3?"gold":bags===2?"orange":"blue"} full" style="margin-top:8px" ${stock<bags?"disabled":""} onclick="applyForestFertilizer(${index},${bags},${reduction})">
+      ${label} — ${bags} 🧪
+    </button>
+  `;
+
+  openModal("🧪 Engrais — Forêt",`
+    <div class="plantPrompt">
+      <b>🌲 Arbre ${index+1}</b><br>
+      Temps restant : <b>${formatTime(remaining)}</b><br>
+      Stock d'engrais : <b>${stock} 🧪</b><br><br>
+      L'engrais accélère aussi la repousse des arbres.
+    </div>
+    ${button(1,.30,"⚡ -30 %")}
+    ${button(2,.50,"⚡⚡ -50 %")}
+    ${button(3,.70,"⚡⚡⚡ -70 %")}
+  `);
+}
+
+function applyForestFertilizer(index,bags,reduction){
+  const tree=ensureForestTree(index);
+  if(!tree||tree.ready<=Date.now()){
+    closeModal();
+    return toast("Cet arbre est déjà prêt.");
+  }
+
+  bags=Math.max(1,Math.floor(Number(bags)||1));
+  reduction=Math.max(0,Math.min(.9,Number(reduction)||.30));
+
+  if(fertilizerStock()<bags)return toast("Pas assez d'engrais.");
+
+  const now=Date.now();
+  const remaining=Math.max(0,tree.ready-now);
+  state.stock.fertilizer-=bags;
+  tree.ready=now+Math.max(900,remaining*(1-reduction));
+  addXP(bags*2);
+
+  closeModal();
+  showFloatingText(`🌲🧪 ARBRE ACCÉLÉRÉ\n-${Math.round(reduction*100)} %`);
+  tone(920,.07);
+  render();
+}
+
+/* -------------------------
+   ACHAT FORÊT / EXTENSION
+------------------------- */
+
+function buyForest(){
+  if(state.forestBought)return;
+  if(state.level<38)return toast("La Forêt se débloque au niveau 38.");
+  if(state.money<FOREST_PRICE)return toast("Pas assez d'argent.");
+
+  state.money-=FOREST_PRICE;
+  state.forestBought=true;
+  state.forestPlots=4;
+  state.forestTrees=Array(18).fill(null);
+
+  for(let i=0;i<4;i++){
+    state.forestTrees[i]={ready:Date.now()+(FOREST_GROW_TIME+i*12)*1000};
+  }
+
+  state.currentZone="forest";
+  showFloatingText("🌲 FORÊT DÉBLOQUÉE\n4 arbres permanents");
+  tone(570,.12);
+  render();
+  openShop("spaces");
+}
+
+function buyForestTree(){
+  if(!state.forestBought)return;
+
+  const limit=forestPlotLimit();
+  if(state.forestPlots>=limit){
+    const next=nextForestExpansionLevel();
+    return toast(next?`Extension suivante au niveau ${next}.`:"18 arbres maximum.");
+  }
+
+  const cost=forestTreeCost();
+  if(state.money<cost)return toast("Pas assez d'argent.");
+
+  state.money-=cost;
+  const index=state.forestPlots;
+  state.forestPlots++;
+  state.forestTrees[index]={ready:Date.now()+FOREST_GROW_TIME*1000};
+  addXP(35);
+  render();
+  openShop("fields");
+}
+
+const shopSpacesV25Base=shopSpaces;
+shopSpaces=function(){
+  let html=shopSpacesV25Base();
+  html+=shopCard(
+    "🌲",
+    "Forêt",
+    "Zone d'arbres permanents. Coupe le bois, laisse les arbres repousser puis transforme les bûches à la Scierie.",
+    FOREST_PRICE,
+    state.level>=38,
+    "buyForest()",
+    state.forestBought,
+    "Niveau 38"
+  );
+  return html;
+};
+
+const shopFieldsV25Base=shopFields;
+shopFields=function(){
+  let html=shopFieldsV25Base();
+
+  if(state.forestBought){
+    const limit=forestPlotLimit();
+    const next=nextForestExpansionLevel();
+
+    if(state.forestPlots>=limit){
+      html+=`<div class="shopCard"><b>🌲 Forêt : ${state.forestPlots}/${limit} arbres</b><br><small>${next?`Prochaine extension au niveau ${next}.`:"Capacité maximale : 18 arbres."}</small></div>`;
+    }else{
+      html+=shopCard(
+        "🌲",
+        "Nouvel arbre "+(state.forestPlots+1),
+        `Arbre permanent • ${forestYield()} bois par coupe • limite actuelle ${limit}/18.`,
+        forestTreeCost(),
+        true,
+        "buyForestTree()"
+      );
+    }
+  }
+
+  return html;
+};
+
+/* -------------------------
+   SCIERIE / QUANTITÉ EXACTE
+------------------------- */
+
+Object.assign(EXACT_PRODUCTION_CONFIG,{
+  plank:{
+    title:"🪚 Planche",
+    owned:"sawmillBought",
+    minLevel:39,
+    req:{log:3},
+    queue:"plankQueue",
+    last:"plankLastProduction",
+    output:"plank"
+  },
+  woodCrate:{
+    title:"📦 Caisse en bois",
+    owned:"sawmillBought",
+    minLevel:40,
+    req:{plank:3},
+    queue:"woodCrateQueue",
+    last:"woodCrateLastProduction",
+    output:"woodCrate"
+  },
+  furniture:{
+    title:"🪑 Meuble",
+    owned:"sawmillBought",
+    minLevel:41,
+    req:{plank:6},
+    queue:"furnitureQueue",
+    last:"furnitureLastProduction",
+    output:"furniture"
+  }
+});
+
+function loadPlank(){openExactProduction("plank")}
+function loadWoodCrate(){openExactProduction("woodCrate")}
+function loadFurniture(){openExactProduction("furniture")}
+
+function collectPlank(){collectWaiting("plankWaiting","plank","🪚")}
+function collectWoodCrate(){collectWaiting("woodCrateWaiting","woodCrate","📦")}
+function collectFurniture(){collectWaiting("furnitureWaiting","furniture","🪑")}
+
+function renderSawmillV25(){
+  ensureV25Dom();
+  const panel=document.getElementById("sawmillPanel");
+  if(!panel)return;
+
+  panel.style.display=state.sawmillBought?"block":"none";
+  if(!state.sawmillBought)return;
+
+  let recipes="";
+
+  recipes+=recipeCardV19({
+    icon:"🪚",name:"Planche",description:"3 🪵 bois bruts → 1 🪚 planche",
+    queue:state.plankQueue,waiting:state.plankWaiting,cap:15,last:state.plankLastProduction,
+    interval:boostedTime("sawmill",180),loadAction:"loadPlank()",collectAction:"collectPlank()",
+    loadLabel:"🪵 SCIER",collectLabel:"🪚 PRENDRE"
+  });
+
+  recipes+=state.level>=40
+    ?recipeCardV19({
+      icon:"📦",name:"Caisse en bois",description:"3 🪚 planches → 1 📦 caisse",
+      queue:state.woodCrateQueue,waiting:state.woodCrateWaiting,cap:10,last:state.woodCrateLastProduction,
+      interval:boostedTime("sawmill",300),loadAction:"loadWoodCrate()",collectAction:"collectWoodCrate()",
+      loadLabel:"📦 ASSEMBLER",collectLabel:"📦 PRENDRE"
+    })
+    :lockedRecipeCard(40,"📦","Caisse en bois","3 🪚 planches → 1 caisse");
+
+  recipes+=state.level>=41
+    ?recipeCardV19({
+      icon:"🪑",name:"Meuble",description:"6 🪚 planches → 1 🪑 meuble",
+      queue:state.furnitureQueue,waiting:state.furnitureWaiting,cap:6,last:state.furnitureLastProduction,
+      interval:boostedTime("sawmill",480),loadAction:"loadFurniture()",collectAction:"collectFurniture()",
+      loadLabel:"🪑 FABRIQUER",collectLabel:"🪑 PRENDRE"
+    })
+    :lockedRecipeCard(41,"🪑","Meuble","6 🪚 planches → 1 meuble");
+
+  panel.innerHTML=`
+    <div class="buildingHeader">
+      <div class="buildingIcon">🪚</div>
+      <div class="buildingBody">
+        <div class="buildingName">SCIERIE ${boostBadge("sawmill")}</div>
+        <div class="buildingStats">Transforme le bois de ta forêt en matériaux et objets à forte valeur. <span class="woodBadge">V2.5</span></div>
+      </div>
+    </div>
+    <div class="forestInfo">🔢 La scierie utilise la <b>quantité exacte</b> et profite des boosts de vitesse ainsi que du stockage améliorable.</div>
+    <div class="recipeGridV19">${recipes}</div>
+  `;
+}
+
+const renderBuildingsV25Base=renderBuildings;
+renderBuildings=function(){
+  ensureV25Dom();
+  renderBuildingsV25Base();
+  renderSawmillV25();
+  decorateStoragePanels();
+};
+
+const shopBuildingsV25Base=shopBuildings;
+shopBuildings=function(){
+  let html=shopBuildingsV25Base();
+  html+=shopCard(
+    "🪚",
+    "Scierie",
+    "Transforme le bois brut en planches, caisses et meubles.",
+    SAWMILL_PRICE,
+    state.level>=39&&state.forestBought,
+    "buyBuilding('sawmill')",
+    state.sawmillBought,
+    "Niveau 39 + Forêt"
+  );
+  return html;
+};
+
+const buyBuildingV25Base=buyBuilding;
+buyBuilding=function(type){
+  if(type!=="sawmill")return buyBuildingV25Base(type);
+  if(state.sawmillBought)return;
+  if(state.level<39)return toast("La Scierie se débloque au niveau 39.");
+  if(!state.forestBought)return toast("Il faut d'abord acheter la Forêt.");
+  if(state.money<SAWMILL_PRICE)return toast("Pas assez d'argent.");
+
+  state.money-=SAWMILL_PRICE;
+  state.sawmillBought=true;
+
+  const now=Date.now();
+  ["plankLastProduction","woodCrateLastProduction","furnitureLastProduction"].forEach(key=>state[key]=now);
+
+  showFloatingText("🪚 SCIERIE CONSTRUITE");
+  tone(610,.11);
+  render();
+  openShop("buildings");
+};
+
+/* -------------------------
+   PRODUCTION / HORS LIGNE
+------------------------- */
+
+const updateProductionsV25Base=updateProductions;
+updateProductions=function(now=Date.now()){
+  updateProductionsV25Base(now);
+
+  [
+    ["plankQueue","plankWaiting","plankLastProduction",15,180],
+    ["woodCrateQueue","woodCrateWaiting","woodCrateLastProduction",10,300],
+    ["furnitureQueue","furnitureWaiting","furnitureLastProduction",6,480]
+  ].forEach(([queue,wait,last,cap,time])=>{
+    runQueueProduction({
+      owned:"sawmillBought",
+      queue,wait,last,cap,
+      interval:boostedTime("sawmill",time)
+    },now);
+  });
+};
+
+const processOfflineV25Base=processOffline;
+processOffline=function(){
+  processOfflineV25Base();
+  const now=Date.now();
+  ["plankLastProduction","woodCrateLastProduction","furnitureLastProduction"].forEach(key=>state[key]=now);
+};
+
+/* -------------------------
+   COMMANDES / MARCHÉ
+------------------------- */
+
+const availableOrderProductsV25Base=availableOrderProducts;
+availableOrderProducts=function(){
+  const list=availableOrderProductsV25Base();
+
+  if(state.forestBought){
+    list.push({key:"log",sell:PRODUCTS.log.sell});
+  }
+
+  if(state.sawmillBought){
+    list.push({key:"plank",sell:PRODUCTS.plank.sell});
+    if(state.level>=40)list.push({key:"woodCrate",sell:PRODUCTS.woodCrate.sell});
+    if(state.level>=41)list.push({key:"furniture",sell:PRODUCTS.furniture.sell});
+  }
+
+  return list;
+};
+
+/* -------------------------
+   NORMALISATION / MIGRATION V2.5
+------------------------- */
+
+function normalizeV25State(){
+  if(!state.stock||typeof state.stock!=="object")state.stock={};
+
+  state.forestBought=!!state.forestBought;
+  state.sawmillBought=!!state.sawmillBought;
+
+  state.forestPlots=state.forestBought
+    ?Math.max(4,Math.min(18,Math.floor(Number(state.forestPlots)||4)))
+    :0;
+
+  if(!Array.isArray(state.forestTrees))state.forestTrees=[];
+  while(state.forestTrees.length<18)state.forestTrees.push(null);
+  state.forestTrees=state.forestTrees.slice(0,18);
+
+  if(state.forestBought){
+    for(let i=0;i<state.forestPlots;i++)ensureForestTree(i);
+  }
+
+  ["plankQueue","woodCrateQueue","furnitureQueue"].forEach(key=>{
+    state[key]=Math.max(0,Math.floor(Number(state[key])||0));
+  });
+
+  const waits={
+    plankWaiting:storageCapAt("sawmill",15),
+    woodCrateWaiting:storageCapAt("sawmill",10),
+    furnitureWaiting:storageCapAt("sawmill",6)
+  };
+
+  Object.entries(waits).forEach(([key,cap])=>{
+    state[key]=Math.max(0,Math.min(cap,Math.floor(Number(state[key])||0)));
+  });
+
+  ["plankLastProduction","woodCrateLastProduction","furnitureLastProduction"].forEach(key=>{
+    state[key]=Number(state[key])||Date.now();
+  });
+
+  ["log","plank","woodCrate","furniture"].forEach(key=>{
+    state.stock[key]=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  });
+
+  normalizeStorageLevels();
+
+  if(!state.forestBought&&state.currentZone==="forest")state.currentZone="farm";
+}
+
+function restoreV25Waiting(raw){
+  if(!raw||typeof raw!=="object")return;
+
+  const caps={
+    plankWaiting:storageCapAt("sawmill",15),
+    woodCrateWaiting:storageCapAt("sawmill",10),
+    furnitureWaiting:storageCapAt("sawmill",6)
+  };
+
+  Object.entries(caps).forEach(([key,cap])=>{
+    if(raw[key]!==undefined){
+      state[key]=Math.max(0,Math.min(cap,Math.floor(Number(raw[key])||0)));
+    }
+  });
+}
+
+saveGame=function(){
+  state.lastSeen=Date.now();
+  normalizeV24State();
+  normalizeV25State();
+  localStorage.setItem("farmRushV25",JSON.stringify(state));
+};
+
+let v25LoadCandidate=null;
+const v223FindBestSaveV25Base=v223FindBestSave;
+v223FindBestSave=function(){
+  const current=v223ParseSave("farmRushV25");
+  if(current&&!v223LooksReset(current.data)){
+    v25LoadCandidate=current;
+    return current;
+  }
+  const best=v223FindBestSaveV25Base();
+  v25LoadCandidate=best;
+  return best;
+};
+
+const loadGameV25Base=loadGame;
+loadGame=function(){
+  v25LoadCandidate=null;
+  loadGameV25Base();
+  normalizeV25State();
+  if(v25LoadCandidate?.data){
+    restoreV25Waiting(v25LoadCandidate.data);
+    if(v25LoadCandidate.data.currentZone==="forest"&&state.forestBought){
+      state.currentZone="forest";
+    }
+  }
+  ensureV25Dom();
+  render();
+  saveGame();
+};
+
+recoverPreviousSave=function(){
+  const keys=[
+    "farmRushV24","farmRushV23","farmRushV224","farmRushV223","farmRushV222","farmRushV221","farmRushV22","farmRushV21","farmRushV20",
+    "farmRushV192","farmRushV191","farmRushV19","farmRushV184","farmRushV183","farmRushV182","farmRushV181","farmRushV18",
+    "farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"
+  ];
+
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return toast("Aucune ancienne sauvegarde trouvée.");
+
+  saves.forEach(save=>save.score=v223ProgressScore(save.data));
+  saves.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("farmRushV25",saves[0].raw);
+  location.reload();
+};
+
+/* -------------------------
+   OBJECTIFS / NIVEAUX / PROGRESSION
+------------------------- */
+
+const renderGoalV25Base=renderGoal;
+renderGoal=function(){
+  renderGoalV25Base();
+
+  if(state.level>=38&&!state.forestBought){
+    document.getElementById("goalIcon").textContent="🌲";
+    document.getElementById("goalTitle").textContent="OBJECTIF : FORÊT";
+    document.getElementById("goalText").textContent=`${state.money.toLocaleString("fr-FR")} / ${FOREST_PRICE.toLocaleString("fr-FR")} 🪙`;
+    document.getElementById("goalFill").style.width=Math.min(100,state.money/FOREST_PRICE*100)+"%";
+    return;
+  }
+
+  if(state.level>=39&&state.forestBought&&!state.sawmillBought){
+    document.getElementById("goalIcon").textContent="🪚";
+    document.getElementById("goalTitle").textContent="OBJECTIF : SCIERIE";
+    document.getElementById("goalText").textContent=`${state.money.toLocaleString("fr-FR")} / ${SAWMILL_PRICE.toLocaleString("fr-FR")} 🪙`;
+    document.getElementById("goalFill").style.width=Math.min(100,state.money/SAWMILL_PRICE*100)+"%";
+    return;
+  }
+
+  if(state.forestBought){
+    const limit=forestPlotLimit();
+    if(state.forestPlots<limit){
+      document.getElementById("goalIcon").textContent="🌲";
+      document.getElementById("goalTitle").textContent="AGRANDIR LA FORÊT";
+      document.getElementById("goalText").textContent=`${state.forestPlots}/${limit} arbres • prochain : ${forestTreeCost().toLocaleString("fr-FR")} 🪙`;
+      document.getElementById("goalFill").style.width=Math.min(100,state.forestPlots/limit*100)+"%";
+    }
+  }
+};
+
+const levelRewardV25Base=levelReward;
+levelReward=function(level){
+  levelRewardV25Base(level);
+
+  const extra={
+    38:"<br><b>🌲 Nouveau :</b> Forêt débloquée • jusqu'à 6 arbres permanents.",
+    39:"<br><b>🪚 Nouveau :</b> Scierie débloquée • forêt jusqu'à 10 arbres.",
+    40:"<br><b>📦 Bois :</b> Caisses en bois débloquées • forêt jusqu'à 14 arbres.",
+    41:"<br><b>🪑 Bois :</b> Meubles débloqués • rendement forestier amélioré • forêt jusqu'à 18 arbres."
+  }[level];
+
+  if(extra&&document.getElementById("levelUpReward")){
+    document.getElementById("levelUpReward").innerHTML+=extra;
+  }
+};
+
+const showProgressV25Base=showProgress;
+showProgress=function(){
+  showProgressV25Base();
+
+  document.getElementById("modalTitle").textContent="⭐ Progression V2.5";
+  const body=document.getElementById("modalBody");
+  if(!body)return;
+
+  body.innerHTML=body.innerHTML
+    .replace(/Farm Rush V2\.4/g,"Farm Rush V2.5")
+    .replace(/Farm Rush V2\.3/g,"Farm Rush V2.5");
+
+  body.insertAdjacentHTML("beforeend",`
+    <p><b>🌲 Forêt & filière bois</b></p>
+    <div class="shopCard"><b>🌲 Forêt</b><span style="float:right">${state.forestBought?state.forestPlots+"/"+forestPlotLimit()+" arbres":"🔒 Niv. 38"}</span><br><small>${state.forestBought?`Rendement ${forestYield()} 🪵/arbre • max 18`:FOREST_PRICE.toLocaleString("fr-FR")+" 🪙"}</small></div>
+    <div class="shopCard"><b>🪚 Scierie</b><span style="float:right">${state.sawmillBought?"✅":"🔒 Niv. 39"}</span><br><small>${state.sawmillBought?storageSummaryAt("sawmill"):SAWMILL_PRICE.toLocaleString("fr-FR")+" 🪙"}</small></div>
+    <div class="shopCard"><b>🪵 Bois brut</b><span style="float:right">${state.stock.log||0}</span></div>
+    <div class="shopCard"><b>🪚 Planches</b><span style="float:right">${state.stock.plank||0}</span></div>
+    <div class="shopCard"><b>📦 Caisses en bois</b><span style="float:right">${state.stock.woodCrate||0}</span></div>
+    <div class="shopCard"><b>🪑 Meubles</b><span style="float:right">${state.stock.furniture||0}</span></div>
+  `);
+};
+
 
 ensureV24Dom();
 
