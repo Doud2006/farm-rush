@@ -7071,6 +7071,769 @@ showProgress=function(){
 };
 
 
+
+/* ======================================================
+   FARM RUSH V2.3 — COTON & ATELIER TEXTILE
+   Étape 4 : coton + laine -> vêtements
+====================================================== */
+
+(function(){
+  const style=document.createElement("style");
+  style.textContent=`
+    .textilePanel{
+      background:linear-gradient(135deg,#f7eef7,#ead9ee);
+      border-color:#a87ba7;
+    }
+    .textileIntro{
+      background:#fff9ff;
+      border:1px solid #d8bdd7;
+      border-radius:11px;
+      padding:9px;
+      margin-top:8px;
+      font-size:10px;
+      line-height:1.5;
+    }
+    .textileBadge{
+      display:inline-block;
+      background:#754b78;
+      color:#fff;
+      border-radius:999px;
+      padding:2px 6px;
+      font-size:8px;
+      vertical-align:middle;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title="Farm Rush V2.3";
+const v23VersionEl=document.querySelector(".version");
+if(v23VersionEl){
+  v23VersionEl.textContent="V2.3 — Coton, Atelier textile & vêtements • Vignoble Niv.25 • Bergerie Niv.27";
+}
+
+/* -------------------------
+   COTON
+------------------------- */
+
+Object.assign(CROPS,{
+  cotton:{
+    icon:"☁️",
+    name:"Coton",
+    seed:"🌱",
+    sprout:"🌿",
+    time:240,
+    cost:240,
+    sell:680,
+    xp:18,
+    level:28,
+    zone:"farm"
+  }
+});
+
+/* -------------------------
+   PRODUITS TEXTILES
+------------------------- */
+
+Object.assign(PRODUCTS,{
+  woolThread:{icon:"🧵",name:"Fil de laine",sell:2800},
+  cottonFabric:{icon:"🪡",name:"Tissu de coton",sell:3000},
+  scarf:{icon:"🧣",name:"Écharpe",sell:7000},
+  tshirt:{icon:"👕",name:"T-shirt",sell:7500},
+  pants:{icon:"👖",name:"Pantalon",sell:10500},
+  sweater:{icon:"🧶",name:"Pull en laine",sell:12500},
+  dress:{icon:"👗",name:"Robe",sell:16000},
+  coat:{icon:"🧥",name:"Manteau",sell:19000}
+});
+
+Object.assign(DEFAULT_STATE,{
+  textileBought:false,
+
+  woolThreadQueue:0,
+  woolThreadWaiting:0,
+  woolThreadLastProduction:Date.now(),
+
+  cottonFabricQueue:0,
+  cottonFabricWaiting:0,
+  cottonFabricLastProduction:Date.now(),
+
+  scarfQueue:0,
+  scarfWaiting:0,
+  scarfLastProduction:Date.now(),
+
+  tshirtQueue:0,
+  tshirtWaiting:0,
+  tshirtLastProduction:Date.now(),
+
+  pantsQueue:0,
+  pantsWaiting:0,
+  pantsLastProduction:Date.now(),
+
+  sweaterQueue:0,
+  sweaterWaiting:0,
+  sweaterLastProduction:Date.now(),
+
+  dressQueue:0,
+  dressWaiting:0,
+  dressLastProduction:Date.now(),
+
+  coatQueue:0,
+  coatWaiting:0,
+  coatLastProduction:Date.now()
+});
+
+const TEXTILE_PRICE=220000;
+
+DEFAULT_STATE.boosts.textile=0;
+BOOST_BASE_COST.textile=40000;
+BOOST_LABELS.textile="🧵 Atelier textile";
+
+/* -------------------------
+   STOCKAGE AMÉLIORABLE
+------------------------- */
+
+if(!STORAGE_KEYS.includes("textile")){
+  STORAGE_KEYS.push("textile");
+}
+
+STORAGE_LABELS.textile="🧵 Atelier textile";
+STORAGE_BASE_COST.textile=30000;
+DEFAULT_STATE.storageLevels.textile=0;
+STORAGE_PANEL_MAP.textile="textilePanel";
+
+WAIT_STORAGE.woolThreadWaiting=["textile",15];
+WAIT_STORAGE.cottonFabricWaiting=["textile",15];
+WAIT_STORAGE.scarfWaiting=["textile",10];
+WAIT_STORAGE.tshirtWaiting=["textile",10];
+WAIT_STORAGE.pantsWaiting=["textile",8];
+WAIT_STORAGE.sweaterWaiting=["textile",8];
+WAIT_STORAGE.dressWaiting=["textile",6];
+WAIT_STORAGE.coatWaiting=["textile",6];
+
+RECIPE_STORAGE_BY_NAME["Fil de laine"]=["textile",15];
+RECIPE_STORAGE_BY_NAME["Tissu de coton"]=["textile",15];
+RECIPE_STORAGE_BY_NAME["Écharpe"]=["textile",10];
+RECIPE_STORAGE_BY_NAME["T-shirt"]=["textile",10];
+RECIPE_STORAGE_BY_NAME["Pantalon"]=["textile",8];
+RECIPE_STORAGE_BY_NAME["Pull en laine"]=["textile",8];
+RECIPE_STORAGE_BY_NAME["Robe"]=["textile",6];
+RECIPE_STORAGE_BY_NAME["Manteau"]=["textile",6];
+
+const storageOwnedV23Base=storageOwned;
+storageOwned=function(key){
+  if(key==="textile")return !!state.textileBought;
+  return storageOwnedV23Base(key);
+};
+
+const storageSummaryAtV23Base=storageSummaryAt;
+storageSummaryAt=function(key,level=storageLevel(key)){
+  if(key==="textile"){
+    const c=base=>storageCapAt("textile",base,level);
+    return `🧵 Fil ${c(15)} • 🪡 Tissu ${c(15)} • 🧣 ${c(10)} • 👕 ${c(10)} • 👖 ${c(8)} • 🧶 ${c(8)} • 👗 ${c(6)} • 🧥 ${c(6)}`;
+  }
+  return storageSummaryAtV23Base(key,level);
+};
+
+const buildingOwnedForBoostV23Base=buildingOwnedForBoost;
+buildingOwnedForBoost=function(key){
+  if(key==="textile")return !!state.textileBought;
+  return buildingOwnedForBoostV23Base(key);
+};
+
+/* -------------------------
+   DOM ATELIER TEXTILE
+------------------------- */
+
+function ensureV23Dom(){
+  ensureV22Dom();
+
+  const sheepfold=document.getElementById("sheepfoldPanel");
+  const restaurant=document.getElementById("restaurantPanel");
+  const anchor=sheepfold||restaurant;
+
+  if(anchor&&!document.getElementById("textilePanel")){
+    const panel=document.createElement("div");
+    panel.id="textilePanel";
+    panel.className="panel buildingPanel textilePanel";
+    panel.style.display="none";
+    anchor.insertAdjacentElement("afterend",panel);
+  }
+}
+
+/* -------------------------
+   RECETTES / QUANTITÉS EXACTES
+------------------------- */
+
+Object.assign(EXACT_PRODUCTION_CONFIG,{
+  woolThread:{
+    title:"🧵 Fil de laine",
+    owned:"textileBought",
+    minLevel:29,
+    req:{wool:2},
+    queue:"woolThreadQueue",
+    last:"woolThreadLastProduction",
+    output:"woolThread"
+  },
+
+  cottonFabric:{
+    title:"🪡 Tissu de coton",
+    owned:"textileBought",
+    minLevel:29,
+    req:{cotton:3},
+    queue:"cottonFabricQueue",
+    last:"cottonFabricLastProduction",
+    output:"cottonFabric"
+  },
+
+  scarf:{
+    title:"🧣 Écharpe",
+    owned:"textileBought",
+    minLevel:30,
+    req:{woolThread:2},
+    queue:"scarfQueue",
+    last:"scarfLastProduction",
+    output:"scarf"
+  },
+
+  tshirt:{
+    title:"👕 T-shirt",
+    owned:"textileBought",
+    minLevel:30,
+    req:{cottonFabric:2},
+    queue:"tshirtQueue",
+    last:"tshirtLastProduction",
+    output:"tshirt"
+  },
+
+  pants:{
+    title:"👖 Pantalon",
+    owned:"textileBought",
+    minLevel:31,
+    req:{cottonFabric:3},
+    queue:"pantsQueue",
+    last:"pantsLastProduction",
+    output:"pants"
+  },
+
+  sweater:{
+    title:"🧶 Pull en laine",
+    owned:"textileBought",
+    minLevel:31,
+    req:{woolThread:3,cottonFabric:1},
+    queue:"sweaterQueue",
+    last:"sweaterLastProduction",
+    output:"sweater"
+  },
+
+  dress:{
+    title:"👗 Robe",
+    owned:"textileBought",
+    minLevel:32,
+    req:{cottonFabric:4,woolThread:1},
+    queue:"dressQueue",
+    last:"dressLastProduction",
+    output:"dress"
+  },
+
+  coat:{
+    title:"🧥 Manteau",
+    owned:"textileBought",
+    minLevel:33,
+    req:{cottonFabric:3,woolThread:3},
+    queue:"coatQueue",
+    last:"coatLastProduction",
+    output:"coat"
+  }
+});
+
+function loadWoolThread(){openExactProduction("woolThread")}
+function loadCottonFabric(){openExactProduction("cottonFabric")}
+function loadScarf(){openExactProduction("scarf")}
+function loadTshirt(){openExactProduction("tshirt")}
+function loadPants(){openExactProduction("pants")}
+function loadSweater(){openExactProduction("sweater")}
+function loadDress(){openExactProduction("dress")}
+function loadCoat(){openExactProduction("coat")}
+
+function collectWoolThread(){collectWaiting("woolThreadWaiting","woolThread","🧵")}
+function collectCottonFabric(){collectWaiting("cottonFabricWaiting","cottonFabric","🪡")}
+function collectScarf(){collectWaiting("scarfWaiting","scarf","🧣")}
+function collectTshirt(){collectWaiting("tshirtWaiting","tshirt","👕")}
+function collectPants(){collectWaiting("pantsWaiting","pants","👖")}
+function collectSweater(){collectWaiting("sweaterWaiting","sweater","🧶")}
+function collectDress(){collectWaiting("dressWaiting","dress","👗")}
+function collectCoat(){collectWaiting("coatWaiting","coat","🧥")}
+
+/* -------------------------
+   AFFICHAGE ATELIER
+------------------------- */
+
+function renderTextileV23(){
+  ensureV23Dom();
+
+  const panel=document.getElementById("textilePanel");
+  if(!panel)return;
+
+  panel.style.display=state.textileBought?"block":"none";
+  if(!state.textileBought)return;
+
+  let recipes="";
+
+  recipes+=recipeCardV19({
+    icon:"🧵",
+    name:"Fil de laine",
+    description:"2 🧶 laine → 1 🧵 fil de laine",
+    queue:state.woolThreadQueue,
+    waiting:state.woolThreadWaiting,
+    cap:15,
+    last:state.woolThreadLastProduction,
+    interval:boostedTime("textile",180),
+    loadAction:"loadWoolThread()",
+    collectAction:"collectWoolThread()",
+    loadLabel:"🧶 FILER",
+    collectLabel:"🧵 PRENDRE"
+  });
+
+  recipes+=recipeCardV19({
+    icon:"🪡",
+    name:"Tissu de coton",
+    description:"3 ☁️ coton → 1 🪡 tissu",
+    queue:state.cottonFabricQueue,
+    waiting:state.cottonFabricWaiting,
+    cap:15,
+    last:state.cottonFabricLastProduction,
+    interval:boostedTime("textile",180),
+    loadAction:"loadCottonFabric()",
+    collectAction:"collectCottonFabric()",
+    loadLabel:"☁️ TISSER",
+    collectLabel:"🪡 PRENDRE"
+  });
+
+  recipes+=state.level>=30
+    ?recipeCardV19({
+      icon:"🧣",name:"Écharpe",description:"2 🧵 fils de laine → 1 🧣 écharpe",
+      queue:state.scarfQueue,waiting:state.scarfWaiting,cap:10,last:state.scarfLastProduction,
+      interval:boostedTime("textile",240),loadAction:"loadScarf()",collectAction:"collectScarf()",
+      loadLabel:"🧣 FABRIQUER",collectLabel:"🧣 PRENDRE"
+    })
+    :lockedRecipeCard(30,"🧣","Écharpe","2 🧵 fils de laine → 1 écharpe");
+
+  recipes+=state.level>=30
+    ?recipeCardV19({
+      icon:"👕",name:"T-shirt",description:"2 🪡 tissus de coton → 1 👕 T-shirt",
+      queue:state.tshirtQueue,waiting:state.tshirtWaiting,cap:10,last:state.tshirtLastProduction,
+      interval:boostedTime("textile",240),loadAction:"loadTshirt()",collectAction:"collectTshirt()",
+      loadLabel:"👕 FABRIQUER",collectLabel:"👕 PRENDRE"
+    })
+    :lockedRecipeCard(30,"👕","T-shirt","2 🪡 tissus de coton → 1 T-shirt");
+
+  recipes+=state.level>=31
+    ?recipeCardV19({
+      icon:"👖",name:"Pantalon",description:"3 🪡 tissus de coton → 1 👖 pantalon",
+      queue:state.pantsQueue,waiting:state.pantsWaiting,cap:8,last:state.pantsLastProduction,
+      interval:boostedTime("textile",300),loadAction:"loadPants()",collectAction:"collectPants()",
+      loadLabel:"👖 FABRIQUER",collectLabel:"👖 PRENDRE"
+    })
+    :lockedRecipeCard(31,"👖","Pantalon","3 🪡 tissus de coton → 1 pantalon");
+
+  recipes+=state.level>=31
+    ?recipeCardV19({
+      icon:"🧶",name:"Pull en laine",description:"3 🧵 fils + 1 🪡 tissu → 1 pull",
+      queue:state.sweaterQueue,waiting:state.sweaterWaiting,cap:8,last:state.sweaterLastProduction,
+      interval:boostedTime("textile",360),loadAction:"loadSweater()",collectAction:"collectSweater()",
+      loadLabel:"🧶 FABRIQUER",collectLabel:"🧶 PRENDRE"
+    })
+    :lockedRecipeCard(31,"🧶","Pull en laine","3 🧵 fils + 1 🪡 tissu → 1 pull");
+
+  recipes+=state.level>=32
+    ?recipeCardV19({
+      icon:"👗",name:"Robe",description:"4 🪡 tissus + 1 🧵 fil → 1 👗 robe",
+      queue:state.dressQueue,waiting:state.dressWaiting,cap:6,last:state.dressLastProduction,
+      interval:boostedTime("textile",420),loadAction:"loadDress()",collectAction:"collectDress()",
+      loadLabel:"👗 FABRIQUER",collectLabel:"👗 PRENDRE"
+    })
+    :lockedRecipeCard(32,"👗","Robe","4 🪡 tissus + 1 🧵 fil → 1 robe");
+
+  recipes+=state.level>=33
+    ?recipeCardV19({
+      icon:"🧥",name:"Manteau",description:"3 🪡 tissus + 3 🧵 fils → 1 🧥 manteau",
+      queue:state.coatQueue,waiting:state.coatWaiting,cap:6,last:state.coatLastProduction,
+      interval:boostedTime("textile",480),loadAction:"loadCoat()",collectAction:"collectCoat()",
+      loadLabel:"🧥 FABRIQUER",collectLabel:"🧥 PRENDRE"
+    })
+    :lockedRecipeCard(33,"🧥","Manteau","3 🪡 tissus + 3 🧵 fils → 1 manteau");
+
+  panel.innerHTML=`
+    <div class="buildingHeader">
+      <div class="buildingIcon">🧵</div>
+      <div class="buildingBody">
+        <div class="buildingName">ATELIER TEXTILE ${boostBadge("textile")}</div>
+        <div class="buildingStats">Transforme la laine et le coton en vêtements à forte valeur. <span class="textileBadge">V2.3</span></div>
+      </div>
+    </div>
+
+    <div class="textileIntro">
+      ☁️ Cultive le coton dans la ferme • 🧶 récupère la laine de la bergerie • puis fabrique fils, tissus et vêtements.
+    </div>
+
+    <div class="recipeGridV19">${recipes}</div>
+  `;
+}
+
+const renderBuildingsV23Base=renderBuildings;
+renderBuildings=function(){
+  ensureV23Dom();
+  renderBuildingsV23Base();
+  renderTextileV23();
+  decorateStoragePanels();
+};
+
+/* -------------------------
+   SHOP / ACHAT
+------------------------- */
+
+const shopBuildingsV23Base=shopBuildings;
+shopBuildings=function(){
+  let html=shopBuildingsV23Base();
+
+  html+=shopCard(
+    "🧵",
+    "Atelier textile",
+    "Transforme la laine et le coton en fil, tissu, écharpes, T-shirts, pantalons, pulls, robes et manteaux.",
+    TEXTILE_PRICE,
+    state.level>=29&&state.sheepfoldBought,
+    "buyBuilding('textile')",
+    state.textileBought,
+    "Niveau 29 + Bergerie"
+  );
+
+  return html;
+};
+
+const buyBuildingV23Base=buyBuilding;
+buyBuilding=function(type){
+  if(type!=="textile"){
+    return buyBuildingV23Base(type);
+  }
+
+  if(state.textileBought)return;
+
+  if(state.level<29){
+    return toast("L'Atelier textile se débloque au niveau 29.");
+  }
+
+  if(!state.sheepfoldBought){
+    return toast("Il faut d'abord construire la Bergerie.");
+  }
+
+  if(state.money<TEXTILE_PRICE){
+    return toast("Pas assez d'argent.");
+  }
+
+  state.money-=TEXTILE_PRICE;
+  state.textileBought=true;
+
+  const now=Date.now();
+  [
+    "woolThreadLastProduction","cottonFabricLastProduction","scarfLastProduction","tshirtLastProduction",
+    "pantsLastProduction","sweaterLastProduction","dressLastProduction","coatLastProduction"
+  ].forEach(key=>state[key]=now);
+
+  showFloatingText("🧵 ATELIER TEXTILE CONSTRUIT");
+  tone(680,.11);
+  render();
+  openShop("buildings");
+};
+
+/* -------------------------
+   PRODUCTION
+------------------------- */
+
+const updateProductionsV23Base=updateProductions;
+updateProductions=function(now=Date.now()){
+  updateProductionsV23Base(now);
+
+  [
+    ["woolThreadQueue","woolThreadWaiting","woolThreadLastProduction",15,180],
+    ["cottonFabricQueue","cottonFabricWaiting","cottonFabricLastProduction",15,180],
+    ["scarfQueue","scarfWaiting","scarfLastProduction",10,240],
+    ["tshirtQueue","tshirtWaiting","tshirtLastProduction",10,240],
+    ["pantsQueue","pantsWaiting","pantsLastProduction",8,300],
+    ["sweaterQueue","sweaterWaiting","sweaterLastProduction",8,360],
+    ["dressQueue","dressWaiting","dressLastProduction",6,420],
+    ["coatQueue","coatWaiting","coatLastProduction",6,480]
+  ].forEach(([queue,wait,last,cap,time])=>{
+    runQueueProduction({
+      owned:"textileBought",
+      queue,
+      wait,
+      last,
+      cap,
+      interval:boostedTime("textile",time)
+    },now);
+  });
+};
+
+const processOfflineV23Base=processOffline;
+processOffline=function(){
+  processOfflineV23Base();
+  const now=Date.now();
+  [
+    "woolThreadLastProduction","cottonFabricLastProduction","scarfLastProduction","tshirtLastProduction",
+    "pantsLastProduction","sweaterLastProduction","dressLastProduction","coatLastProduction"
+  ].forEach(key=>state[key]=now);
+};
+
+/* -------------------------
+   COMMANDES / MARCHÉ
+------------------------- */
+
+const availableOrderProductsV23Base=availableOrderProducts;
+availableOrderProducts=function(){
+  const list=availableOrderProductsV23Base();
+
+  if(state.textileBought){
+    list.push(
+      {key:"woolThread",sell:PRODUCTS.woolThread.sell},
+      {key:"cottonFabric",sell:PRODUCTS.cottonFabric.sell}
+    );
+
+    if(state.level>=30){
+      list.push(
+        {key:"scarf",sell:PRODUCTS.scarf.sell},
+        {key:"tshirt",sell:PRODUCTS.tshirt.sell}
+      );
+    }
+
+    if(state.level>=31){
+      list.push(
+        {key:"pants",sell:PRODUCTS.pants.sell},
+        {key:"sweater",sell:PRODUCTS.sweater.sell}
+      );
+    }
+
+    if(state.level>=32){
+      list.push({key:"dress",sell:PRODUCTS.dress.sell});
+    }
+
+    if(state.level>=33){
+      list.push({key:"coat",sell:PRODUCTS.coat.sell});
+    }
+  }
+
+  return list;
+};
+
+/* -------------------------
+   NORMALISATION / MIGRATION
+------------------------- */
+
+function normalizeV23State(){
+  state.textileBought=!!state.textileBought;
+
+  const queueKeys=[
+    "woolThreadQueue","cottonFabricQueue","scarfQueue","tshirtQueue",
+    "pantsQueue","sweaterQueue","dressQueue","coatQueue"
+  ];
+
+  queueKeys.forEach(key=>{
+    state[key]=Math.max(0,Math.floor(Number(state[key])||0));
+  });
+
+  const waits={
+    woolThreadWaiting:storageCapAt("textile",15),
+    cottonFabricWaiting:storageCapAt("textile",15),
+    scarfWaiting:storageCapAt("textile",10),
+    tshirtWaiting:storageCapAt("textile",10),
+    pantsWaiting:storageCapAt("textile",8),
+    sweaterWaiting:storageCapAt("textile",8),
+    dressWaiting:storageCapAt("textile",6),
+    coatWaiting:storageCapAt("textile",6)
+  };
+
+  Object.entries(waits).forEach(([key,cap])=>{
+    state[key]=Math.max(0,Math.min(cap,Math.floor(Number(state[key])||0)));
+  });
+
+  [
+    "woolThreadLastProduction","cottonFabricLastProduction","scarfLastProduction","tshirtLastProduction",
+    "pantsLastProduction","sweaterLastProduction","dressLastProduction","coatLastProduction"
+  ].forEach(key=>{
+    state[key]=Number(state[key])||Date.now();
+  });
+
+  [
+    "woolThread","cottonFabric","scarf","tshirt","pants","sweater","dress","coat"
+  ].forEach(key=>{
+    state.stock[key]=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  });
+
+  normalizeStorageLevels();
+}
+
+function restoreV23Waiting(raw){
+  if(!raw||typeof raw!=="object")return;
+
+  const caps={
+    woolThreadWaiting:storageCapAt("textile",15),
+    cottonFabricWaiting:storageCapAt("textile",15),
+    scarfWaiting:storageCapAt("textile",10),
+    tshirtWaiting:storageCapAt("textile",10),
+    pantsWaiting:storageCapAt("textile",8),
+    sweaterWaiting:storageCapAt("textile",8),
+    dressWaiting:storageCapAt("textile",6),
+    coatWaiting:storageCapAt("textile",6)
+  };
+
+  Object.entries(caps).forEach(([key,cap])=>{
+    if(raw[key]!==undefined){
+      state[key]=Math.max(0,Math.min(cap,Math.floor(Number(raw[key])||0)));
+    }
+  });
+}
+
+/* -------------------------
+   SAUVEGARDE V2.3
+------------------------- */
+
+saveGame=function(){
+  state.lastSeen=Date.now();
+  normalizeV23State();
+  localStorage.setItem("farmRushV23",JSON.stringify(state));
+};
+
+let v23LoadCandidate=null;
+const v223FindBestSaveV23Base=v223FindBestSave;
+v223FindBestSave=function(){
+  const current=v223ParseSave("farmRushV23");
+
+  if(current&&!v223LooksReset(current.data)){
+    v23LoadCandidate=current;
+    return current;
+  }
+
+  const best=v223FindBestSaveV23Base();
+  v23LoadCandidate=best;
+  return best;
+};
+
+const loadGameV23Base=loadGame;
+loadGame=function(){
+  v23LoadCandidate=null;
+  loadGameV23Base();
+  normalizeV23State();
+
+  if(v23LoadCandidate?.data){
+    restoreV23Waiting(v23LoadCandidate.data);
+  }
+
+  ensureV23Dom();
+  render();
+  saveGame();
+};
+
+recoverPreviousSave=function(){
+  const keys=[
+    "farmRushV224","farmRushV223","farmRushV222","farmRushV221","farmRushV22","farmRushV21","farmRushV20",
+    "farmRushV192","farmRushV191","farmRushV19","farmRushV184","farmRushV183","farmRushV182","farmRushV181",
+    "farmRushV18","farmRushV173","farmRushV172","farmRushV171","farmRushV17","farmRushV161","farmRushV16","farmRushV15"
+  ];
+
+  const saves=keys.map(v223ParseSave).filter(Boolean);
+  if(!saves.length)return toast("Aucune ancienne sauvegarde trouvée.");
+
+  saves.forEach(save=>save.score=v223ProgressScore(save.data));
+  saves.sort((a,b)=>b.score-a.score);
+
+  localStorage.setItem("farmRushV23",saves[0].raw);
+  location.reload();
+};
+
+/* -------------------------
+   OBJECTIFS / PROGRESSION
+------------------------- */
+
+const renderGoalV23Base=renderGoal;
+renderGoal=function(){
+  renderGoalV23Base();
+
+  if(
+    state.level>=28&&
+    state.sheepfoldBought&&
+    !state.textileBought
+  ){
+    document.getElementById("goalIcon").textContent="🧵";
+    document.getElementById("goalTitle").textContent="OBJECTIF : ATELIER TEXTILE";
+
+    if(state.level<29){
+      document.getElementById("goalText").textContent=`Niveau ${state.level}/29 • ☁️ Le coton est déjà disponible`;
+      document.getElementById("goalFill").style.width=Math.min(100,state.level/29*100)+"%";
+    }else{
+      document.getElementById("goalText").textContent=`${state.money.toLocaleString("fr-FR")} / ${TEXTILE_PRICE.toLocaleString("fr-FR")} 🪙`;
+      document.getElementById("goalFill").style.width=Math.min(100,state.money/TEXTILE_PRICE*100)+"%";
+    }
+  }
+};
+
+const levelRewardV23Base=levelReward;
+levelReward=function(level){
+  levelRewardV23Base(level);
+
+  const extra={
+    28:"<br><b>☁️ Nouveau :</b> Coton débloqué dans les champs.",
+    29:"<br><b>🧵 Nouveau :</b> Atelier textile débloqué • Fil de laine + Tissu de coton.",
+    30:"<br><b>🧣👕 Textile :</b> Écharpe et T-shirt débloqués.",
+    31:"<br><b>👖🧶 Textile :</b> Pantalon et Pull en laine débloqués.",
+    32:"<br><b>👗 Textile :</b> Robe débloquée.",
+    33:"<br><b>🧥 Textile :</b> Manteau débloqué."
+  }[level];
+
+  if(extra&&document.getElementById("levelUpReward")){
+    document.getElementById("levelUpReward").innerHTML+=extra;
+  }
+};
+
+const showProgressV23Base=showProgress;
+showProgress=function(){
+  showProgressV23Base();
+
+  document.getElementById("modalTitle").textContent="⭐ Progression V2.3";
+  const body=document.getElementById("modalBody");
+  if(!body)return;
+
+  body.innerHTML=body.innerHTML
+    .replace(/Farm Rush V2\.2\.4/g,"Farm Rush V2.3")
+    .replace(/Farm Rush V2\.2\.3/g,"Farm Rush V2.3")
+    .replace(/Farm Rush V2\.2\.2/g,"Farm Rush V2.3");
+
+  body.insertAdjacentHTML("beforeend",`
+    <p><b>🧵 Filière textile</b></p>
+
+    <div class="shopCard">
+      <b>☁️ Coton</b>
+      <span style="float:right">${state.level>=28?"✅ Niv. 28":"🔒 Niv. 28"}</span>
+    </div>
+
+    <div class="shopCard">
+      <b>🧵 Atelier textile</b>
+      <span style="float:right">${state.textileBought?"✅":"🔒 Niv. 29"}</span>
+      <br><small>${state.textileBought?storageSummaryAt("textile"):"Bergerie requise"}</small>
+    </div>
+
+    <div class="shopCard"><b>🧵 Fil de laine</b><span style="float:right">${state.stock.woolThread||0}</span></div>
+    <div class="shopCard"><b>🪡 Tissu de coton</b><span style="float:right">${state.stock.cottonFabric||0}</span></div>
+    <div class="shopCard"><b>🧣 Écharpes</b><span style="float:right">${state.stock.scarf||0}</span></div>
+    <div class="shopCard"><b>👕 T-shirts</b><span style="float:right">${state.stock.tshirt||0}</span></div>
+    <div class="shopCard"><b>👖 Pantalons</b><span style="float:right">${state.stock.pants||0}</span></div>
+    <div class="shopCard"><b>🧶 Pulls</b><span style="float:right">${state.stock.sweater||0}</span></div>
+    <div class="shopCard"><b>👗 Robes</b><span style="float:right">${state.stock.dress||0}</span></div>
+    <div class="shopCard"><b>🧥 Manteaux</b><span style="float:right">${state.stock.coat||0}</span></div>
+  `);
+};
+
+ensureV23Dom();
+
+
 ensureV22Dom();
 
 ensureV20Dom();
