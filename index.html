@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.5</title>
+<title>Farm Rush V2.5.1</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -9531,5 +9531,122 @@ bindFieldArea("farmArea","farm");bindFieldArea("orchardArea","orchard");
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"){if(!paintGesture&&!activeFieldTouch)renderFields();renderBuildings();renderGoal()}},500);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
+<style>
+/* ===== FARM RUSH V2.5.1 — INTERFACE CONFORT ===== */
+:root{--ui-bg:#f6f1e4;--ui-card:#fffdf7;--ui-green:#4f8f3a;--ui-dark:#342b21;--ui-line:#ded2b7;--ui-gold:#d69a22}
+body{background:linear-gradient(#eaf4df 0,#f6f1e4 240px);padding-bottom:92px}
+header{position:sticky;top:0;z-index:24;background:rgba(255,253,247,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--ui-line);box-shadow:0 3px 14px rgba(55,45,30,.10)}
+.top{padding:9px 12px;gap:9px}.avatar{width:42px;height:42px;font-size:24px}.playerName{font-size:10px}.xpText{font-size:8px}.money{background:#fff3c9;border:1px solid #e5c46f;border-radius:13px;padding:9px 10px;font-size:12px;white-space:nowrap}
+.panel,.building,.goalCard{border-radius:17px!important;box-shadow:0 4px 14px rgba(63,51,31,.08);border-color:var(--ui-line)!important;background:var(--ui-card)!important}
+.panelTitle{font-size:12px}.btn{min-height:38px;border-radius:12px}.btn.small{min-height:34px}
+.stockGrid{gap:6px}.stockItem{border-radius:11px!important}
+.nav{background:rgba(52,43,33,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -5px 18px rgba(0,0,0,.18)}
+.nav button{padding:9px 3px 7px;opacity:.86}.nav button:active{transform:scale(.94);opacity:1}.nav span{font-size:23px;margin-bottom:2px}
+.modalSheet{border-radius:22px 22px 0 0!important}.marketRow{border-radius:15px;padding:12px;box-shadow:0 2px 7px rgba(50,40,25,.05)}
+.marketTop{align-items:center}.marketButtons{grid-template-columns:1fr 1fr 1fr 1.2fr}.marketButtons .btn{padding:7px 4px;font-size:9px}
+.quickSellBar{position:sticky;top:0;z-index:2;background:#fffdf7;padding:7px 0 10px;border-bottom:1px solid #e7dcc3;margin-bottom:10px}
+.marketSearch{width:100%;box-sizing:border-box;border:2px solid #b7c9a5;border-radius:12px;padding:11px 12px;font-size:16px;background:white;outline:none}
+.marketEmpty{text-align:center;padding:24px 8px;color:#786d5c}
+.sellQtyBox{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}.sellQtyInput{width:100%;box-sizing:border-box;border:2px solid #b7c9a5;border-radius:11px;padding:9px;text-align:center;font-size:16px;font-weight:900}
+@media(max-width:390px){.money{font-size:10px;padding:8px 7px}.nav button{font-size:8px}.marketButtons{grid-template-columns:repeat(3,1fr)}.marketButtons .exactSellBtn{grid-column:1/-1}}
+</style>
+<script>
+/* ===== FARM RUSH V2.5.1 — UI + CORRECTIF VENTE ===== */
+document.title="Farm Rush V2.5.1";
+const v251Version=document.querySelector('.version');
+if(v251Version)v251Version.textContent="V2.5.1 — Interface confort • Marché réparé • Forêt & Scierie";
+
+function v251SellPrice(key){
+  if(CROPS[key]&&Number.isFinite(Number(CROPS[key].sell)))return Number(CROPS[key].sell);
+  if(PRODUCTS[key]&&Number.isFinite(Number(PRODUCTS[key].sell)))return Number(PRODUCTS[key].sell);
+  return 0;
+}
+function v251SellableKeys(){
+  const keys=[];
+  for(const key in CROPS)if(unlocked(key)&&v251SellPrice(key)>0)keys.push(key);
+  for(const key in PRODUCTS){
+    if(isAccessibleOrderKey(key)&&v251SellPrice(key)>0&&!keys.includes(key))keys.push(key);
+  }
+  return keys;
+}
+function v251MarketName(key){const p=productInfo(key);return (p.name||key).toLowerCase()}
+
+marketCard=function(key,icon,name,price){
+  const q=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  const safePrice=Math.max(0,Number(price)||v251SellPrice(key));
+  return `<div class="marketRow" data-market-name="${String(name).toLowerCase()} ${key}">
+    <div class="marketTop"><div><b>${icon} ${name}</b><br><small>Stock : <b>${q}</b> • ${safePrice.toLocaleString('fr-FR')} 🪙/u</small></div><b>${(q*safePrice).toLocaleString('fr-FR')} 🪙</b></div>
+    <div class="marketButtons">
+      <button class="btn small" ${q<1?'disabled':''} onclick="sellProduct('${key}',1,${safePrice})">x1</button>
+      <button class="btn blue small" ${q<5?'disabled':''} onclick="sellProduct('${key}',5,${safePrice})">x5</button>
+      <button class="btn gold small" ${q<1?'disabled':''} onclick="sellProduct('${key}',${q},${safePrice})">TOUT</button>
+      <button class="btn small exactSellBtn" ${q<1?'disabled':''} onclick="openExactSell('${key}')">🔢 QUANTITÉ</button>
+    </div>
+  </div>`;
+};
+
+showMarket=function(restoreScroll=null){
+  cancelPaintSession();
+  let html=`<div class="quickSellBar"><input id="marketSearch" class="marketSearch" type="search" placeholder="🔎 Rechercher un produit…" oninput="filterV251Market(this.value)"></div><div id="marketList">`;
+  for(const key of v251SellableKeys()){
+    const p=productInfo(key); html+=marketCard(key,p.icon,p.name,v251SellPrice(key));
+  }
+  html+='</div>';
+  openModal('💰 Marché — vendre',html);
+  if(Number.isFinite(restoreScroll))requestAnimationFrame(()=>requestAnimationFrame(()=>{const sheet=document.getElementById('modalSheet');if(sheet)sheet.scrollTop=restoreScroll}));
+};
+
+function filterV251Market(value){
+  const term=String(value||'').trim().toLowerCase();
+  document.querySelectorAll('#marketList .marketRow').forEach(row=>{row.style.display=!term||row.dataset.marketName.includes(term)?'':'none'});
+}
+
+sellProduct=function(key,q,price){
+  const available=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  const qty=Math.min(Math.max(0,Math.floor(Number(q)||0)),available);
+  const unit=Math.max(0,Number(price)||v251SellPrice(key));
+  if(qty<=0)return toast('Aucun produit à vendre.');
+  if(unit<=0)return toast('Ce produit ne peut pas être vendu.');
+  const sheet=document.getElementById('modalSheet');
+  const scroll=sheet?sheet.scrollTop:0;
+  const gain=qty*unit;
+  state.stock[key]=available-qty;
+  state.money=(Number(state.money)||0)+gain;
+  saveGame();
+  showFloatingText('🪙 +'+gain.toLocaleString('fr-FR'));
+  tone(1000,.06);
+  render();
+  showMarket(scroll);
+};
+
+function openExactSell(key){
+  const p=productInfo(key),stock=Math.max(0,Math.floor(Number(state.stock[key])||0)),price=v251SellPrice(key);
+  if(stock<1)return toast('Aucun stock à vendre.');
+  openModal('💰 Vendre '+p.name,`<div class="shopCard"><div class="shopHeader"><div class="shopIcon">${p.icon}</div><div class="shopInfo"><div class="shopName">${p.name}</div><div class="shopDescription">Stock disponible : ${stock} • ${price.toLocaleString('fr-FR')} 🪙/u</div></div></div><div class="sellQtyBox"><input id="v251SellQty" class="sellQtyInput" type="number" inputmode="numeric" min="1" max="${stock}" value="1" oninput="updateExactSellV251('${key}')"><button class="btn gold" onclick="confirmExactSellV251('${key}')">VENDRE</button></div><div id="v251SellPreview" class="shopDescription" style="margin-top:9px"></div></div>`);
+  updateExactSellV251(key);
+  const input=document.getElementById('v251SellQty');if(input){input.focus();input.select()}
+}
+function updateExactSellV251(key){
+  const input=document.getElementById('v251SellQty'),out=document.getElementById('v251SellPreview');if(!input||!out)return;
+  const stock=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  const qty=Math.min(stock,Math.max(0,Math.floor(Number(input.value)||0)));
+  out.innerHTML=`Tu vas recevoir <b>${(qty*v251SellPrice(key)).toLocaleString('fr-FR')} 🪙</b> pour <b>${qty}</b> unité${qty>1?'s':''}.`;
+}
+function confirmExactSellV251(key){
+  const input=document.getElementById('v251SellQty');if(!input)return;
+  const stock=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  const qty=Math.min(stock,Math.max(0,Math.floor(Number(input.value)||0)));
+  if(qty<1)return toast('Entre une quantité valide.');
+  sellProduct(key,qty,v251SellPrice(key));
+}
+
+/* sauvegarde séparée V2.5.1, sans détruire les backups */
+const saveGameV251Base=saveGame;
+saveGame=function(){
+  saveGameV251Base();
+  try{localStorage.setItem('farmRushV251',JSON.stringify(state))}catch(e){}
+};
+</script>
+
 </body>
 </html>
