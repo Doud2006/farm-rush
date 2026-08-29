@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.5.1</title>
+<title>Farm Rush V2.5</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -9516,6 +9516,194 @@ showProgress=function(){
 };
 
 
+
+/* ======================================================
+   FARM RUSH V2.5.2 — INTERFACE CARTOON + COLLECTE FIABLE
+   Base : V2.5 (pas V2.5.1)
+====================================================== */
+
+(function(){
+  const style=document.createElement('style');
+  style.textContent=`
+    :root{--cartoon-cream:#fff5d8;--cartoon-paper:#fffaf0;--cartoon-green:#5ca94a;--cartoon-dark:#315b35;--cartoon-gold:#f7c957;--cartoon-orange:#f29a3a;--cartoon-blue:#71b7d8;--cartoon-border:#6f573c}
+    body{background:linear-gradient(#bfe8ff 0,#d9f2c5 180px,#f5e3b7 100%);}
+    header{background:linear-gradient(180deg,#4d9848,#39753b);border-bottom:4px solid #2d5d31;box-shadow:0 5px 0 #0002,0 10px 24px #244b2633}
+    .avatar{background:linear-gradient(180deg,#ffd976,#f0ad45);border:3px solid #7e5a2f;box-shadow:inset 0 3px #fff7,0 3px 0 #0002;border-radius:18px}
+    .money{font-size:16px;background:linear-gradient(180deg,#fff2a8,#f5c94c);color:#624514;border:3px solid #8a652d;border-radius:18px;padding:9px 12px;box-shadow:inset 0 2px #fff9,0 3px 0 #5f4327;min-width:96px;text-align:center}
+    main{padding-bottom:92px}
+    .panel{background:linear-gradient(180deg,#fffdf4,#fff2d2);border:3px solid #8a6b42;border-radius:22px;box-shadow:0 5px 0 #c9a36e,0 10px 22px #6b5a3a26}
+    .btn{border:2px solid #477438;border-radius:15px;box-shadow:inset 0 2px #ffffff55,0 4px 0 #39702e;transition:transform .08s,filter .08s;min-height:42px}
+    .btn:active{transform:translateY(3px);box-shadow:inset 0 2px #ffffff55,0 1px 0 #39702e}
+    .btn.orange{border-color:#a86221;box-shadow:inset 0 2px #ffffff55,0 4px 0 #a86221}
+    .btn.gold{border-color:#9e7725;box-shadow:inset 0 2px #ffffff88,0 4px 0 #9e7725}
+    .btn.blue{border-color:#477c99;box-shadow:inset 0 2px #ffffff55,0 4px 0 #477c99}
+    .nav{background:linear-gradient(180deg,#fff9e8,#f3ddb3);border-top:3px solid #8a6b42;box-shadow:0 -5px 20px #0002;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+    .nav button{color:#5f4b31;font-weight:1000;border-radius:16px;margin:4px 2px;padding:7px 2px}
+    .nav button:active{background:#ffe899;transform:translateY(2px)}
+    .modal{background:#0006;backdrop-filter:blur(3px)}
+    .modalSheet{background:linear-gradient(180deg,#fff8df,#f7e5bb);border:4px solid #74593a;border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -8px 0 #0002,0 -20px 50px #0003}
+    .modalHeader{background:linear-gradient(180deg,#ffe98c,#f5c958);border-bottom:3px solid #a77b2d;border-radius:22px 22px 0 0;color:#594220}
+    .shopCartoonHead{position:sticky;top:0;z-index:5;margin:-4px 0 12px;padding:11px 12px;border:3px solid #8c652b;border-radius:18px;background:linear-gradient(180deg,#fff3a7,#f7c94f);box-shadow:0 4px 0 #a8782b;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .shopCartoonHead .shopTitle{font-size:15px;font-weight:1000;color:#5c421d}
+    .shopMoneyBadge{background:#fffdf1;border:2px solid #a8782b;border-radius:999px;padding:7px 11px;font-weight:1000;color:#5a421d;white-space:nowrap}
+    .shopTabs{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px!important;overflow:visible!important;padding:2px 1px 10px!important}
+    .shopTab{min-width:0!important;border:3px solid #9a7543!important;border-radius:17px!important;background:linear-gradient(180deg,#fff8df,#f5dfb4)!important;color:#604926!important;box-shadow:0 4px 0 #b38a54!important;font-size:10px!important;padding:9px 3px!important}
+    .shopTab.active{background:linear-gradient(180deg,#bde884,#78c65d)!important;color:#284e2a!important;border-color:#4d813e!important;box-shadow:0 4px 0 #477438!important;transform:translateY(-1px)}
+    .shopCard,.marketRow{background:linear-gradient(180deg,#fffdf5,#fff0ca)!important;border:3px solid #a9814b!important;border-radius:20px!important;box-shadow:0 4px 0 #c69d66!important;margin-bottom:11px!important;padding:12px!important}
+    .shopIcon{width:48px!important;height:48px!important;border-radius:15px!important;background:#fff7ce!important;border:2px solid #b88b48!important;display:grid!important;place-items:center!important;font-size:28px!important}
+    .shopName{font-size:13px!important;color:#4e3d29!important}
+    .shopDescription{color:#705d43!important;line-height:1.35!important}
+    .cartoonCollect{position:relative;overflow:hidden}
+    .cartoonCollect.ready{animation:collectPulse 1.4s infinite;background:linear-gradient(180deg,#ffb95d,#ef8f27)!important}
+    @keyframes collectPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14)}}
+    .producerReadyBadge{display:inline-flex;align-items:center;gap:4px;background:#fff0a7;color:#6a471e;border:2px solid #b17a2d;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:1000;margin:4px 0}
+    .cartoonHint{background:#e7f6d4;border:2px dashed #74a554;color:#3e6032;border-radius:16px;padding:10px;margin:8px 0 12px;font-size:11px;font-weight:800}
+  `;
+  document.head.appendChild(style);
+})();
+
+document.title='Farm Rush V2.5.2';
+const v252Version=document.querySelector('.version');
+if(v252Version)v252Version.textContent='V2.5.2 — Interface cartoon • collecte producteurs fiabilisée • base V2.5';
+
+/* ---- Collecte centralisée : évite les boutons qui semblent ne rien faire ---- */
+collectWaiting=function(waitKey,stockKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const raw=Number(state[waitKey]);
+  const qty=Math.max(0,Math.floor(Number.isFinite(raw)?raw:0));
+  if(qty<=0){
+    toast('Aucune production prête.');
+    return false;
+  }
+  state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
+  state[waitKey]=0;
+  showFloatingText(`${label} +${qty}`);
+  tone(900,.06);
+  saveGame();
+  render();
+  return true;
+};
+
+/* Collecte du fumier fiabilisée aussi. */
+collectManure=function(waitKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0)return toast('Aucun fumier prêt.');
+  state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
+  state[waitKey]=0;
+  showFloatingText(`💩 +${qty}`);
+  tone(760,.06);
+  saveGame();
+  render();
+};
+
+/* Marché robuste : permet toujours de vendre à partir du stock réel. */
+sellProduct=function(key,q,price){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const available=Math.max(0,Math.floor(Number(state.stock[key])||0));
+  const qty=Math.max(0,Math.min(available,Math.floor(Number(q)||0)));
+  const unit=Math.max(0,Number(price)||0);
+  if(qty<=0)return toast('Tu n’en as pas en stock.');
+  state.stock[key]=available-qty;
+  const gain=Math.floor(qty*unit);
+  state.money=Math.max(0,Number(state.money)||0)+gain;
+  showFloatingText(`🪙 +${gain.toLocaleString('fr-FR')}`);
+  tone(1000,.06);
+  saveGame();
+  render();
+  showMarket();
+};
+
+/* ---- Shop cartoon : garde toutes les catégories de la V2.5 ---- */
+function v252ShopHeader(){
+  return `<div class="shopCartoonHead"><div class="shopTitle">🛒 BOUTIQUE DE LA FERME<br><small>Choisis une catégorie</small></div><div class="shopMoneyBadge">🪙 ${Math.floor(Number(state.money)||0).toLocaleString('fr-FR')}</div></div>`;
+}
+
+function v252Tab(key,icon,name){
+  return `<button class="shopTab ${shopCategory===key?'active':''}" onclick="openShop('${key}')"><span style="font-size:22px">${icon}</span><br>${name}</button>`;
+}
+
+renderShop=function(){
+  let html=v252ShopHeader()+`<div class="shopTabs">`+
+    v252Tab('fields','🌱','CHAMPS')+
+    v252Tab('buildings','🏠','BÂTIMENTS')+
+    v252Tab('animals','🐔','ANIMAUX')+
+    v252Tab('machines','🚜','MACHINES')+
+    v252Tab('spaces','🗺️','ESPACES')+
+    v252Tab('buycrops','🥕','RÉCOLTES')+
+    v252Tab('automation','🤖','AUTO')+
+    v252Tab('boosts','⚡','BOOSTS')+
+    v252Tab('storage','📦','STOCKAGE')+
+    `</div>`;
+
+  if(shopCategory==='fields')html+=`<div class="cartoonHint">🌾 Agrandis tes zones de culture pour produire davantage.</div>`+shopFields();
+  if(shopCategory==='buildings')html+=`<div class="cartoonHint">🏠 Les bâtiments ouvrent de nouvelles chaînes de production.</div>`+shopBuildings();
+  if(shopCategory==='animals')html+=`<div class="cartoonHint">🐾 Plus d’animaux = plus de production, à condition de les nourrir.</div>`+shopAnimals();
+  if(shopCategory==='machines')html+=shopMachines();
+  if(shopCategory==='spaces')html+=shopSpaces();
+  if(shopCategory==='buycrops')html+=`<div class="cartoonHint">🛍️ Achète directement les cultures déjà débloquées. Le prix d’achat reste supérieur au prix de vente.</div>`+shopCropPurchases();
+  if(shopCategory==='automation')html+=shopAutomation();
+  if(shopCategory==='boosts')html+=shopBoosts();
+  if(shopCategory==='storage')html+=shopStorageUpgrades();
+  openModal('🛒 Boutique',html);
+};
+
+/* Rend les boutons RÉCUPÉRER plus visibles quand un produit est prêt. */
+const renderBuildingsV252Base=renderBuildings;
+renderBuildings=function(){
+  renderBuildingsV252Base();
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('button').forEach(btn=>{
+      const t=(btn.textContent||'').toUpperCase();
+      if(!t.includes('RÉCUPÉRER'))return;
+      btn.classList.add('cartoonCollect');
+      const panel=btn.closest('.panel,.animalCard,.recipeCard');
+      if(!panel)return;
+      const txt=panel.textContent||'';
+      const m=txt.match(/\b([1-9]\d*)\s*\/\s*\d+/);
+      if(m)btn.classList.add('ready');
+    });
+  });
+};
+
+/* ---- Sauvegarde séparée V2.5.2, récupération V2.5 prioritaire ---- */
+saveGame=function(){
+  state.lastSeen=Date.now();
+  normalizeV24State();
+  normalizeV25State();
+  localStorage.setItem('farmRushV252',JSON.stringify(state));
+};
+
+let v252LoadCandidate=null;
+const v223FindBestSaveV252Base=v223FindBestSave;
+v223FindBestSave=function(){
+  const current=v223ParseSave('farmRushV252');
+  if(current&&!v223LooksReset(current.data)){v252LoadCandidate=current;return current;}
+  const v25=v223ParseSave('farmRushV25');
+  if(v25&&!v223LooksReset(v25.data)){v252LoadCandidate=v25;return v25;}
+  const best=v223FindBestSaveV252Base();
+  v252LoadCandidate=best;
+  return best;
+};
+
+const loadGameV252Base=loadGame;
+loadGame=function(){
+  v252LoadCandidate=null;
+  loadGameV252Base();
+  normalizeV25State();
+  ensureV25Dom();
+  render();
+  saveGame();
+};
+
+const showProgressV252Base=showProgress;
+showProgress=function(){
+  showProgressV252Base();
+  const title=document.getElementById('modalTitle');
+  if(title)title.textContent='⭐ Progression V2.5.2';
+};
+
+
 ensureV24Dom();
 
 ensureV23Dom();
@@ -9531,122 +9719,5 @@ bindFieldArea("farmArea","farm");bindFieldArea("orchardArea","orchard");
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"){if(!paintGesture&&!activeFieldTouch)renderFields();renderBuildings();renderGoal()}},500);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
-<style>
-/* ===== FARM RUSH V2.5.1 — INTERFACE CONFORT ===== */
-:root{--ui-bg:#f6f1e4;--ui-card:#fffdf7;--ui-green:#4f8f3a;--ui-dark:#342b21;--ui-line:#ded2b7;--ui-gold:#d69a22}
-body{background:linear-gradient(#eaf4df 0,#f6f1e4 240px);padding-bottom:92px}
-header{position:sticky;top:0;z-index:24;background:rgba(255,253,247,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--ui-line);box-shadow:0 3px 14px rgba(55,45,30,.10)}
-.top{padding:9px 12px;gap:9px}.avatar{width:42px;height:42px;font-size:24px}.playerName{font-size:10px}.xpText{font-size:8px}.money{background:#fff3c9;border:1px solid #e5c46f;border-radius:13px;padding:9px 10px;font-size:12px;white-space:nowrap}
-.panel,.building,.goalCard{border-radius:17px!important;box-shadow:0 4px 14px rgba(63,51,31,.08);border-color:var(--ui-line)!important;background:var(--ui-card)!important}
-.panelTitle{font-size:12px}.btn{min-height:38px;border-radius:12px}.btn.small{min-height:34px}
-.stockGrid{gap:6px}.stockItem{border-radius:11px!important}
-.nav{background:rgba(52,43,33,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -5px 18px rgba(0,0,0,.18)}
-.nav button{padding:9px 3px 7px;opacity:.86}.nav button:active{transform:scale(.94);opacity:1}.nav span{font-size:23px;margin-bottom:2px}
-.modalSheet{border-radius:22px 22px 0 0!important}.marketRow{border-radius:15px;padding:12px;box-shadow:0 2px 7px rgba(50,40,25,.05)}
-.marketTop{align-items:center}.marketButtons{grid-template-columns:1fr 1fr 1fr 1.2fr}.marketButtons .btn{padding:7px 4px;font-size:9px}
-.quickSellBar{position:sticky;top:0;z-index:2;background:#fffdf7;padding:7px 0 10px;border-bottom:1px solid #e7dcc3;margin-bottom:10px}
-.marketSearch{width:100%;box-sizing:border-box;border:2px solid #b7c9a5;border-radius:12px;padding:11px 12px;font-size:16px;background:white;outline:none}
-.marketEmpty{text-align:center;padding:24px 8px;color:#786d5c}
-.sellQtyBox{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}.sellQtyInput{width:100%;box-sizing:border-box;border:2px solid #b7c9a5;border-radius:11px;padding:9px;text-align:center;font-size:16px;font-weight:900}
-@media(max-width:390px){.money{font-size:10px;padding:8px 7px}.nav button{font-size:8px}.marketButtons{grid-template-columns:repeat(3,1fr)}.marketButtons .exactSellBtn{grid-column:1/-1}}
-</style>
-<script>
-/* ===== FARM RUSH V2.5.1 — UI + CORRECTIF VENTE ===== */
-document.title="Farm Rush V2.5.1";
-const v251Version=document.querySelector('.version');
-if(v251Version)v251Version.textContent="V2.5.1 — Interface confort • Marché réparé • Forêt & Scierie";
-
-function v251SellPrice(key){
-  if(CROPS[key]&&Number.isFinite(Number(CROPS[key].sell)))return Number(CROPS[key].sell);
-  if(PRODUCTS[key]&&Number.isFinite(Number(PRODUCTS[key].sell)))return Number(PRODUCTS[key].sell);
-  return 0;
-}
-function v251SellableKeys(){
-  const keys=[];
-  for(const key in CROPS)if(unlocked(key)&&v251SellPrice(key)>0)keys.push(key);
-  for(const key in PRODUCTS){
-    if(isAccessibleOrderKey(key)&&v251SellPrice(key)>0&&!keys.includes(key))keys.push(key);
-  }
-  return keys;
-}
-function v251MarketName(key){const p=productInfo(key);return (p.name||key).toLowerCase()}
-
-marketCard=function(key,icon,name,price){
-  const q=Math.max(0,Math.floor(Number(state.stock[key])||0));
-  const safePrice=Math.max(0,Number(price)||v251SellPrice(key));
-  return `<div class="marketRow" data-market-name="${String(name).toLowerCase()} ${key}">
-    <div class="marketTop"><div><b>${icon} ${name}</b><br><small>Stock : <b>${q}</b> • ${safePrice.toLocaleString('fr-FR')} 🪙/u</small></div><b>${(q*safePrice).toLocaleString('fr-FR')} 🪙</b></div>
-    <div class="marketButtons">
-      <button class="btn small" ${q<1?'disabled':''} onclick="sellProduct('${key}',1,${safePrice})">x1</button>
-      <button class="btn blue small" ${q<5?'disabled':''} onclick="sellProduct('${key}',5,${safePrice})">x5</button>
-      <button class="btn gold small" ${q<1?'disabled':''} onclick="sellProduct('${key}',${q},${safePrice})">TOUT</button>
-      <button class="btn small exactSellBtn" ${q<1?'disabled':''} onclick="openExactSell('${key}')">🔢 QUANTITÉ</button>
-    </div>
-  </div>`;
-};
-
-showMarket=function(restoreScroll=null){
-  cancelPaintSession();
-  let html=`<div class="quickSellBar"><input id="marketSearch" class="marketSearch" type="search" placeholder="🔎 Rechercher un produit…" oninput="filterV251Market(this.value)"></div><div id="marketList">`;
-  for(const key of v251SellableKeys()){
-    const p=productInfo(key); html+=marketCard(key,p.icon,p.name,v251SellPrice(key));
-  }
-  html+='</div>';
-  openModal('💰 Marché — vendre',html);
-  if(Number.isFinite(restoreScroll))requestAnimationFrame(()=>requestAnimationFrame(()=>{const sheet=document.getElementById('modalSheet');if(sheet)sheet.scrollTop=restoreScroll}));
-};
-
-function filterV251Market(value){
-  const term=String(value||'').trim().toLowerCase();
-  document.querySelectorAll('#marketList .marketRow').forEach(row=>{row.style.display=!term||row.dataset.marketName.includes(term)?'':'none'});
-}
-
-sellProduct=function(key,q,price){
-  const available=Math.max(0,Math.floor(Number(state.stock[key])||0));
-  const qty=Math.min(Math.max(0,Math.floor(Number(q)||0)),available);
-  const unit=Math.max(0,Number(price)||v251SellPrice(key));
-  if(qty<=0)return toast('Aucun produit à vendre.');
-  if(unit<=0)return toast('Ce produit ne peut pas être vendu.');
-  const sheet=document.getElementById('modalSheet');
-  const scroll=sheet?sheet.scrollTop:0;
-  const gain=qty*unit;
-  state.stock[key]=available-qty;
-  state.money=(Number(state.money)||0)+gain;
-  saveGame();
-  showFloatingText('🪙 +'+gain.toLocaleString('fr-FR'));
-  tone(1000,.06);
-  render();
-  showMarket(scroll);
-};
-
-function openExactSell(key){
-  const p=productInfo(key),stock=Math.max(0,Math.floor(Number(state.stock[key])||0)),price=v251SellPrice(key);
-  if(stock<1)return toast('Aucun stock à vendre.');
-  openModal('💰 Vendre '+p.name,`<div class="shopCard"><div class="shopHeader"><div class="shopIcon">${p.icon}</div><div class="shopInfo"><div class="shopName">${p.name}</div><div class="shopDescription">Stock disponible : ${stock} • ${price.toLocaleString('fr-FR')} 🪙/u</div></div></div><div class="sellQtyBox"><input id="v251SellQty" class="sellQtyInput" type="number" inputmode="numeric" min="1" max="${stock}" value="1" oninput="updateExactSellV251('${key}')"><button class="btn gold" onclick="confirmExactSellV251('${key}')">VENDRE</button></div><div id="v251SellPreview" class="shopDescription" style="margin-top:9px"></div></div>`);
-  updateExactSellV251(key);
-  const input=document.getElementById('v251SellQty');if(input){input.focus();input.select()}
-}
-function updateExactSellV251(key){
-  const input=document.getElementById('v251SellQty'),out=document.getElementById('v251SellPreview');if(!input||!out)return;
-  const stock=Math.max(0,Math.floor(Number(state.stock[key])||0));
-  const qty=Math.min(stock,Math.max(0,Math.floor(Number(input.value)||0)));
-  out.innerHTML=`Tu vas recevoir <b>${(qty*v251SellPrice(key)).toLocaleString('fr-FR')} 🪙</b> pour <b>${qty}</b> unité${qty>1?'s':''}.`;
-}
-function confirmExactSellV251(key){
-  const input=document.getElementById('v251SellQty');if(!input)return;
-  const stock=Math.max(0,Math.floor(Number(state.stock[key])||0));
-  const qty=Math.min(stock,Math.max(0,Math.floor(Number(input.value)||0)));
-  if(qty<1)return toast('Entre une quantité valide.');
-  sellProduct(key,qty,v251SellPrice(key));
-}
-
-/* sauvegarde séparée V2.5.1, sans détruire les backups */
-const saveGameV251Base=saveGame;
-saveGame=function(){
-  saveGameV251Base();
-  try{localStorage.setItem('farmRushV251',JSON.stringify(state))}catch(e){}
-};
-</script>
-
 </body>
 </html>
