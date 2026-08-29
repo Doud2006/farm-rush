@@ -9704,6 +9704,78 @@ showProgress=function(){
 };
 
 
+
+/* ======================================================
+   FARM RUSH V2.5.3 — HOTFIX COLLECTE PRODUCTEURS
+   La collecte met d'abord à jour le stock et l'interface,
+   puis sauvegarde sans pouvoir bloquer le bouton.
+====================================================== */
+document.title='Farm Rush V2.5.3';
+const v253Version=document.querySelector('.version');
+if(v253Version)v253Version.textContent='V2.5.3 — Interface cartoon • récupération producteurs réparée';
+
+collectWaiting=function(waitKey,stockKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0){toast('Aucune production prête.');return false;}
+  state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
+  state[waitKey]=0;
+  showFloatingText(`${label} +${qty}`);
+  tone(900,.06);
+  render();
+  try{saveGame();}catch(e){console.error('Sauvegarde après collecte:',e);}
+  return true;
+};
+
+collectManure=function(waitKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0){toast('Aucun fumier prêt.');return false;}
+  state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
+  state[waitKey]=0;
+  showFloatingText(`💩 +${qty}`);
+  tone(760,.06);
+  render();
+  try{saveGame();}catch(e){console.error('Sauvegarde fumier:',e);}
+  return true;
+};
+
+// Fonctions explicites pour que tous les boutons inline appellent bien le hotfix.
+collectEggs=()=>collectWaiting('eggWaiting','egg','🥚');
+collectMilk=()=>collectWaiting('milkWaiting','milk','🥛');
+collectBacon=()=>collectWaiting('baconWaiting','bacon','🥓');
+collectFlour=()=>collectWaiting('flourWaiting','flour','🥣');
+collectBread=()=>collectWaiting('breadWaiting','bread','🥖');
+collectCheese=()=>collectWaiting('cheeseWaiting','cheese','🧀');
+collectPasta=()=>collectWaiting('pastaWaiting','pasta','🍝');
+collectSauce=()=>collectWaiting('sauceWaiting','tomatoSauce','🥫');
+collectSteak=()=>collectWaiting('steakWaiting','groundSteak','🥩');
+collectBeef=()=>collectWaiting('beefWaiting','beef','🥩');
+collectCream=()=>collectWaiting('creamWaiting','cream','🥛');
+collectCake=()=>collectWaiting('cakeWaiting','cake','🎂');
+collectStrawberryCake=()=>collectWaiting('strawberryCakeWaiting','strawberryCake','🍰');
+collectMozzarella=()=>collectWaiting('mozzarellaWaiting','mozzarella','⚪');
+collectParmesan=()=>collectWaiting('parmesanWaiting','parmesan','🧀');
+collectBlueCheese=()=>collectWaiting('blueCheeseWaiting','blueCheese','🧀');
+collectOil=()=>collectWaiting('oilWaiting','sunflowerOil','🫙');
+collectFries=()=>collectWaiting('friesWaiting','fries','🍟');
+collectPesto=()=>collectWaiting('pestoWaiting','pesto','🫙');
+collectWoolThread=()=>collectWaiting('woolThreadWaiting','woolThread','🧵');
+collectCottonFabric=()=>collectWaiting('cottonFabricWaiting','cottonFabric','🪡');
+collectScarf=()=>collectWaiting('scarfWaiting','scarf','🧣');
+collectTshirt=()=>collectWaiting('tshirtWaiting','tshirt','👕');
+collectPants=()=>collectWaiting('pantsWaiting','pants','👖');
+collectSweater=()=>collectWaiting('sweaterWaiting','sweater','🧶');
+collectDress=()=>collectWaiting('dressWaiting','dress','👗');
+collectCoat=()=>collectWaiting('coatWaiting','coat','🧥');
+collectTrout=()=>collectWaiting('troutWaiting','trout','🐟');
+collectCarp=()=>collectWaiting('carpWaiting','carp','🐠');
+collectPerch=()=>collectWaiting('perchWaiting','perch','🐟');
+collectSalmon=()=>collectWaiting('salmonWaiting','salmon','🐟');
+collectPlank=()=>collectWaiting('plankWaiting','plank','🪚');
+collectWoodCrate=()=>collectWaiting('woodCrateWaiting','woodCrate','📦');
+collectFurniture=()=>collectWaiting('furnitureWaiting','furniture','🪑');
+
 ensureV24Dom();
 
 ensureV23Dom();
