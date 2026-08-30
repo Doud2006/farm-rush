@@ -9776,6 +9776,91 @@ collectPlank=()=>collectWaiting('plankWaiting','plank','🪚');
 collectWoodCrate=()=>collectWaiting('woodCrateWaiting','woodCrate','📦');
 collectFurniture=()=>collectWaiting('furnitureWaiting','furniture','🪑');
 
+
+/* ======================================================
+   FARM RUSH V2.5.4 — SAUVETAGE AUTOMATIQUE DE SAUVEGARDE
+   - N'écrase aucune ancienne sauvegarde
+   - Cherche la progression la plus avancée parmi toutes les versions
+   - Une fois récupérée, utilise farmRushV254 comme sauvegarde principale
+====================================================== */
+document.title='Farm Rush V2.5.4';
+const v254Version=document.querySelector('.version');
+if(v254Version)v254Version.textContent='V2.5.4 — Sauvetage automatique sauvegarde • interface cartoon';
+
+const V254_RECOVERY_KEYS=[
+  'farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
+  'farmRushV223','farmRushV222','farmRushV221','farmRushV22','farmRushV21',
+  'farmRushV20','farmRushV192','farmRushV191','farmRushV19','farmRushV184',
+  'farmRushV183','farmRushV182','farmRushV181','farmRushV18','farmRushV173',
+  'farmRushV172','farmRushV171','farmRushV17','farmRushV161','farmRushV16',
+  'farmRushV15'
+];
+
+function v254BestOldSave(){
+  const saves=V254_RECOVERY_KEYS.map(k=>{
+    try{
+      const raw=localStorage.getItem(k);
+      if(!raw)return null;
+      const data=JSON.parse(raw);
+      if(!data||typeof data!=='object')return null;
+      return {key:k,raw,data,score:v223ProgressScore(data)};
+    }catch(e){
+      return null;
+    }
+  }).filter(Boolean);
+
+  if(!saves.length)return null;
+
+  saves.sort((a,b)=>{
+    if(b.score!==a.score)return b.score-a.score;
+    const aSeen=Number(a.data.lastSeen)||0;
+    const bSeen=Number(b.data.lastSeen)||0;
+    return bSeen-aSeen;
+  });
+
+  return saves[0];
+}
+
+/* Ne sauvegarde désormais QUE dans V2.5.4 :
+   les anciennes clés restent intactes comme copies de secours. */
+saveGame=function(){
+  state.lastSeen=Date.now();
+  try{normalizeV24State();}catch(e){}
+  try{normalizeV25State();}catch(e){}
+  localStorage.setItem('farmRushV254',JSON.stringify(state));
+};
+
+/* Au premier lancement V2.5.4 :
+   - s'il existe déjà une bonne V254, on l'utilise ;
+   - sinon on récupère automatiquement la meilleure ancienne sauvegarde. */
+v223FindBestSave=function(){
+  try{
+    const raw=localStorage.getItem('farmRushV254');
+    if(raw){
+      const data=JSON.parse(raw);
+      if(data&&typeof data==='object'&&!v223LooksReset(data)){
+        return {key:'farmRushV254',raw,data,score:v223ProgressScore(data)};
+      }
+    }
+  }catch(e){}
+
+  const best=v254BestOldSave();
+
+  if(best){
+    console.log('Farm Rush V2.5.4 : sauvegarde récupérée depuis',best.key);
+  }
+
+  return best;
+};
+
+/* Bouton de secours utilisable depuis la console ou un futur bouton UI.
+   Il supprime uniquement V254 puis recharge la meilleure ancienne copie. */
+window.farmRushEmergencyRecovery=function(){
+  localStorage.removeItem('farmRushV254');
+  location.reload();
+};
+
+
 ensureV24Dom();
 
 ensureV23Dom();
@@ -9789,7 +9874,7 @@ ensureV19Dom();
 
 bindFieldArea("farmArea","farm");bindFieldArea("orchardArea","orchard");
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"){if(!paintGesture&&!activeFieldTouch)renderFields();renderBuildings();renderGoal()}},500);
-window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";
+window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
 </body>
 </html>
