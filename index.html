@@ -9787,7 +9787,7 @@ document.title='Farm Rush V2.5.4';
 const v254Version=document.querySelector('.version');
 if(v254Version)v254Version.textContent='V2.5.4 — Sauvetage automatique sauvegarde • interface cartoon';
 
-const V254_RECOVERY_KEYS=[
+const V254_RECOVERY_KEYS=['farmRushV254',
   'farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
   'farmRushV223','farmRushV222','farmRushV221','farmRushV22','farmRushV21',
   'farmRushV20','farmRushV192','farmRushV191','farmRushV19','farmRushV184',
@@ -9827,7 +9827,7 @@ saveGame=function(){
   state.lastSeen=Date.now();
   try{normalizeV24State();}catch(e){}
   try{normalizeV25State();}catch(e){}
-  localStorage.setItem('farmRushV254',JSON.stringify(state));
+  localStorage.setItem('farmRushV255',JSON.stringify(state));
 };
 
 /* Au premier lancement V2.5.4 :
@@ -9835,11 +9835,11 @@ saveGame=function(){
    - sinon on récupère automatiquement la meilleure ancienne sauvegarde. */
 v223FindBestSave=function(){
   try{
-    const raw=localStorage.getItem('farmRushV254');
+    const raw=localStorage.getItem('farmRushV255') || localStorage.getItem('farmRushV254');
     if(raw){
       const data=JSON.parse(raw);
       if(data&&typeof data==='object'&&!v223LooksReset(data)){
-        return {key:'farmRushV254',raw,data,score:v223ProgressScore(data)};
+        return {key:localStorage.getItem('farmRushV255')?'farmRushV255':'farmRushV254',raw,data,score:v223ProgressScore(data)};
       }
     }
   }catch(e){}
@@ -9860,6 +9860,187 @@ window.farmRushEmergencyRecovery=function(){
   location.reload();
 };
 
+
+
+/* ======================================================
+   FARM RUSH V2.5.5 — HOTFIX FINAL BOUTONS RÉCUPÉRER
+   - Intercepte directement les clics/touch sur les boutons
+   - Ne dépend plus des anciennes fonctions inline
+   - Met à jour le stock, l'écran puis sauvegarde
+====================================================== */
+document.title='Farm Rush V2.5.5';
+const v255Version=document.querySelector('.version');
+if(v255Version)v255Version.textContent='V2.5.5 — Récupération producteurs réparée • sauvegarde protégée';
+
+const V255_COLLECT_MAP={
+  collectEggs:['eggWaiting','egg','🥚'],
+  collectMilk:['milkWaiting','milk','🥛'],
+  collectBacon:['baconWaiting','bacon','🥓'],
+  collectFlour:['flourWaiting','flour','🥣'],
+  collectBread:['breadWaiting','bread','🥖'],
+  collectCheese:['cheeseWaiting','cheese','🧀'],
+  collectPasta:['pastaWaiting','pasta','🍝'],
+  collectSauce:['sauceWaiting','tomatoSauce','🥫'],
+  collectSteak:['steakWaiting','groundSteak','🥩'],
+  collectBeef:['beefWaiting','beef','🥩'],
+  collectCream:['creamWaiting','cream','🥛'],
+  collectAgedCheese:['agedCheeseWaiting','agedCheese','🧀'],
+  collectBlueCheese:['blueCheeseWaiting','blueCheese','🧀'],
+  collectCake:['cakeWaiting','cake','🎂'],
+  collectStrawberryCake:['strawberryCakeWaiting','strawberryCake','🍰'],
+  collectMozzarella:['mozzarellaWaiting','mozzarella','⚪'],
+  collectParmesan:['parmesanWaiting','parmesan','🧀'],
+  collectOil:['oilWaiting','sunflowerOil','🫙'],
+  collectFries:['friesWaiting','fries','🍟'],
+  collectPesto:['pestoWaiting','pesto','🫙'],
+  collectFertilizer:['fertilizerWaiting','fertilizer','🧪'],
+  collectGrapeJuice:['grapeJuiceWaiting','grapeJuice','🧃'],
+  collectWine:['wineWaiting','wine','🍷'],
+  collectPremiumWine:['premiumWineWaiting','premiumWine','🍾'],
+  collectWool:['woolWaiting','wool','🧶'],
+  collectWoolThread:['woolThreadWaiting','woolThread','🧵'],
+  collectCottonFabric:['cottonFabricWaiting','cottonFabric','🪡'],
+  collectScarf:['scarfWaiting','scarf','🧣'],
+  collectTshirt:['tshirtWaiting','tshirt','👕'],
+  collectPants:['pantsWaiting','pants','👖'],
+  collectSweater:['sweaterWaiting','sweater','🧶'],
+  collectDress:['dressWaiting','dress','👗'],
+  collectCoat:['coatWaiting','coat','🧥'],
+  collectTrout:['troutWaiting','trout','🐟'],
+  collectCarp:['carpWaiting','carp','🐠'],
+  collectPerch:['perchWaiting','perch','🐟'],
+  collectSalmon:['salmonWaiting','salmon','🐟'],
+  collectPlank:['plankWaiting','plank','🪚'],
+  collectWoodCrate:['woodCrateWaiting','woodCrate','📦'],
+  collectFurniture:['furnitureWaiting','furniture','🪑']
+};
+
+const V255_MANURE_MAP={
+  collectCoopManure:['coopManureWaiting','🐔'],
+  collectCowManure:['cowManureWaiting','🐄'],
+  collectPigManure:['pigManureWaiting','🐖'],
+  collectSheepManure:['sheepManureWaiting','🐑']
+};
+
+function v255DirectCollect(waitKey,stockKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0){
+    toast('Aucune production prête.');
+    return false;
+  }
+
+  state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
+  state[waitKey]=0;
+
+  try{showFloatingText(`${label} +${qty}`)}catch(e){}
+  try{tone(900,.06)}catch(e){}
+
+  try{render()}catch(e){console.error('Render après récupération:',e)}
+  try{saveGame()}catch(e){console.error('Sauvegarde après récupération:',e)}
+
+  return true;
+}
+
+function v255DirectManure(waitKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0){
+    toast('Aucun fumier prêt.');
+    return false;
+  }
+
+  state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
+  state[waitKey]=0;
+
+  try{showFloatingText(`💩 +${qty}`)}catch(e){}
+  try{tone(760,.06)}catch(e){}
+
+  try{render()}catch(e){console.error('Render fumier:',e)}
+  try{saveGame()}catch(e){console.error('Sauvegarde fumier:',e)}
+
+  return true;
+}
+
+/* Remplace aussi les fonctions globales pour les boutons déjà générés. */
+Object.entries(V255_COLLECT_MAP).forEach(([fn,args])=>{
+  window[fn]=()=>v255DirectCollect(...args);
+});
+Object.entries(V255_MANURE_MAP).forEach(([fn,args])=>{
+  window[fn]=()=>v255DirectManure(...args);
+});
+
+/* Sécurise les boutons produits générés plus tard par les renderers. */
+function v255ExtractCollectName(btn){
+  const inline=btn.getAttribute('onclick')||'';
+  const m=inline.match(/\b(collect[A-Za-z0-9_]+)\s*\(/);
+  return m?m[1]:null;
+}
+
+let v255LastTouch=0;
+
+function v255HandleCollectButton(ev){
+  const btn=ev.target.closest&&ev.target.closest('button');
+  if(!btn)return;
+
+  const name=v255ExtractCollectName(btn);
+  if(!name)return;
+
+  const normal=V255_COLLECT_MAP[name];
+  const manure=V255_MANURE_MAP[name];
+  if(!normal&&!manure)return;
+
+  /* évite le double déclenchement touchend + click sur iPhone */
+  if(ev.type==='click' && Date.now()-v255LastTouch<700){
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    return;
+  }
+  if(ev.type==='touchend')v255LastTouch=Date.now();
+
+  ev.preventDefault();
+  ev.stopImmediatePropagation();
+
+  if(normal)v255DirectCollect(...normal);
+  else v255DirectManure(...manure);
+}
+
+document.addEventListener('touchend',v255HandleCollectButton,true);
+document.addEventListener('click',v255HandleCollectButton,true);
+
+/* Les boutons ne doivent jamais rester artificiellement désactivés
+   si une quantité est prête. */
+function v255RefreshCollectButtons(){
+  document.querySelectorAll('button').forEach(btn=>{
+    const name=v255ExtractCollectName(btn);
+    if(!name)return;
+
+    let waitKey=null;
+    if(V255_COLLECT_MAP[name])waitKey=V255_COLLECT_MAP[name][0];
+    if(V255_MANURE_MAP[name])waitKey=V255_MANURE_MAP[name][0];
+    if(!waitKey)return;
+
+    const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+    if(qty>0){
+      btn.disabled=false;
+      btn.removeAttribute('disabled');
+      btn.classList.add('cartoonCollect','ready');
+      btn.style.pointerEvents='auto';
+      btn.style.opacity='1';
+    }
+  });
+}
+
+const renderV255Base=render;
+render=function(){
+  const r=renderV255Base.apply(this,arguments);
+  requestAnimationFrame(v255RefreshCollectButtons);
+  return r;
+};
+
+requestAnimationFrame(v255RefreshCollectButtons);
 
 ensureV24Dom();
 
