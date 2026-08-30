@@ -9789,7 +9789,7 @@ ensureV19Dom();
 
 bindFieldArea("farmArea","farm");bindFieldArea("orchardArea","orchard");
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"){if(!paintGesture&&!activeFieldTouch)renderFields();renderBuildings();renderGoal()}},500);
-window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
-</script>
+window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";
+// TEST V2.5.3 </script>
 </body>
 </html>
