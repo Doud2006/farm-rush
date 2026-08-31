@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.5</title>
+<title>Farm Rush V2.6.1</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -191,7 +191,7 @@ button.cartoonCollect.collectReady{pointer-events:auto!important;touch-action:ma
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.5 — Forêt, bois & scierie • Étang Niv.34 • Forêt Niv.38</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.6.1 — Animaux plus rapides • optimisation & stabilité</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -1049,9 +1049,16 @@ function renderFeeder(){
   p.innerHTML=`<div class="panelTitle"><span>🥣 NOURRISSEUR AUTOMATIQUE</span><span class="tiny">Niv. ${state.feederLevel}/4</span></div><div class="autoStatus">${state.feederEnabled?'<span class="statusOn">● ACTIF</span>':'<span class="statusOff">● ARRÊTÉ</span>'} — ${feederManagedText()}<br><span class="tiny">${reserve}. Il utilise directement le blé et les carottes du stock.</span></div><div class="actions"><button class="btn blue" onclick="toggleFeeder()">${state.feederEnabled?'⏸ ARRÊTER':'▶ ACTIVER'}</button><button class="btn dark" onclick="openShop('automation')">⬆️ AMÉLIORER</button></div>`;
 }
 
-function henInterval(){return boostedTime("coop",Math.max(8,30/state.hens));}
-function cowInterval(){return boostedTime("barn",Math.max(30,120/state.cows));}
-function pigInterval(){return boostedTime("barn",Math.max(45,180/state.pigs));}
+/* V2.6.1 — vitesse animale : on conserve exactement les temps existants.
+   1 animal = temps de base actuel. Plusieurs animaux = production plus rapide.
+   Les bonus de bâtiment continuent ensuite de s'appliquer. */
+function animalProductionTime(baseTime,count,minTime,buildingKey){
+  const n=Math.max(1,Number(count)||1);
+  return boostedTime(buildingKey,Math.max(minTime,baseTime/n));
+}
+function henInterval(){return animalProductionTime(30,state.hens,8,"coop");}
+function cowInterval(){return animalProductionTime(120,state.cows,30,"barn");}
+function pigInterval(){return animalProductionTime(180,state.pigs,45,"barn");}
 
 function recipeCardV19({icon,name,description,queue,waiting,cap,last,interval,loadAction,collectAction,loadLabel,collectLabel}){
   const active=queue>0&&waiting<cap;
@@ -4753,13 +4760,7 @@ function sheepPrice(){
 }
 
 function sheepInterval(){
-  return boostedTime(
-    "sheepfold",
-    Math.max(
-      45,
-      180/Math.max(1,Number(state.sheep)||1)
-    )
-  );
+  return animalProductionTime(180,state.sheep,45,"sheepfold");
 }
 
 function woolCapacity(){
@@ -10004,6 +10005,47 @@ collectFurniture=()=>collectWaiting('furnitureWaiting','furniture','🪑');
 window.addEventListener('pagehide',()=>v260WriteSave(),{capture:true});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')v260WriteSave();},{capture:true});
 
+
+/* Affichage du bonus animaux — aucune modification supplémentaire du moteur. */
+function animalSpeedText(baseTime,count,currentTime){
+  const n=Math.max(1,Number(count)||1);
+  const raw=Math.max(0.001,Number(currentTime)||baseTime);
+  const gain=Math.max(0,Math.round((1-raw/baseTime)*100));
+  return `⚡ ${n} animal${n>1?'aux':''} • ${formatTime(raw)} / production${gain>0?` • ${gain}% plus rapide`:''}`;
+}
+
+/* V2.6.1 : affiche clairement l'effet des animaux sur la vitesse. */
+const v261RenderCoopBase=renderCoop;
+renderCoop=function(){
+  v261RenderCoopBase();
+  const p=document.getElementById('coopPanel');
+  if(!p||p.style.display==='none')return;
+  let el=p.querySelector('.v261AnimalSpeed');
+  if(!el){el=document.createElement('div');el.className='v261AnimalSpeed tiny';el.style.marginTop='6px';p.querySelector('.buildingBody')?.appendChild(el);}
+  if(el)el.textContent=animalSpeedText(30,state.hens,henInterval());
+};
+
+const v261RenderBarnBase=renderBarn;
+renderBarn=function(){
+  v261RenderBarnBase();
+  const p=document.getElementById('barnPanel');
+  if(!p||p.style.display==='none')return;
+  const cards=p.querySelectorAll('.animalCard');
+  if(cards[0]){let e=cards[0].querySelector('.v261AnimalSpeed');if(!e){e=document.createElement('div');e.className='v261AnimalSpeed tiny';e.style.marginTop='5px';cards[0].appendChild(e);}e.textContent=animalSpeedText(120,state.cows,cowInterval());}
+  if(cards[1]){let e=cards[1].querySelector('.v261AnimalSpeed');if(!e){e=document.createElement('div');e.className='v261AnimalSpeed tiny';e.style.marginTop='5px';cards[1].appendChild(e);}e.textContent=animalSpeedText(180,state.pigs,pigInterval());}
+};
+
+if(typeof renderSheepfold==='function'){
+  const v261RenderSheepfoldBase=renderSheepfold;
+  renderSheepfold=function(){
+    v261RenderSheepfoldBase();
+    const p=document.getElementById('sheepfoldPanel');
+    if(!p||p.style.display==='none')return;
+    let e=p.querySelector('.v261AnimalSpeed');
+    if(!e){e=document.createElement('div');e.className='v261AnimalSpeed tiny';e.style.marginTop='6px';p.querySelector('.sheepHeroBody')?.appendChild(e);}
+    if(e)e.textContent=animalSpeedText(180,state.sheep,sheepInterval());
+  };
+}
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"&&!v260UiBusy()){renderFields();renderBuildings();renderGoal()}},1000);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
