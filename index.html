@@ -11241,5 +11241,249 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
   addStatusBadges();
 })();
 </script>
+
+
+<style id="v290-mine-css">
+/* V2.9.0 — Mine & minerais */
+.mineFarm{position:relative;min-height:330px;margin:12px 0 14px;padding:18px 14px 16px;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,#8eb1b7 0 18%,#6e8584 18% 28%,#77634f 28% 100%);border:2px solid rgba(83,61,42,.22);box-shadow:inset 0 2px 0 rgba(255,255,255,.28),0 8px 18px rgba(73,53,35,.12)}
+.mineFarm:before{content:"";position:absolute;inset:27% 0 0;background:radial-gradient(circle at 18% 25%,#8f765e 0 7%,transparent 7.5%),radial-gradient(circle at 72% 18%,#665442 0 8%,transparent 8.5%),radial-gradient(circle at 86% 72%,#92765b 0 6%,transparent 6.5%),linear-gradient(155deg,transparent 0 46%,rgba(54,43,34,.17) 47% 49%,transparent 50%);opacity:.75;pointer-events:none}
+.mineBoard{position:relative;z-index:1;margin:0 auto 13px;width:max-content;max-width:90%;padding:8px 14px;border-radius:12px;background:#6a472f;color:#fff3d5;border:2px solid #4a3021;box-shadow:0 5px 0 rgba(51,31,19,.2);font-weight:1000;font-size:13px;letter-spacing:.5px}
+.mineEntrance{position:relative;z-index:1;width:150px;height:92px;margin:4px auto 16px;border-radius:70px 70px 12px 12px;background:radial-gradient(ellipse at 50% 75%,#191817 0 44%,#2b2824 45% 57%,#5a4939 58% 100%);border:5px solid #594532;box-shadow:0 9px 18px rgba(27,20,15,.26)}
+.mineEntrance:before{content:"🛤️";position:absolute;left:50%;bottom:-23px;transform:translateX(-50%);font-size:48px;filter:saturate(.75)}
+.mineOreGrid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:17px}
+.mineOreCard{background:rgba(255,248,224,.94);border:1px solid rgba(86,65,44,.22);border-radius:16px;padding:10px;box-shadow:0 4px 10px rgba(46,35,27,.13)}
+.mineOreCard.lockedOre{filter:saturate(.45);opacity:.72}
+.mineOreTop{display:flex;align-items:center;gap:8px;margin-bottom:6px}.mineOreIcon{font-size:27px}.mineOreName{font-size:12px;font-weight:1000}.mineOreMeta{font-size:9px;color:#665b4d;line-height:1.35}
+.mineProgress{height:9px;border-radius:999px;background:#d8cbb7;overflow:hidden;margin:8px 0}.mineProgress>i{display:block;height:100%;background:linear-gradient(90deg,#d19a3e,#f1c75b);border-radius:999px}
+.mineReadyBox{margin-top:9px;background:#fffdf5;border:1px solid #d4c09c;border-radius:13px;padding:9px;font-size:10px;line-height:1.55}
+.minePanel{background:linear-gradient(145deg,#f2e3c3,#d7c09a)!important;border-color:#967554!important}
+.minePanel .mineHeader{display:flex;align-items:center;gap:11px;margin-bottom:8px}.minePanel .mineBigIcon{font-size:47px}.minePanel .mineTitle{font-size:14px;font-weight:1000}.minePanel .mineSub{font-size:10px;color:#675542;line-height:1.45}
+.mineStorageRow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding:9px;border-radius:12px;background:rgba(255,255,255,.7);border:1px solid rgba(112,81,50,.18);font-size:10px}
+.minePulse{animation:v290MinePulse 1.5s ease-in-out infinite}@keyframes v290MinePulse{50%{filter:brightness(1.08);transform:translateY(-1px)}}
+@media(max-width:390px){.mineOreGrid{grid-template-columns:1fr}.mineFarm{padding-left:10px;padding-right:10px}}
+@media(prefers-reduced-motion:reduce){.minePulse{animation:none!important}}
+</style>
+
+<script id="v290-mine-js">
+(function(){
+  'use strict';
+  document.title='Farm Rush V2.9.0';
+  const ver=document.querySelector('.version');
+  if(ver)ver.textContent='V2.9.0 — Mine & minerais';
+
+  const MINE_PRICE=480000;
+  const MINE_UNLOCK=42;
+  const MINE_ORES={
+    stone:{icon:'🪨',name:'Pierre',level:42,time:120,yield:3,sell:2400},
+    coal:{icon:'⚫',name:'Charbon',level:42,time:180,yield:2,sell:3900},
+    ironOre:{icon:'⛓️',name:'Minerai de fer',level:43,time:240,yield:2,sell:6200},
+    copperOre:{icon:'🟠',name:'Minerai de cuivre',level:44,time:300,yield:2,sell:8200},
+    goldOre:{icon:'🟡',name:"Minerai d'or",level:45,time:480,yield:1,sell:18500}
+  };
+  Object.entries(MINE_ORES).forEach(([key,o])=>{
+    PRODUCTS[key]={icon:o.icon,name:o.name,sell:o.sell};
+  });
+
+  function normalizeMineState(){
+    if(!state.stock||typeof state.stock!=='object')state.stock={};
+    state.mineBought=!!state.mineBought;
+    state.mineStorageLevel=Math.max(0,Math.min(5,Math.floor(Number(state.mineStorageLevel)||0)));
+    if(!state.mineWaiting||typeof state.mineWaiting!=='object')state.mineWaiting={};
+    Object.keys(MINE_ORES).forEach(k=>state.mineWaiting[k]=Math.max(0,Math.floor(Number(state.mineWaiting[k])||0)));
+    if(state.mineJob&&(!MINE_ORES[state.mineJob.ore]||!Number.isFinite(Number(state.mineJob.startedAt))))state.mineJob=null;
+  }
+  normalizeMineState();
+
+  function mineCapacity(){return Math.round(24*(1+state.mineStorageLevel*.5));}
+  function mineWaitingTotal(){return Object.values(MINE_ORES).reduce((n,o,i)=>n,0)+Object.keys(MINE_ORES).reduce((n,k)=>n+(state.mineWaiting[k]||0),0);}
+  function mineStorageCost(){return [35000,70000,140000,245000,385000][state.mineStorageLevel]||0;}
+  function mineJobDuration(job=state.mineJob){return job&&MINE_ORES[job.ore]?MINE_ORES[job.ore].time:0;}
+  function mineJobProgress(){
+    if(!state.mineJob)return 0;
+    const ms=mineJobDuration()*1000;
+    return Math.max(0,Math.min(1,(Date.now()-state.mineJob.startedAt)/ms));
+  }
+  function mineRemaining(){
+    if(!state.mineJob)return 0;
+    return Math.max(0,Math.ceil((mineJobDuration()*1000-(Date.now()-state.mineJob.startedAt))/1000));
+  }
+  function fmtTime(sec){sec=Math.max(0,Math.floor(sec));const m=Math.floor(sec/60),s=sec%60;return m?`${m}m ${String(s).padStart(2,'0')}s`:`${s}s`;}
+
+  function processMineProduction(){
+    normalizeMineState();
+    if(!state.mineBought||!state.mineJob)return false;
+    if(mineJobProgress()<1)return false;
+    const o=MINE_ORES[state.mineJob.ore];
+    const free=mineCapacity()-mineWaitingTotal();
+    if(free<o.yield)return false;
+    state.mineWaiting[state.mineJob.ore]=(state.mineWaiting[state.mineJob.ore]||0)+o.yield;
+    state.mineJob=null;
+    try{showFloatingText(`${o.icon} +${o.yield}`);tone(720,.035);}catch(e){}
+    saveGame();
+    return true;
+  }
+
+  function ensureMineDom(){
+    const tabs=document.querySelector('.zoneTabs');
+    if(tabs&&!document.getElementById('zoneMineBtn')){
+      const b=document.createElement('button');
+      b.id='zoneMineBtn';b.className='zoneTab';b.setAttribute('onclick',"switchZone('mine')");b.textContent='⛏️ MINE';
+      tabs.appendChild(b);
+    }
+    if(tabs)tabs.style.gridTemplateColumns='repeat(6,1fr)';
+
+    const anchor=document.getElementById('forestArea')||document.getElementById('pondArea')||document.getElementById('vineyardArea')||document.getElementById('orchardArea');
+    if(anchor&&!document.getElementById('mineArea')){
+      const area=document.createElement('div');
+      area.id='mineArea';area.className='mineFarm';area.style.display='none';
+      area.innerHTML='<div class="mineBoard">⛏️ MINE DE FARM RUSH</div><div class="mineEntrance"></div><div id="mineOreGrid" class="mineOreGrid"></div><div id="mineZoneInfo" class="mineReadyBox"></div>';
+      anchor.insertAdjacentElement('afterend',area);
+    }
+    const panelAnchor=document.getElementById('sawmillPanel')||document.getElementById('pondPanel')||document.getElementById('textilePanel')||document.getElementById('restaurantPanel');
+    if(panelAnchor&&!document.getElementById('minePanel')){
+      const p=document.createElement('div');p.id='minePanel';p.className='panel buildingPanel minePanel';p.style.display='none';
+      panelAnchor.insertAdjacentElement('afterend',p);
+    }
+  }
+
+  function mineOreCard(key){
+    const o=MINE_ORES[key], unlocked=state.level>=o.level;
+    const active=state.mineJob&&state.mineJob.ore===key;
+    const pct=active?Math.floor(mineJobProgress()*100):0;
+    const full=mineCapacity()-mineWaitingTotal()<o.yield;
+    return `<div class="mineOreCard ${unlocked?'':'lockedOre'}">
+      <div class="mineOreTop"><span class="mineOreIcon">${o.icon}</span><div><div class="mineOreName">${o.name}</div><div class="mineOreMeta">Niv. ${o.level} • ${fmtTime(o.time)} • +${o.yield} • vente ${o.sell.toLocaleString('fr-FR')} 🪙</div></div></div>
+      ${active?`<div class="mineProgress"><i style="width:${pct}%"></i></div><div class="mineOreMeta">⏳ ${fmtTime(mineRemaining())}</div>`:''}
+      <button class="btn ${active?'orange':'dark'} full" ${(!unlocked||state.mineJob||full)?'disabled':''} onclick="startMineExtraction('${key}')">${active?'⏳ EXTRACTION…':unlocked?(full?'📦 STOCK PLEIN':'⛏️ EXTRAIRE'):`🔒 NIV. ${o.level}`}</button>
+    </div>`;
+  }
+
+  function renderMineZone(){
+    ensureMineDom();processMineProduction();
+    const grid=document.getElementById('mineOreGrid'),info=document.getElementById('mineZoneInfo');
+    if(!grid||!info)return;
+    grid.innerHTML=Object.keys(MINE_ORES).map(mineOreCard).join('');
+    const waiting=mineWaitingTotal();
+    info.innerHTML=`<b>📦 Stock de la mine : ${waiting}/${mineCapacity()}</b><br>${Object.entries(MINE_ORES).map(([k,o])=>`${o.icon} ${state.mineWaiting[k]||0}`).join(' • ')}${state.mineJob?`<br>⏳ En cours : ${MINE_ORES[state.mineJob.ore].icon} ${MINE_ORES[state.mineJob.ore].name} — ${fmtTime(mineRemaining())}`:'<br>✅ Mine disponible'}`;
+  }
+
+  window.startMineExtraction=function(key){
+    normalizeMineState();const o=MINE_ORES[key];
+    if(!state.mineBought)return toast("Achète d'abord la mine.");
+    if(!o||state.level<o.level)return toast(`Débloqué au niveau ${o?o.level:'?'}.`);
+    processMineProduction();
+    if(state.mineJob)return toast('Une extraction est déjà en cours.');
+    if(mineCapacity()-mineWaitingTotal()<o.yield)return toast('Le stockage de la mine est plein.');
+    state.mineJob={ore:key,startedAt:Date.now()};
+    saveGame();renderMineZone();renderMinePanel();
+    try{tone(430,.04);showFloatingText(`⛏️ ${o.name}`);}catch(e){}
+  };
+
+  window.collectMine=function(){
+    processMineProduction();normalizeMineState();
+    let total=0;
+    Object.entries(MINE_ORES).forEach(([k,o])=>{const q=state.mineWaiting[k]||0;if(q>0){state.stock[k]=(state.stock[k]||0)+q;total+=q;state.mineWaiting[k]=0;}});
+    if(!total)return toast('Aucun minerai prêt.');
+    showFloatingText(`⛏️ +${total} minerais`);tone(900,.05);saveGame();renderStock();renderOrders();renderGoal();renderMineZone();renderMinePanel();
+  };
+
+  window.upgradeMineStorage=function(){
+    normalizeMineState();if(!state.mineBought)return;
+    if(state.mineStorageLevel>=5)return toast('Stockage déjà au maximum.');
+    const cost=mineStorageCost();if(state.money<cost)return toast("Pas assez d'argent.");
+    state.money-=cost;state.mineStorageLevel++;showFloatingText('📦 STOCKAGE MINE +50%');tone(980,.05);saveGame();render();
+  };
+
+  window.buyMine=function(){
+    normalizeMineState();
+    if(state.mineBought)return;
+    if(state.level<MINE_UNLOCK)return toast(`Mine débloquée au niveau ${MINE_UNLOCK}.`);
+    if(state.money<MINE_PRICE)return toast("Pas assez d'argent.");
+    state.money-=MINE_PRICE;state.mineBought=true;state.currentZone='mine';showFloatingText('⛏️ MINE DÉBLOQUÉE');tone(1040,.07);saveGame();render();
+  };
+
+  function renderMinePanel(){
+    ensureMineDom();processMineProduction();
+    const p=document.getElementById('minePanel');if(!p)return;
+    p.style.display=state.mineBought?'block':'none';if(!state.mineBought)return;
+    const total=mineWaitingTotal(),cost=mineStorageCost();
+    p.innerHTML=`<div class="mineHeader"><div class="mineBigIcon">⛏️</div><div><div class="mineTitle">MINE</div><div class="mineSub">Extrais pierre, charbon et minerais. Une seule extraction à la fois.</div></div></div>
+      <div class="resourceBox"><div class="resourceRow"><span>Extraction</span><b>${state.mineJob?`${MINE_ORES[state.mineJob.ore].icon} ${fmtTime(mineRemaining())}`:'✅ Disponible'}</b></div><div class="resourceRow"><span>Prêt à récupérer</span><b>${total}/${mineCapacity()}</b></div></div>
+      <div class="actions"><button class="btn orange ${total?'minePulse':''}" onclick="collectMine()" ${total?'':'disabled'}>📦 RÉCUPÉRER (${total})</button><button class="btn dark" onclick="switchZone('mine')">⛏️ OUVRIR LA MINE</button></div>
+      <div class="mineStorageRow"><span>📦 Stockage niv. ${state.mineStorageLevel}/5<br><small>${mineCapacity()} minerais • +50% par niveau</small></span><button class="btn gold small" onclick="upgradeMineStorage()" ${state.mineStorageLevel>=5?'disabled':''}>${state.mineStorageLevel>=5?'MAX':`${cost.toLocaleString('fr-FR')} 🪙`}</button></div>`;
+  }
+
+  const baseRenderZone=window.renderZone;
+  window.renderZone=function(){
+    ensureMineDom();const r=baseRenderZone.apply(this,arguments);const mine=state.currentZone==='mine';
+    ['farmArea','orchardArea','vineyardArea','pondArea','forestArea'].forEach(id=>{const el=document.getElementById(id);if(el&&mine)el.style.display='none';});
+    const area=document.getElementById('mineArea'),btn=document.getElementById('zoneMineBtn'),tools=document.querySelector('.farmTools');
+    if(area)area.style.display=mine?'block':'none';
+    if(btn){btn.classList.toggle('active',mine);btn.textContent=state.mineBought?'⛏️ MINE':'🔒 MINE';}
+    document.querySelectorAll('.zoneTabs .zoneTab').forEach(b=>{if(b.id!=='zoneMineBtn'&&mine)b.classList.remove('active');});
+    if(tools&&mine)tools.style.display='none';
+    if(mine)renderMineZone();
+    return r;
+  };
+
+  const baseSwitchZone=window.switchZone;
+  window.switchZone=function(zone){
+    if(zone==='mine'){
+      cancelPaintSession();
+      if(!state.mineBought){openShop('spaces');return;}
+      state.currentZone='mine';render();return;
+    }
+    return baseSwitchZone.apply(this,arguments);
+  };
+
+  const baseRenderBuildings=window.renderBuildings;
+  window.renderBuildings=function(){const r=baseRenderBuildings.apply(this,arguments);renderMinePanel();return r;};
+
+  const baseUpdate=window.updateProductions;
+  window.updateProductions=function(){const r=baseUpdate.apply(this,arguments);const changed=processMineProduction();if(changed&&!v260UiBusy()){renderMinePanel();if(state.currentZone==='mine')renderMineZone();}return r;};
+
+  const baseSpaces=window.shopSpaces;
+  window.shopSpaces=function(){
+    let html=baseSpaces.apply(this,arguments);
+    const owned=state.mineBought;
+    html+=shopCard('⛏️','Mine','Nouvelle zone : pierre, charbon, fer, cuivre puis or.',MINE_PRICE,state.level>=MINE_UNLOCK,'buyMine()',owned,`Niveau ${MINE_UNLOCK}`);
+    if(owned)html+=`<div class="shopCard"><b>📦 Stockage de la mine</b><span style="float:right">Niv. ${state.mineStorageLevel}/5</span><br><small>${mineCapacity()} minerais • +50% par amélioration</small></div>`;
+    return html;
+  };
+
+  const baseAvailable=window.availableOrderProducts;
+  window.availableOrderProducts=function(){
+    const list=baseAvailable.apply(this,arguments);
+    if(state.mineBought)Object.entries(MINE_ORES).forEach(([k,o])=>{if(state.level>=o.level)list.push({key:k,sell:o.sell});});
+    return list;
+  };
+
+  const baseGoal=window.renderGoal;
+  window.renderGoal=function(){
+    const r=baseGoal.apply(this,arguments);
+    if(state.level>=MINE_UNLOCK&&!state.mineBought){
+      const ic=document.getElementById('goalIcon'),ti=document.getElementById('goalTitle'),tx=document.getElementById('goalText'),fi=document.getElementById('goalFill');
+      if(ic)ic.textContent='⛏️';if(ti)ti.textContent='OBJECTIF : MINE';if(tx)tx.textContent=`${Math.floor(state.money).toLocaleString('fr-FR')} / ${MINE_PRICE.toLocaleString('fr-FR')} 🪙`;if(fi)fi.style.width=Math.min(100,state.money/MINE_PRICE*100)+'%';
+    }
+    return r;
+  };
+
+  const baseReward=window.levelReward;
+  window.levelReward=function(level){
+    const r=baseReward.apply(this,arguments);
+    const extra={42:'<br><b>⛏️ Nouveau :</b> Mine • pierre et charbon.',43:'<br><b>⛓️ Nouveau :</b> Minerai de fer.',44:'<br><b>🟠 Nouveau :</b> Minerai de cuivre.',45:'<br><b>🟡 Nouveau :</b> Minerai d\'or.'};
+    if(extra[level]){const el=document.getElementById('levelUpReward');if(el)el.innerHTML=(el.innerHTML||'')+extra[level];}
+    return r;
+  };
+
+  /* La mine survit aux sauvegardes existantes sans changer de clé : V2.6 reste la base de récupération. */
+  const oldWrite=window.v260WriteSave;
+  /* v260WriteSave est lexical dans une ancienne couche ; saveGame sérialise déjà tout state, donc aucune migration destructive. */
+
+  ensureMineDom();normalizeMineState();processMineProduction();
+  try{renderZone();renderBuildings();renderStock();renderGoal();saveGame();}catch(e){console.error('V2.9.0 init mine',e);}
+})();
+</script>
+
 </body>
 </html>
