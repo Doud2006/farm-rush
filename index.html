@@ -11123,5 +11123,123 @@ window.addEventListener("beforeunload",saveGame);document.addEventListener("visi
 })();
 </script>
 
+
+<style id="v284-polish-css">
+:root{
+  --v284-shadow:0 10px 24px rgba(91,65,35,.14);
+  --v284-soft:0 4px 10px rgba(91,65,35,.10);
+}
+/* V2.8.4 — polish visuel final, sans toucher au gameplay */
+button,.shopCategory,.orderCard,.stockItem,.recipeCard,.animalCard,.panel{
+  -webkit-tap-highlight-color:transparent;
+}
+button:not(:disabled){
+  transition:transform .12s ease, box-shadow .18s ease, filter .18s ease;
+}
+button:not(:disabled):active{transform:translateY(1px) scale(.985)}
+.panel,.recipeCard,.animalCard,.orderCard,.stockItem{box-shadow:var(--v284-soft)}
+.modalSheet,.shopSheet{box-shadow:0 -14px 34px rgba(55,39,22,.22)}
+
+/* Barre basse plus nette sur mobile */
+.bottomNav,
+#bottomNav,
+.bottomBar,
+#bottomBar{
+  backdrop-filter:saturate(1.08) blur(10px);
+  -webkit-backdrop-filter:saturate(1.08) blur(10px);
+}
+
+/* Accent discret sur l'onglet actif */
+.bottomNav button.active,
+.bottomBar button.active,
+#bottomNav button.active,
+#bottomBar button.active{
+  transform:translateY(-2px);
+  box-shadow:0 7px 14px rgba(103,76,39,.18);
+}
+
+/* Petits badges d'état réutilisables */
+.v284StatusBadge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 8px;border-radius:999px;
+  font-size:11px;font-weight:900;line-height:1;
+  background:#fff7df;border:1px solid rgba(142,101,45,.18);
+  box-shadow:0 2px 6px rgba(95,65,30,.08);
+}
+.v284StatusBadge.ready{background:#fff0c2;color:#8b4a10}
+.v284StatusBadge.auto{background:#e8f7df;color:#356b24}
+
+/* Ressources du haut plus lisibles */
+#money,#level,.moneyValue,.levelValue{font-variant-numeric:tabular-nums}
+
+/* Les cartes verrouillées restent lisibles sans sembler désactivées par bug */
+.locked,.isLocked{filter:saturate(.72) brightness(.98)}
+
+/* Réduction des animations pour les appareils/utilisateurs qui le demandent */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+}
+
+/* Très petits iPhone : on garde les contrôles respirables */
+@media (max-width:390px){
+  .panel,.recipeCard,.animalCard,.orderCard{border-radius:16px}
+  button{min-height:42px}
+  .bottomNav button,.bottomBar button,#bottomNav button,#bottomBar button{font-size:11px}
+}
+</style>
+
+<script id="v284-polish-js">
+(function(){
+  document.title='Farm Rush V2.8.4';
+  const ver=document.querySelector('.version');
+  if(ver)ver.textContent='V2.8.4 — Polish visuel';
+
+  function addStatusBadges(){
+    document.querySelectorAll('.v281IllustratedBuilding,.panel').forEach(panel=>{
+      panel.querySelectorAll('.v284StatusBadge').forEach(n=>n.remove());
+      const collect=panel.querySelector('button.cartoonCollect.collectReady:not(:disabled),button.collectReady:not(:disabled)');
+      if(collect){
+        const b=document.createElement('span');b.className='v284StatusBadge ready';b.textContent='✨ Prêt';
+        const head=panel.querySelector('.buildingHeader,.panelTitle');
+        if(head)head.appendChild(b);
+      }
+      const txt=(panel.textContent||'').toUpperCase();
+      if(/AUTO|AUTOMAT/.test(txt)){
+        const enabled=/ACTIF|ON|EN MARCHE/.test(txt);
+        if(enabled){
+          const b=document.createElement('span');b.className='v284StatusBadge auto';b.textContent='🤖 Auto';
+          const head=panel.querySelector('.buildingHeader,.panelTitle');
+          if(head)head.appendChild(b);
+        }
+      }
+    });
+  }
+
+  const oldRenderBuildings=window.renderBuildings;
+  if(typeof oldRenderBuildings==='function'){
+    window.renderBuildings=function(){
+      const r=oldRenderBuildings.apply(this,arguments);
+      requestAnimationFrame(addStatusBadges);
+      return r;
+    };
+  }
+
+  /* Son de clic très léger uniquement si le jeu possède déjà tone(). */
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest&&e.target.closest('button');
+    if(!btn||btn.disabled)return;
+    try{if(typeof window.tone==='function')window.tone(520,.018)}catch(_e){}
+  },{passive:true});
+
+  /* Sauvegarde immédiate quand l'app passe en arrière-plan, sans changer la logique existante. */
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'){
+      try{if(typeof window.saveGame==='function')window.saveGame()}catch(_e){}
+    }
+  });
+
+  addStatusBadges();
+})();
+</script>
 </body>
 </html>
