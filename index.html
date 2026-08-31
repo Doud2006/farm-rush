@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.7.1 — Design Preview</title>
+<title>Farm Rush V2.7.2 — Bâtiments & animaux</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -329,12 +329,185 @@ main{padding:11px 10px 102px}
 @keyframes v271HarvestBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
 @media (hover:hover){.plot:not(.locked):hover{transform:translateY(-2px);filter:brightness(1.04)}}
 </style>
+
+
+<style id="v272-buildings-animals-design">
+/* =========================================================
+   FARM RUSH V2.7.2 — BÂTIMENTS & ANIMAUX
+   Passe visuelle uniquement : aucune mécanique modifiée.
+   ========================================================= */
+
+/* Carte bâtiment = petite scène de ferme */
+.buildingPanel,
+#sheepfoldPanel,
+#cellarPanel,
+#textilePanel,
+#pondPanel,
+#sawmillPanel,
+#meatPanel,
+#restaurantPanel{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border-width:3px!important;
+  padding:14px!important;
+  box-shadow:0 7px 0 rgba(95,66,32,.15),0 13px 24px rgba(78,56,30,.13)!important;
+}
+.buildingPanel::after,
+#sheepfoldPanel::after,
+#cellarPanel::after,
+#textilePanel::after,
+#pondPanel::after,
+#sawmillPanel::after,
+#meatPanel::after,
+#restaurantPanel::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+  left:-7%;right:-7%;bottom:-26px;height:72px;
+  border-radius:50% 50% 0 0;
+  background:linear-gradient(180deg,rgba(121,183,79,.28),rgba(74,137,59,.16));
+  border-top:2px solid rgba(77,129,50,.12);
+}
+
+/* Thèmes propres à chaque bâtiment */
+#coopPanel{background:linear-gradient(145deg,#fff7d6,#ffe6a4)!important;border-color:#d29b42!important}
+#barnPanel{background:linear-gradient(145deg,#fff0d9,#ffd4ad)!important;border-color:#bd7950!important}
+#millPanel{background:linear-gradient(145deg,#f5f0df,#e8ddc5)!important;border-color:#a58d68!important}
+#bakeryPanel{background:linear-gradient(145deg,#fff0d1,#ffd99d)!important;border-color:#c98b43!important}
+#dairyPanel{background:linear-gradient(145deg,#f3fbff,#ddecf4)!important;border-color:#83a9b9!important}
+#pastaPanel{background:linear-gradient(145deg,#f3efe8,#ded7cd)!important;border-color:#8f8679!important}
+#meatPanel{background:linear-gradient(145deg,#fff0e8,#f3cbc0)!important;border-color:#a86659!important}
+#restaurantPanel{background:linear-gradient(145deg,#fff8df,#f5dfaa)!important;border-color:#bd943e!important}
+#cellarPanel{background:linear-gradient(145deg,#f4eafa,#ded0ec)!important;border-color:#87649d!important}
+#sheepfoldPanel{background:linear-gradient(145deg,#fffdf7,#eee9dc)!important;border-color:#aaa18c!important}
+#textilePanel{background:linear-gradient(145deg,#f3ecff,#e2d7f4)!important;border-color:#8c72ac!important}
+#pondPanel{background:linear-gradient(145deg,#eaf9ff,#cceaf4)!important;border-color:#65a4bd!important}
+#sawmillPanel{background:linear-gradient(145deg,#f5ead7,#dfc49c)!important;border-color:#8d663b!important}
+
+/* En-tête bâtiment plus proche d'une carte de jeu mobile */
+.buildingHeader{align-items:center!important;gap:11px!important;margin-bottom:10px!important}
+.buildingIcon{
+  width:58px!important;height:58px!important;min-width:58px!important;
+  display:grid!important;place-items:center!important;
+  font-size:35px!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(255,246,214,.72))!important;
+  border:2px solid rgba(117,83,38,.24)!important;
+  box-shadow:0 5px 0 rgba(104,75,36,.14),inset 0 2px rgba(255,255,255,.8)!important;
+  filter:none!important;
+}
+.buildingName{font-size:15px!important;letter-spacing:.15px!important;color:#4a3826!important;text-shadow:0 1px rgba(255,255,255,.8)}
+.buildingStats{font-size:10px!important;color:#79654d!important;line-height:1.45!important}
+.countdown{margin-top:4px!important;font-weight:900!important;color:#655136!important}
+
+/* Barres de production plus épaisses */
+.productionBar{height:10px!important;border-radius:999px!important;background:rgba(92,65,35,.16)!important;border:1px solid rgba(92,65,35,.18)!important;overflow:hidden!important;box-shadow:inset 0 2px 3px rgba(69,45,24,.12)!important}
+.productionFill{border-radius:999px!important;background:linear-gradient(90deg,#7fc850,#f2c54f)!important;box-shadow:inset 0 1px rgba(255,255,255,.7)!important}
+
+/* Ressources : petites caisses/cartes */
+.resourceBox{
+  background:rgba(255,255,255,.66)!important;
+  border:2px solid rgba(137,103,57,.20)!important;
+  box-shadow:0 3px 0 rgba(112,80,42,.08)!important;
+  backdrop-filter:blur(2px);
+}
+.resourceRow span{font-weight:800;color:#725e45}
+.resourceRow b{font-size:13px;color:#4b3b2a}
+
+/* Animaux : vraies cartes distinctes dans l'étable */
+#barnPanel .dual{gap:9px!important}
+#barnPanel .animalCard{
+  position:relative;
+  overflow:hidden;
+  padding:11px!important;
+  border:2px solid rgba(111,76,50,.22)!important;
+  box-shadow:0 4px 0 rgba(101,71,45,.10)!important;
+}
+#barnPanel .animalCard:first-child{background:linear-gradient(160deg,#f7fbff,#dfedf5)!important}
+#barnPanel .animalCard:last-child{background:linear-gradient(160deg,#fff4ef,#f6d7cd)!important}
+#barnPanel .animalCard::before{
+  position:absolute;right:-5px;top:-12px;
+  font-size:56px;opacity:.09;transform:rotate(8deg);pointer-events:none;
+}
+#barnPanel .animalCard:first-child::before{content:"🐄"}
+#barnPanel .animalCard:last-child::before{content:"🐖"}
+.animalTitle{font-size:12px!important;color:#49392b!important;letter-spacing:.2px}
+.animalStat{color:#7b6c59!important;line-height:1.4!important}
+.v261AnimalSpeed{
+  display:inline-block!important;
+  padding:4px 7px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.62)!important;
+  border:1px solid rgba(116,91,58,.18)!important;
+  color:#68563d!important;
+  font-weight:900!important;
+}
+
+/* Bergerie */
+.sheepHero{
+  border:2px solid rgba(126,113,87,.22)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(247,243,230,.76))!important;
+  box-shadow:0 4px 0 rgba(101,91,70,.08)!important;
+}
+.sheepHeroIcon{
+  width:66px;height:66px;display:grid;place-items:center;
+  border-radius:20px;background:linear-gradient(#fff,#f1eee5);
+  border:2px solid #d8d1bf;box-shadow:0 4px 0 #bfb7a055;
+  font-size:39px!important;
+}
+.sheepResource{background:rgba(255,255,255,.74)!important;border:2px solid rgba(141,126,93,.18)!important;box-shadow:0 3px 0 rgba(120,102,69,.07)!important}
+
+/* Recettes / files d'attente */
+.recipeCard,.queueCard{
+  border-radius:15px!important;
+  border:2px solid rgba(135,105,65,.18)!important;
+  background:rgba(255,255,255,.68)!important;
+  box-shadow:0 3px 0 rgba(108,78,43,.07)!important;
+}
+
+/* Boutons des bâtiments : un peu plus tactiles */
+.buildingPanel .actions,.animalCard .actions,#sheepfoldPanel .actions{gap:8px!important}
+.buildingPanel .btn,.animalCard .btn,#sheepfoldPanel .btn{
+  min-height:43px;
+  font-size:10px!important;
+  letter-spacing:.15px;
+}
+.cartoonCollect.collectReady{
+  animation:v272CollectPulse 1.5s ease-in-out infinite!important;
+  box-shadow:0 4px 0 #b96918,0 0 0 0 rgba(239,143,39,.30)!important;
+}
+@keyframes v272CollectPulse{
+  0%,100%{filter:brightness(1);box-shadow:0 4px 0 #b96918,0 0 0 0 rgba(239,143,39,0)}
+  50%{filter:brightness(1.07);box-shadow:0 4px 0 #b96918,0 0 0 5px rgba(239,143,39,.13)}
+}
+
+/* Petits pictos d'ambiance, purement décoratifs */
+#coopPanel::before,#barnPanel::before,#millPanel::before,#bakeryPanel::before,#dairyPanel::before,#pastaPanel::before,
+#cellarPanel::before,#sheepfoldPanel::before,#textilePanel::before,#pondPanel::before,#sawmillPanel::before{
+  position:absolute;z-index:-1;right:8px;top:5px;font-size:52px;opacity:.055;pointer-events:none;transform:rotate(5deg)
+}
+#coopPanel::before{content:"🐔"} #barnPanel::before{content:"🐄"} #millPanel::before{content:"⚙️"}
+#bakeryPanel::before{content:"🥖"} #dairyPanel::before{content:"🧀"} #pastaPanel::before{content:"🏭"}
+#cellarPanel::before{content:"🍷"} #sheepfoldPanel::before{content:"🐑"} #textilePanel::before{content:"🧵"}
+#pondPanel::before{content:"🎣"} #sawmillPanel::before{content:"🪚"}
+
+/* Mobile étroit : on garde tout confortable au doigt */
+@media(max-width:380px){
+  .buildingPanel,#sheepfoldPanel,#cellarPanel,#textilePanel,#pondPanel,#sawmillPanel{padding:11px!important}
+  .buildingIcon{width:51px!important;height:51px!important;min-width:51px!important;font-size:31px!important}
+  #barnPanel .dual{grid-template-columns:1fr!important}
+  .sheepResources{gap:5px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.1 — Refonte visuelle • Design Preview</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.2 — Bâtiments & animaux</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
