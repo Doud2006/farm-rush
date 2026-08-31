@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.6.2</title>
+<title>Farm Rush V2.7.0 — Design Preview</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -186,12 +186,128 @@
 <style id="v259-collect-fix">
 button.cartoonCollect.collectReady{pointer-events:auto!important;touch-action:manipulation!important}
 </style>
+
+<style id="v270-design-preview">
+:root{
+  --fr-green:#2f6d3f;
+  --fr-green-dark:#214d30;
+  --fr-green-soft:#74b85d;
+  --fr-cream:#fff8e8;
+  --fr-cream-2:#f6ead0;
+  --fr-brown:#805a35;
+  --fr-brown-dark:#5e3e24;
+  --fr-gold:#f5c84b;
+  --fr-orange:#ef9b37;
+  --fr-text:#3a3328;
+  --fr-shadow:0 8px 20px rgba(69,54,31,.16);
+  --fr-shadow-soft:0 4px 10px rgba(69,54,31,.12);
+}
+html,body{background:#8fcf70}
+body{color:var(--fr-text);font-family:ui-rounded,"SF Pro Rounded","Avenir Next",Arial,sans-serif}
+.app{background:linear-gradient(180deg,#9bd777 0,#d9edb9 38%,#f1ecd8 100%);box-shadow:0 0 36px #244b2b35}
+
+/* Écran titre */
+#home{background:linear-gradient(#8bd5f4 0 44%,#82c860 44%);padding:24px}
+.homeHill{background:linear-gradient(#76bd58,#5ea547);box-shadow:inset 0 7px 0 #ffffff20}
+.homeCard{width:min(100%,390px);padding:28px 22px 24px;border:3px solid #fff2c2;background:linear-gradient(180deg,#fffdf4f2,#fff2d8ed);border-radius:30px;box-shadow:0 16px 0 #557c3d55,0 24px 42px #28452538;backdrop-filter:blur(10px)}
+.homeLogo{font-size:76px;filter:drop-shadow(0 6px 0 #fff5c0)}
+.homeTitle{font-size:45px;letter-spacing:-2px;color:#2f6d3f;text-shadow:0 3px 0 #fff,0 6px 10px #315e3026}
+.homeSubtitle{font-size:14px;color:#5d5a3f;margin:12px 0 25px}
+.playButton{border:2px solid #3e8a43;background:linear-gradient(180deg,#78d45c,#4da840);border-radius:18px;box-shadow:0 6px 0 #347936,0 10px 20px #315e3030;text-shadow:0 2px 0 #2b6b2b55}
+.playButton:active{transform:translateY(4px);box-shadow:0 2px 0 #347936}
+.roundBtn{background:linear-gradient(#466f45,#2b5430);border:2px solid #fff1bf;box-shadow:0 4px 0 #1f3e25}
+.version{font-weight:800;color:#765f42}
+
+/* HUD */
+header{background:linear-gradient(180deg,#2f7443,#285f39);padding:calc(9px + env(safe-area-inset-top)) 10px 10px;border-bottom:3px solid #204b2e;box-shadow:0 5px 14px #24412945}
+.top{gap:9px}
+.avatar{width:52px;height:52px;border-radius:16px;border:2px solid #fff1b8;background:linear-gradient(145deg,#ffd670,#efa63c);box-shadow:0 4px 0 #9f682e;font-size:29px}
+.playerName{font-size:12px;letter-spacing:.25px;text-shadow:0 1px 0 #0004}
+.xpText{opacity:.9;font-weight:800}
+.xpbar{height:11px;background:#183f25;border:2px solid #17371f;box-shadow:inset 0 2px 3px #0004}
+.xpfill{background:linear-gradient(90deg,#f4c84c,#a9e55d);box-shadow:inset 0 1px #fff8}
+.money{min-width:98px;text-align:center;border:2px solid #f8dc73;background:linear-gradient(180deg,#6b4a25,#523718);border-radius:15px;padding:10px 9px;box-shadow:0 4px 0 #18351f, inset 0 1px #ffffff25;color:#fff7cb;font-size:13px}
+main{padding:11px 10px 102px}
+
+/* Cartes principales */
+.panel{border:2px solid #c7a86b;background:linear-gradient(180deg,#fffaf0,#f8ecd2);border-radius:20px;padding:12px;margin-bottom:11px;box-shadow:var(--fr-shadow-soft)}
+.panelTitle{font-size:13px;color:#4b3d2d}
+.tiny{color:#8b7a60}
+.goalPanel{position:relative;overflow:hidden;background:linear-gradient(135deg,#fff6b8,#f7d46c);border-color:#c89d37;box-shadow:0 5px 0 #c89d3740,var(--fr-shadow-soft)}
+.goalPanel:before{content:"";position:absolute;inset:-35% 55% 20% -10%;background:#fff8;transform:rotate(-16deg);pointer-events:none}
+.goalIcon{filter:drop-shadow(0 3px 0 #fff8)}
+.orders{gap:8px}
+.order{border:2px solid #dfcda5;background:#fffdf8;border-radius:14px;padding:9px;box-shadow:0 3px 0 #d9c18e55}
+.orderComplete{border-color:#77b557;background:#f3ffe9}
+.orderLine{background:#f4eddc;border:1px solid #eadfc7}
+
+/* Zones */
+.zoneTabs{gap:8px;margin:3px 0 10px}
+.zoneTab{min-height:45px;border:2px solid #9e835f;background:linear-gradient(#eee2c6,#d8c7a4);border-radius:15px;color:#5d4d39;box-shadow:0 4px 0 #aa9270;font-size:11px}
+.zoneTab.active{border-color:#24532f;background:linear-gradient(#4f9c54,#34743e);color:#fff;box-shadow:0 4px 0 #214e2d;text-shadow:0 1px #0004}
+.farmTools{border:2px solid #b39461;background:linear-gradient(#fffdf8,#f4ead7);border-radius:18px;box-shadow:var(--fr-shadow-soft)}
+.fieldHelp{color:#6f634f}
+
+/* Boutons */
+.btn,.cartoonCollect{border:2px solid #4d913f;border-radius:14px;background:linear-gradient(180deg,#78c955,#53a744);box-shadow:0 4px 0 #3d7d35,inset 0 1px #ffffff50;color:#fff;text-shadow:0 1px #0003;transition:transform .08s ease,filter .15s ease}
+.btn:active,.cartoonCollect:active{transform:translateY(3px) scale(.99);box-shadow:0 1px 0 #3d7d35}
+.btn.orange{border-color:#cf791e;background:linear-gradient(#ffb350,#e98927);box-shadow:0 4px 0 #b96918}
+.btn.gold{border-color:#d29b25;background:linear-gradient(#ffe477,#f4bd3f);box-shadow:0 4px 0 #c38d20;color:#664613;text-shadow:none}
+.btn.blue{border-color:#4e7da8;background:linear-gradient(#78b7df,#5794c2);box-shadow:0 4px 0 #42769d}
+.btn.dark{border-color:#5c594f;background:linear-gradient(#77766d,#575b52);box-shadow:0 4px 0 #44463f}
+.btn.red{border-color:#a74c3d;background:linear-gradient(#e77461,#c65444);box-shadow:0 4px 0 #973e33}
+.btn:disabled{transform:none;filter:grayscale(.25);box-shadow:none}
+
+/* Terrain : juste un polish, mécanique inchangée */
+.farm{border:3px solid #5d913e;border-radius:22px;background:linear-gradient(#9cdb73 0 22%,#70b753 22%);box-shadow:inset 0 0 0 3px #ffffff20,0 6px 14px #516b3530}
+.plot{border-radius:9px;box-shadow:inset 0 2px 0 #c58a4a66,0 2px 0 #60391f35}
+.plot.empty{background:linear-gradient(#a36b3e,#86522e)}
+.plot.locked{background:linear-gradient(#86827a,#67645f)}
+.timer{background:#fff8dc;border:1px solid #c9a96b;color:#4e402f}
+
+/* Bâtiments & automatisation */
+.buildingPanel{background:linear-gradient(145deg,#fff8da,#ffe8b0);border-color:#c8a45f}
+.automationPanel{background:linear-gradient(145deg,#edf7ff,#d9ecff);border-color:#7ca5c6}
+.buildingIcon{filter:drop-shadow(0 3px 0 #fff)}
+.resourceBox,.animalCard,.autoStatus{border-width:2px;border-radius:13px;box-shadow:0 2px 0 #c7aa7050}
+.select{border:2px solid #a6b9c5;border-radius:12px;min-height:42px}
+.stockItem{border:2px solid #dfcda5;background:#fffdf8;border-radius:13px;box-shadow:0 2px 0 #d4bd8f50}
+
+/* Navigation inférieure */
+.nav{gap:4px;padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#fff7e6,#ead8b9);border-top:3px solid #b4905d;box-shadow:0 -8px 20px #3e301a2b}
+.nav button{min-height:57px;margin:0;padding:6px 2px;border:1px solid transparent;border-radius:15px;color:#66543d;font-size:9px;font-weight:1000;transition:.1s;background:transparent}
+.nav button:active{background:#d8c39c;transform:scale(.96)}
+.nav span{font-size:23px;margin-bottom:2px;filter:drop-shadow(0 2px 0 #fff)}
+.nav button:nth-child(2){background:#fffaf0;border-color:#dfc99f;box-shadow:0 2px 0 #c8aa79}
+
+/* Modales / Shop */
+.modal{background:rgba(32,29,20,.58);backdrop-filter:blur(4px)}
+.sheet{background:linear-gradient(180deg,#fffaf0,#f5e8cc);border:3px solid #c8a770;border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -12px 34px #21190d45;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.sheetHandle{width:52px;height:6px;background:#b79d78}
+.sheetHint{color:#9b886b}
+.sheet h2,#modalTitle{font-size:20px;color:#4d3e2d;letter-spacing:-.4px}
+.shopTabs{gap:7px}
+.shopTab{min-height:42px;border:2px solid #d2bd92;border-radius:13px;background:linear-gradient(#fff7e5,#eadcc0);color:#65543d;box-shadow:0 3px 0 #c9af7e;font-size:9px}
+.shopTab.active{border-color:#3d813f;background:linear-gradient(#74c657,#4ea343);box-shadow:0 3px 0 #397b36;color:white}
+.shopCard,.marketRow{border:2px solid #dfcaa1;background:#fffdf8;border-radius:16px;box-shadow:0 4px 0 #d5bc8b45;margin-bottom:10px}
+.shopIcon{width:54px;height:54px;display:grid;place-items:center;border-radius:15px;background:#f5ead2;border:2px solid #e0c89b;font-size:34px}
+.shopName{font-size:14px;color:#493b2c}
+.shopDescription{color:#81715b}
+.shopPrice{display:inline-block;background:#fff0bc;border:1px solid #dfbb56;border-radius:999px;padding:4px 8px;color:#7e5613}
+.marketButtons{gap:7px}
+
+/* Petits détails */
+.toast{border-radius:16px!important;box-shadow:0 8px 22px #0003!important}
+.levelCard{border-radius:28px!important;border:3px solid #e6b743!important;background:linear-gradient(#fffbe9,#ffe8a7)!important;box-shadow:0 16px 40px #0005!important}
+@media (max-width:380px){.money{min-width:84px;font-size:12px}.avatar{width:46px;height:46px}.homeTitle{font-size:41px}.panel{padding:10px}.nav span{font-size:21px}}
+</style>
+
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.6.1 — Animaux plus rapides • optimisation & stabilité</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.0 — Refonte visuelle • Design Preview</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
