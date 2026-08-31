@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.7.5 — Finition mobile</title>
+<title>Farm Rush V2.7.6 — Barre fixe iPhone</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -592,6 +592,21 @@ main{padding-bottom:112px!important}
 }
 </style>
 
+
+<style id="v276-viewport-nav-fix">
+/* V2.7.6 — la navigation est hors de #game pour rester fixée au viewport iOS */
+#mainNav{
+  position:fixed!important;
+  left:50%!important;
+  bottom:calc(10px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:min(calc(100% - 18px),482px)!important;
+  z-index:2147483000!important;
+}
+body{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+#game{padding-bottom:0!important}
+main{padding-bottom:24px!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -612,9 +627,9 @@ main{padding-bottom:112px!important}
 <div id="coopPanel" class="panel buildingPanel" style="display:none"></div><div id="barnPanel" class="panel buildingPanel" style="display:none"></div><div id="millPanel" class="panel buildingPanel" style="display:none"></div><div id="bakeryPanel" class="panel buildingPanel" style="display:none"></div><div id="dairyPanel" class="panel buildingPanel" style="display:none"></div><div id="pastaPanel" class="panel buildingPanel" style="display:none"></div>
 <div class="panel"><div class="panelTitle"><span>📦 STOCK</span><button class="btn gold small" onclick="showMarket()">🛒 VENDRE</button></div><div id="stock" class="stockGrid"></div></div>
 </main>
-<nav class="nav"><button onclick="window.scrollTo(0,0)"><span>🏡</span>FERME</button><button onclick="openShop()"><span>🛒</span>SHOP</button><button onclick="showMarket()"><span>💰</span>MARCHÉ</button><button onclick="showProgress()"><span>⭐</span>PROGRESSION</button></nav>
 </section>
 </div>
+<nav id="mainNav" class="nav" style="display:none"><button onclick="window.scrollTo(0,0)"><span>🏡</span>FERME</button><button onclick="openShop()"><span>🛒</span>SHOP</button><button onclick="showMarket()"><span>💰</span>MARCHÉ</button><button onclick="showProgress()"><span>⭐</span>PROGRESSION</button></nav>
 <div id="modal" class="modal" onclick="modalBackgroundClose(event)"><div id="modalSheet" class="sheet"><div class="sheetHandleArea"><div class="sheetHandle"></div><div class="sheetHint">Balaye vers le bas pour fermer</div></div><h2 id="modalTitle"></h2><div id="modalBody"></div><button class="btn dark full" onclick="closeModal()">FERMER</button></div></div>
 <div id="levelUp" class="levelUp"><div class="levelCard"><div class="levelStar">⭐</div><h2>NIVEAU <span id="levelUpNumber"></span> !</h2><p id="levelUpReward"></p><button class="btn gold full" onclick="closeLevelUp()">CONTINUER</button></div></div>
 <div id="toast" class="toast"></div>
@@ -636,7 +651,7 @@ function formatTime(s){s=Math.max(0,Math.ceil(s));return s<60?s+"s":Math.floor(s
 function initAudio(){if(!audioCtx){try{const A=window.AudioContext||window.webkitAudioContext;if(A)audioCtx=new A()}catch(e){}}if(audioCtx?.state==="suspended")audioCtx.resume()}
 function tone(freq=520,d=.05){if(!soundOn)return;initAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.05,audioCtx.currentTime+.01);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d+.02)}
 function toggleSound(){soundOn=!soundOn;localStorage.setItem("farmRushSound",soundOn?"1":"0");document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";if(soundOn)tone()}
-function startGame(){document.getElementById("home").style.display="none";document.getElementById("game").style.display="block";render()}
+function startGame(){document.getElementById("home").style.display="none";document.getElementById("game").style.display="block";const nav=document.getElementById("mainNav");if(nav)nav.style.display="grid";render()}
 function render(){document.getElementById("money").textContent=Math.floor(state.money).toLocaleString("fr-FR");document.getElementById("level").textContent=state.level;document.getElementById("xp").textContent=state.xp;document.getElementById("xpNeed").textContent=xpRequired();document.getElementById("xpFill").style.width=Math.min(100,state.xp/xpRequired()*100)+"%";renderZone();renderPaintStatus();renderFields();renderOrders();renderStock();renderBuildings();renderWorker();renderGoal();saveGame()}
 function switchZone(zone){cancelPaintSession();if(zone==="orchard"&&!state.orchardBought){openShop("spaces");return}state.currentZone=zone;render()}
 function renderZone(){const orchard=state.currentZone==="orchard";document.getElementById("farmArea").style.display=orchard?"none":"block";document.getElementById("orchardArea").style.display=orchard?"block":"none";document.getElementById("zoneFarmBtn").classList.toggle("active",!orchard);document.getElementById("zoneOrchardBtn").classList.toggle("active",orchard);document.getElementById("zoneOrchardBtn").textContent=state.orchardBought?"🍎 VERGER":"🔒 VERGER"}
@@ -10655,7 +10670,7 @@ window.addEventListener("beforeunload",saveGame);document.addEventListener("visi
       setTimeout(function(){
         originalStart.apply(window,arguments);
         var game=document.getElementById('game');
-        if(game){game.classList.remove('v274Enter');void game.offsetWidth;game.classList.add('v274Enter')}
+        if(game){game.classList.remove('v274Enter');void game.offsetWidth;game.classList.add('v274Enter');setTimeout(function(){game.classList.remove('v274Enter')},500)}
       },170);
     };
   }
