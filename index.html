@@ -182,6 +182,10 @@
 }
 
 </style>
+
+<style id="v259-collect-fix">
+button.cartoonCollect.collectReady{pointer-events:auto!important;touch-action:manipulation!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -9554,7 +9558,7 @@ showProgress=function(){
     .shopName{font-size:13px!important;color:#4e3d29!important}
     .shopDescription{color:#705d43!important;line-height:1.35!important}
     .cartoonCollect{position:relative;overflow:hidden}
-    .cartoonCollect.ready{animation:collectPulse 1.4s infinite;background:linear-gradient(180deg,#ffb95d,#ef8f27)!important}
+    .cartoonCollect.collectReady{animation:collectPulse 1.4s infinite;background:linear-gradient(180deg,#ffb95d,#ef8f27)!important;pointer-events:auto!important}
     @keyframes collectPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14)}}
     .producerReadyBadge{display:inline-flex;align-items:center;gap:4px;background:#fff0a7;color:#6a471e;border:2px solid #b17a2d;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:1000;margin:4px 0}
     .cartoonHint{background:#e7f6d4;border:2px dashed #74a554;color:#3e6032;border-radius:16px;padding:10px;margin:8px 0 12px;font-size:11px;font-weight:800}
@@ -9661,7 +9665,7 @@ renderBuildings=function(){
       if(!panel)return;
       const txt=panel.textContent||'';
       const m=txt.match(/\b([1-9]\d*)\s*\/\s*\d+/);
-      if(m)btn.classList.add('ready');
+      if(m)btn.classList.add('collectReady');
     });
   });
 };
@@ -9783,9 +9787,9 @@ collectFurniture=()=>collectWaiting('furnitureWaiting','furniture','🪑');
    - Cherche la progression la plus avancée parmi toutes les versions
    - Une fois récupérée, utilise farmRushV254 comme sauvegarde principale
 ====================================================== */
-document.title='Farm Rush V2.5.4';
+document.title='Farm Rush V2.5.9';
 const v254Version=document.querySelector('.version');
-if(v254Version)v254Version.textContent='V2.5.4 — Sauvetage automatique sauvegarde • interface cartoon';
+if(v254Version)v254Version.textContent='V2.5.9 — Boutons RÉCUPÉRER corrigés • sauvegarde protégée';
 
 const V254_RECOVERY_KEYS=[
   'farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
@@ -9827,7 +9831,7 @@ saveGame=function(){
   state.lastSeen=Date.now();
   try{normalizeV24State();}catch(e){}
   try{normalizeV25State();}catch(e){}
-  localStorage.setItem('farmRushV257',JSON.stringify(state));
+  localStorage.setItem('farmRushV254',JSON.stringify(state));
 };
 
 /* Au premier lancement V2.5.4 :
@@ -9835,11 +9839,11 @@ saveGame=function(){
    - sinon on récupère automatiquement la meilleure ancienne sauvegarde. */
 v223FindBestSave=function(){
   try{
-    const raw=localStorage.getItem('farmRushV257') || localStorage.getItem('farmRushV254');
+    const raw=localStorage.getItem('farmRushV254');
     if(raw){
       const data=JSON.parse(raw);
       if(data&&typeof data==='object'&&!v223LooksReset(data)){
-        return {key:localStorage.getItem('farmRushV257')?'farmRushV257':'farmRushV254',raw,data,score:v223ProgressScore(data)};
+        return {key:'farmRushV254',raw,data,score:v223ProgressScore(data)};
       }
     }
   }catch(e){}
@@ -9860,123 +9864,6 @@ window.farmRushEmergencyRecovery=function(){
   location.reload();
 };
 
-
-
-/* ======================================================
-   FARM RUSH V2.5.7 — STABILISATION DES BOUTONS
-   Base propre : V2.5.4 (avant les intercepteurs V2.5.5/V2.5.6)
-   - Aucun MutationObserver
-   - Aucun intercepteur global touch/click
-   - Les boutons utilisent leurs onclick d'origine
-   - Collecte centralisée, tolérante aux erreurs de sauvegarde
-====================================================== */
-document.title='Farm Rush V2.5.7';
-const v257Version=document.querySelector('.version');
-if(v257Version)v257Version.textContent='V2.5.7 — Boutons stabilisés • collecte réparée • sauvegarde protégée';
-
-function v257SafeStock(){
-  if(!state.stock || typeof state.stock!=='object') state.stock={};
-}
-
-function v257Collect(waitKey, stockKey, label){
-  v257SafeStock();
-
-  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
-  if(qty<=0){
-    try{toast('Aucune production prête.');}catch(e){}
-    return false;
-  }
-
-  state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
-  state[waitKey]=0;
-
-  /* Le rendu passe AVANT la sauvegarde :
-     même si une vieille routine de migration plante, le bouton reste fonctionnel. */
-  try{showFloatingText(`${label} +${qty}`);}catch(e){}
-  try{tone(900,.06);}catch(e){}
-  try{render();}catch(e){console.error('V2.5.7 render collecte:',e);}
-  try{saveGame();}catch(e){console.error('V2.5.7 sauvegarde collecte:',e);}
-
-  return true;
-}
-
-function v257CollectManure(waitKey){
-  v257SafeStock();
-
-  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
-  if(qty<=0){
-    try{toast('Aucun fumier prêt.');}catch(e){}
-    return false;
-  }
-
-  state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
-  state[waitKey]=0;
-
-  try{showFloatingText(`💩 +${qty}`);}catch(e){}
-  try{tone(760,.06);}catch(e){}
-  try{render();}catch(e){console.error('V2.5.7 render fumier:',e);}
-  try{saveGame();}catch(e){console.error('V2.5.7 sauvegarde fumier:',e);}
-
-  return true;
-}
-
-/* On expose explicitement les fonctions sur window.
-   Les onclick HTML continuent donc de fonctionner normalement sur Safari/iPhone. */
-window.collectEggs=()=>v257Collect('eggWaiting','egg','🥚');
-window.collectMilk=()=>v257Collect('milkWaiting','milk','🥛');
-window.collectBacon=()=>v257Collect('baconWaiting','bacon','🥓');
-window.collectFlour=()=>v257Collect('flourWaiting','flour','🥣');
-window.collectBread=()=>v257Collect('breadWaiting','bread','🥖');
-window.collectCheese=()=>v257Collect('cheeseWaiting','cheese','🧀');
-window.collectPasta=()=>v257Collect('pastaWaiting','pasta','🍝');
-window.collectSauce=()=>v257Collect('sauceWaiting','tomatoSauce','🥫');
-window.collectSteak=()=>v257Collect('steakWaiting','groundSteak','🥩');
-window.collectBeef=()=>v257Collect('beefWaiting','beef','🥩');
-window.collectCream=()=>v257Collect('creamWaiting','cream','🥛');
-window.collectCake=()=>v257Collect('cakeWaiting','cake','🎂');
-window.collectStrawberryCake=()=>v257Collect('strawberryCakeWaiting','strawberryCake','🍰');
-window.collectMozzarella=()=>v257Collect('mozzarellaWaiting','mozzarella','⚪');
-window.collectParmesan=()=>v257Collect('parmesanWaiting','parmesan','🧀');
-window.collectBlueCheese=()=>v257Collect('blueCheeseWaiting','blueCheese','🧀');
-window.collectOil=()=>v257Collect('oilWaiting','sunflowerOil','🫙');
-window.collectFries=()=>v257Collect('friesWaiting','fries','🍟');
-window.collectPesto=()=>v257Collect('pestoWaiting','pesto','🫙');
-window.collectFertilizer=()=>v257Collect('fertilizerWaiting','fertilizer','🧪');
-window.collectGrapeJuice=()=>v257Collect('grapeJuiceWaiting','grapeJuice','🧃');
-window.collectWine=()=>v257Collect('wineWaiting','wine','🍷');
-window.collectPremiumWine=()=>v257Collect('premiumWineWaiting','premiumWine','🍾');
-window.collectWool=()=>v257Collect('woolWaiting','wool','🧶');
-
-window.collectWoolThread=()=>v257Collect('woolThreadWaiting','woolThread','🧵');
-window.collectCottonFabric=()=>v257Collect('cottonFabricWaiting','cottonFabric','🪡');
-window.collectScarf=()=>v257Collect('scarfWaiting','scarf','🧣');
-window.collectTshirt=()=>v257Collect('tshirtWaiting','tshirt','👕');
-window.collectPants=()=>v257Collect('pantsWaiting','pants','👖');
-window.collectSweater=()=>v257Collect('sweaterWaiting','sweater','🧶');
-window.collectDress=()=>v257Collect('dressWaiting','dress','👗');
-window.collectCoat=()=>v257Collect('coatWaiting','coat','🧥');
-
-window.collectTrout=()=>v257Collect('troutWaiting','trout','🐟');
-window.collectCarp=()=>v257Collect('carpWaiting','carp','🐠');
-window.collectPerch=()=>v257Collect('perchWaiting','perch','🐟');
-window.collectSalmon=()=>v257Collect('salmonWaiting','salmon','🐟');
-
-window.collectPlank=()=>v257Collect('plankWaiting','plank','🪚');
-window.collectWoodCrate=()=>v257Collect('woodCrateWaiting','woodCrate','📦');
-window.collectFurniture=()=>v257Collect('furnitureWaiting','furniture','🪑');
-
-window.collectCoopManure=()=>v257CollectManure('coopManureWaiting');
-window.collectCowManure=()=>v257CollectManure('cowManureWaiting');
-window.collectPigManure=()=>v257CollectManure('pigManureWaiting');
-window.collectSheepManure=()=>v257CollectManure('sheepManureWaiting');
-
-/* Compatibilité avec les cartes génériques de recettes. */
-collectWaiting=function(waitKey,stockKey,label){
-  return v257Collect(waitKey,stockKey,label);
-};
-collectManure=function(waitKey){
-  return v257CollectManure(waitKey);
-};
 
 ensureV24Dom();
 
