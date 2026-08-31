@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.7.0 — Design Preview</title>
+<title>Farm Rush V2.7.1 — Design Preview</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -302,12 +302,39 @@ main{padding:11px 10px 102px}
 @media (max-width:380px){.money{min-width:84px;font-size:12px}.avatar{width:46px;height:46px}.homeTitle{font-size:41px}.panel{padding:10px}.nav span{font-size:21px}}
 </style>
 
+
+<style id="v271-zone-design">
+/* V2.7.1 — terrain / verger / vignoble visual pass */
+:root{--v271-soil:#8d5b32;--v271-soil2:#6f4324;--v271-grass:#8fcf5c;--v271-grass2:#62a83e;--v271-cream:#fff6df}
+#field,#orchardField,#vineyardField,.fieldGrid,.orchardGrid,.vineyardGrid{position:relative}
+.plot{border-radius:16px!important;box-shadow:inset 0 3px 0 rgba(255,255,255,.18),0 4px 0 rgba(91,57,31,.16)!important;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease!important}
+.plot:not(.locked){background:linear-gradient(180deg,#a66f3f,#82502d)!important;border:3px solid #6d4125!important}
+.plot:not(.locked)::before{content:"";position:absolute;inset:5px;border-radius:11px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 3px,rgba(0,0,0,.025) 3px 7px);pointer-events:none}
+.plot.empty:not(.locked){background:linear-gradient(180deg,#a97847,#8e5a34)!important}
+.plot.growing:not(.locked){background:linear-gradient(180deg,#9e683b,#7a4728)!important;box-shadow:inset 0 0 0 3px rgba(255,222,139,.18),0 5px 0 rgba(91,57,31,.18)!important}
+.plot.ready:not(.locked){filter:saturate(1.15) brightness(1.05);animation:v271ReadyPulse 1.35s ease-in-out infinite}
+.plot.locked{background:linear-gradient(180deg,#c8c0b2,#a9a094)!important;border:3px dashed rgba(92,84,73,.45)!important;filter:saturate(.55);opacity:.82}
+.plot.locked::after{content:"🔒";position:absolute;right:5px;bottom:3px;font-size:12px;filter:grayscale(.2)}
+.cropEmoji{filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));transform-origin:50% 100%}
+.plot.growing .cropEmoji{animation:v271GrowBob 1.8s ease-in-out infinite}
+.plot.ready .cropEmoji{animation:v271HarvestBob 1.05s ease-in-out infinite}
+#orchardField .plot:not(.locked),.orchardGrid .plot:not(.locked){background:linear-gradient(180deg,#7fb64e 0 34%,#8d5c34 35% 100%)!important;border-color:#5e7f3c!important}
+#vineyardField .plot:not(.locked),.vineyardGrid .plot:not(.locked){background:linear-gradient(180deg,#7ab14c 0 30%,#8a5833 31% 100%)!important;border-color:#5d7a3b!important}
+#vineyardField .plot:not(.locked)::after,.vineyardGrid .plot:not(.locked)::after{content:"";position:absolute;left:50%;top:7px;bottom:7px;width:2px;background:rgba(80,56,32,.4);transform:translateX(-50%);pointer-events:none}
+.zoneButton,.zoneTab{border-radius:18px!important;box-shadow:0 4px 0 rgba(70,53,34,.16)!important}
+.zoneButton.active,.zoneTab.active{transform:translateY(-1px);box-shadow:0 6px 0 rgba(70,53,34,.18)!important}
+.zonePanel,.fieldWrap,.fieldSection{border-radius:22px!important;overflow:hidden}
+@keyframes v271ReadyPulse{0%,100%{transform:translateY(0);box-shadow:0 4px 0 rgba(91,57,31,.16)}50%{transform:translateY(-2px);box-shadow:0 7px 0 rgba(91,57,31,.12),0 0 0 3px rgba(255,214,88,.18)}}
+@keyframes v271GrowBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.035)}}
+@keyframes v271HarvestBob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}
+@media (hover:hover){.plot:not(.locked):hover{transform:translateY(-2px);filter:brightness(1.04)}}
+</style>
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.0 — Refonte visuelle • Design Preview</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.1 — Refonte visuelle • Design Preview</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
