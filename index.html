@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.7.4 — Finition mobile</title>
+<title>Farm Rush V2.7.5 — Finition mobile</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -529,7 +529,7 @@ main{padding:11px 10px 102px}
 </style>
 
 <style id="v274-finish">
-/* V2.7.4 — écran d'accueil, transitions et micro-animations */
+/* V2.7.5 — écran d'accueil, transitions et micro-animations */
 :root{--v274-ease:cubic-bezier(.22,.9,.28,1)}
 #home{isolation:isolate;background:radial-gradient(circle at 72% 13%,#fff8ae 0 6%,transparent 6.6%),linear-gradient(180deg,#8fdbff 0 43%,#8bcf67 43% 100%)}
 #home::before,#home::after{content:"☁️";position:absolute;z-index:0;font-size:58px;opacity:.82;filter:drop-shadow(0 5px 8px #47789a22);animation:v274Cloud 18s linear infinite}
@@ -560,12 +560,44 @@ main{padding:11px 10px 102px}
 .toast{transition:transform .2s var(--v274-ease),opacity .2s ease}
 @media (prefers-reduced-motion:reduce){#home::before,#home::after,.homeCard,.homeCard::before,.homeLogo,.playButton::after,.playIcon,.homeHill,.homeDecor,#game.v274Enter,.panel.v274Pop,.nav button.v274Tap,.modal.show .sheet{animation:none!important}}
 </style>
+
+<style id="v275-bottom-nav-fix">
+/* V2.7.5 — barre principale toujours visible et légèrement décollée du bas */
+.nav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:calc(10px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  width:calc(100% - 18px)!important;
+  max-width:482px!important;
+  border:3px solid #8a6b42!important;
+  border-radius:22px!important;
+  padding:6px!important;
+  z-index:1000!important;
+  box-shadow:0 7px 0 #6d5335,0 12px 28px #0003!important;
+  overflow:visible!important;
+}
+.nav button{
+  min-height:58px!important;
+  margin:0 2px!important;
+  padding:6px 2px!important;
+  border-radius:15px!important;
+}
+main{padding-bottom:112px!important}
+#game{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
+@media (max-width:380px){
+  .nav{width:calc(100% - 12px)!important;bottom:calc(6px + env(safe-area-inset-bottom))!important}
+  .nav button{font-size:8px!important;min-height:54px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeKicker">🌱 TA FERME T’ATTEND</div><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><div class="homeFeatures"><span>🌾 Cultures</span><span>🏭 Production</span><span>🤖 Auto</span></div><button class="playButton" onclick="startGame()"><span class="playIcon">▶</span> JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()" aria-label="Activer ou couper le son">🔊</button></div><div class="version">V2.7.4 — Finition mobile</div></div>
+<div class="homeCard"><div class="homeKicker">🌱 TA FERME T’ATTEND</div><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><div class="homeFeatures"><span>🌾 Cultures</span><span>🏭 Production</span><span>🤖 Auto</span></div><button class="playButton" onclick="startGame()"><span class="playIcon">▶</span> JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()" aria-label="Activer ou couper le son">🔊</button></div><div class="version">V2.7.5 — Finition mobile</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
