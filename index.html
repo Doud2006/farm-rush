@@ -9787,7 +9787,7 @@ document.title='Farm Rush V2.5.4';
 const v254Version=document.querySelector('.version');
 if(v254Version)v254Version.textContent='V2.5.4 — Sauvetage automatique sauvegarde • interface cartoon';
 
-const V254_RECOVERY_KEYS=['farmRushV255','farmRushV254',
+const V254_RECOVERY_KEYS=[
   'farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
   'farmRushV223','farmRushV222','farmRushV221','farmRushV22','farmRushV21',
   'farmRushV20','farmRushV192','farmRushV191','farmRushV19','farmRushV184',
@@ -9827,7 +9827,7 @@ saveGame=function(){
   state.lastSeen=Date.now();
   try{normalizeV24State();}catch(e){}
   try{normalizeV25State();}catch(e){}
-  localStorage.setItem('farmRushV256',JSON.stringify(state));
+  localStorage.setItem('farmRushV257',JSON.stringify(state));
 };
 
 /* Au premier lancement V2.5.4 :
@@ -9835,11 +9835,11 @@ saveGame=function(){
    - sinon on récupère automatiquement la meilleure ancienne sauvegarde. */
 v223FindBestSave=function(){
   try{
-    const raw=localStorage.getItem('farmRushV256') || localStorage.getItem('farmRushV255') || localStorage.getItem('farmRushV254');
+    const raw=localStorage.getItem('farmRushV257') || localStorage.getItem('farmRushV254');
     if(raw){
       const data=JSON.parse(raw);
       if(data&&typeof data==='object'&&!v223LooksReset(data)){
-        return {key:localStorage.getItem('farmRushV256')?'farmRushV256':(localStorage.getItem('farmRushV255')?'farmRushV255':'farmRushV254'),raw,data,score:v223ProgressScore(data)};
+        return {key:localStorage.getItem('farmRushV257')?'farmRushV257':'farmRushV254',raw,data,score:v223ProgressScore(data)};
       }
     }
   }catch(e){}
@@ -9863,423 +9863,120 @@ window.farmRushEmergencyRecovery=function(){
 
 
 /* ======================================================
-   FARM RUSH V2.5.5 — HOTFIX FINAL BOUTONS RÉCUPÉRER
-   - Intercepte directement les clics/touch sur les boutons
-   - Ne dépend plus des anciennes fonctions inline
-   - Met à jour le stock, l'écran puis sauvegarde
+   FARM RUSH V2.5.7 — STABILISATION DES BOUTONS
+   Base propre : V2.5.4 (avant les intercepteurs V2.5.5/V2.5.6)
+   - Aucun MutationObserver
+   - Aucun intercepteur global touch/click
+   - Les boutons utilisent leurs onclick d'origine
+   - Collecte centralisée, tolérante aux erreurs de sauvegarde
 ====================================================== */
-document.title='Farm Rush V2.5.5';
-const v255Version=document.querySelector('.version');
-if(v255Version)v255Version.textContent='V2.5.5 — Récupération producteurs réparée • sauvegarde protégée';
+document.title='Farm Rush V2.5.7';
+const v257Version=document.querySelector('.version');
+if(v257Version)v257Version.textContent='V2.5.7 — Boutons stabilisés • collecte réparée • sauvegarde protégée';
 
-const V255_COLLECT_MAP={
-  collectEggs:['eggWaiting','egg','🥚'],
-  collectMilk:['milkWaiting','milk','🥛'],
-  collectBacon:['baconWaiting','bacon','🥓'],
-  collectFlour:['flourWaiting','flour','🥣'],
-  collectBread:['breadWaiting','bread','🥖'],
-  collectCheese:['cheeseWaiting','cheese','🧀'],
-  collectPasta:['pastaWaiting','pasta','🍝'],
-  collectSauce:['sauceWaiting','tomatoSauce','🥫'],
-  collectSteak:['steakWaiting','groundSteak','🥩'],
-  collectBeef:['beefWaiting','beef','🥩'],
-  collectCream:['creamWaiting','cream','🥛'],
-  collectAgedCheese:['agedCheeseWaiting','agedCheese','🧀'],
-  collectBlueCheese:['blueCheeseWaiting','blueCheese','🧀'],
-  collectCake:['cakeWaiting','cake','🎂'],
-  collectStrawberryCake:['strawberryCakeWaiting','strawberryCake','🍰'],
-  collectMozzarella:['mozzarellaWaiting','mozzarella','⚪'],
-  collectParmesan:['parmesanWaiting','parmesan','🧀'],
-  collectOil:['oilWaiting','sunflowerOil','🫙'],
-  collectFries:['friesWaiting','fries','🍟'],
-  collectPesto:['pestoWaiting','pesto','🫙'],
-  collectFertilizer:['fertilizerWaiting','fertilizer','🧪'],
-  collectGrapeJuice:['grapeJuiceWaiting','grapeJuice','🧃'],
-  collectWine:['wineWaiting','wine','🍷'],
-  collectPremiumWine:['premiumWineWaiting','premiumWine','🍾'],
-  collectWool:['woolWaiting','wool','🧶'],
-  collectWoolThread:['woolThreadWaiting','woolThread','🧵'],
-  collectCottonFabric:['cottonFabricWaiting','cottonFabric','🪡'],
-  collectScarf:['scarfWaiting','scarf','🧣'],
-  collectTshirt:['tshirtWaiting','tshirt','👕'],
-  collectPants:['pantsWaiting','pants','👖'],
-  collectSweater:['sweaterWaiting','sweater','🧶'],
-  collectDress:['dressWaiting','dress','👗'],
-  collectCoat:['coatWaiting','coat','🧥'],
-  collectTrout:['troutWaiting','trout','🐟'],
-  collectCarp:['carpWaiting','carp','🐠'],
-  collectPerch:['perchWaiting','perch','🐟'],
-  collectSalmon:['salmonWaiting','salmon','🐟'],
-  collectPlank:['plankWaiting','plank','🪚'],
-  collectWoodCrate:['woodCrateWaiting','woodCrate','📦'],
-  collectFurniture:['furnitureWaiting','furniture','🪑']
-};
+function v257SafeStock(){
+  if(!state.stock || typeof state.stock!=='object') state.stock={};
+}
 
-const V255_MANURE_MAP={
-  collectCoopManure:['coopManureWaiting','🐔'],
-  collectCowManure:['cowManureWaiting','🐄'],
-  collectPigManure:['pigManureWaiting','🐖'],
-  collectSheepManure:['sheepManureWaiting','🐑']
-};
-
-function v255DirectCollect(waitKey,stockKey,label){
-  if(!state.stock||typeof state.stock!=='object')state.stock={};
+function v257Collect(waitKey, stockKey, label){
+  v257SafeStock();
 
   const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
   if(qty<=0){
-    toast('Aucune production prête.');
+    try{toast('Aucune production prête.');}catch(e){}
     return false;
   }
 
   state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
   state[waitKey]=0;
 
-  try{showFloatingText(`${label} +${qty}`)}catch(e){}
-  try{tone(900,.06)}catch(e){}
-
-  try{render()}catch(e){console.error('Render après récupération:',e)}
-  try{saveGame()}catch(e){console.error('Sauvegarde après récupération:',e)}
+  /* Le rendu passe AVANT la sauvegarde :
+     même si une vieille routine de migration plante, le bouton reste fonctionnel. */
+  try{showFloatingText(`${label} +${qty}`);}catch(e){}
+  try{tone(900,.06);}catch(e){}
+  try{render();}catch(e){console.error('V2.5.7 render collecte:',e);}
+  try{saveGame();}catch(e){console.error('V2.5.7 sauvegarde collecte:',e);}
 
   return true;
 }
 
-function v255DirectManure(waitKey,label){
-  if(!state.stock||typeof state.stock!=='object')state.stock={};
+function v257CollectManure(waitKey){
+  v257SafeStock();
 
   const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
   if(qty<=0){
-    toast('Aucun fumier prêt.');
+    try{toast('Aucun fumier prêt.');}catch(e){}
     return false;
   }
 
   state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
   state[waitKey]=0;
 
-  try{showFloatingText(`💩 +${qty}`)}catch(e){}
-  try{tone(760,.06)}catch(e){}
-
-  try{render()}catch(e){console.error('Render fumier:',e)}
-  try{saveGame()}catch(e){console.error('Sauvegarde fumier:',e)}
-
-  return true;
-}
-
-/* Remplace aussi les fonctions globales pour les boutons déjà générés. */
-Object.entries(V255_COLLECT_MAP).forEach(([fn,args])=>{
-  window[fn]=()=>v255DirectCollect(...args);
-});
-Object.entries(V255_MANURE_MAP).forEach(([fn,args])=>{
-  window[fn]=()=>v255DirectManure(...args);
-});
-
-/* Sécurise les boutons produits générés plus tard par les renderers. */
-function v255ExtractCollectName(btn){
-  const inline=btn.getAttribute('onclick')||'';
-  const m=inline.match(/\b(collect[A-Za-z0-9_]+)\s*\(/);
-  return m?m[1]:null;
-}
-
-let v255LastTouch=0;
-
-function v255HandleCollectButton(ev){
-  const btn=ev.target.closest&&ev.target.closest('button');
-  if(!btn)return;
-
-  const name=v255ExtractCollectName(btn);
-  if(!name)return;
-
-  const normal=V255_COLLECT_MAP[name];
-  const manure=V255_MANURE_MAP[name];
-  if(!normal&&!manure)return;
-
-  /* évite le double déclenchement touchend + click sur iPhone */
-  if(ev.type==='click' && Date.now()-v255LastTouch<700){
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
-    return;
-  }
-  if(ev.type==='touchend')v255LastTouch=Date.now();
-
-  ev.preventDefault();
-  ev.stopImmediatePropagation();
-
-  if(normal)v255DirectCollect(...normal);
-  else v255DirectManure(...manure);
-}
-
-document.addEventListener('touchend',v255HandleCollectButton,true);
-document.addEventListener('click',v255HandleCollectButton,true);
-
-/* Les boutons ne doivent jamais rester artificiellement désactivés
-   si une quantité est prête. */
-function v255RefreshCollectButtons(){
-  document.querySelectorAll('button').forEach(btn=>{
-    const name=v255ExtractCollectName(btn);
-    if(!name)return;
-
-    let waitKey=null;
-    if(V255_COLLECT_MAP[name])waitKey=V255_COLLECT_MAP[name][0];
-    if(V255_MANURE_MAP[name])waitKey=V255_MANURE_MAP[name][0];
-    if(!waitKey)return;
-
-    const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
-    if(qty>0){
-      btn.disabled=false;
-      btn.removeAttribute('disabled');
-      btn.classList.add('cartoonCollect','ready');
-      btn.style.pointerEvents='auto';
-      btn.style.opacity='1';
-    }
-  });
-}
-
-const renderV255Base=render;
-render=function(){
-  const r=renderV255Base.apply(this,arguments);
-  requestAnimationFrame(v255RefreshCollectButtons);
-  return r;
-};
-
-requestAnimationFrame(v255RefreshCollectButtons);
-
-
-/* ======================================================
-   FARM RUSH V2.5.6 — NOUVEAU SYSTÈME DE RÉCUPÉRATION
-   - Supprime les anciens boutons "RÉCUPÉRER"
-   - Les remplace par une barre "📦 STOCK PRÊT"
-   - Un seul gestionnaire simple et fiable
-====================================================== */
-document.title='Farm Rush V2.5.6';
-const v256Version=document.querySelector('.version');
-if(v256Version)v256Version.textContent='V2.5.6 — Nouveau système de collecte • sauvegarde protégée';
-
-/* Neutralise les anciens intercepteurs V2.5.5 pour éviter les doubles actions. */
-try{document.removeEventListener('touchend',v255HandleCollectButton,true);}catch(e){}
-try{document.removeEventListener('click',v255HandleCollectButton,true);}catch(e){}
-
-(function(){
-  const style=document.createElement('style');
-  style.textContent=`
-    .v256CollectBar{
-      width:100%;
-      min-height:54px;
-      border:3px solid #8a5d24;
-      border-radius:18px;
-      background:linear-gradient(180deg,#ffd76b,#f1a72f);
-      color:#553713;
-      font-weight:1000;
-      font-size:13px;
-      box-shadow:0 4px 0 #a56622,inset 0 2px #fff8;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 13px;
-      margin-top:10px;
-      touch-action:manipulation;
-      -webkit-tap-highlight-color:transparent;
-      user-select:none;
-    }
-    .v256CollectBar:active:not(:disabled){
-      transform:translateY(3px);
-      box-shadow:0 1px 0 #a56622,inset 0 2px #fff8;
-    }
-    .v256CollectBar:disabled{
-      background:linear-gradient(180deg,#eee5d5,#d9cfbd);
-      color:#8a7d6d;
-      border-color:#aaa090;
-      box-shadow:0 3px 0 #bdb2a2;
-      opacity:.9;
-    }
-    .v256CollectLeft{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      text-align:left;
-    }
-    .v256CollectIcon{
-      font-size:24px;
-      line-height:1;
-    }
-    .v256CollectMain{
-      display:block;
-      font-size:12px;
-      line-height:1.1;
-    }
-    .v256CollectSub{
-      display:block;
-      font-size:10px;
-      opacity:.8;
-      margin-top:3px;
-      font-weight:900;
-    }
-    .v256CollectQty{
-      min-width:40px;
-      padding:6px 9px;
-      border-radius:999px;
-      background:#fff8dd;
-      border:2px solid #a87631;
-      font-size:14px;
-      text-align:center;
-      white-space:nowrap;
-    }
-    .v256CollectBar:disabled .v256CollectQty{
-      background:#f3eee6;
-      border-color:#b8aea0;
-    }
-  `;
-  document.head.appendChild(style);
-})();
-
-function v256CollectMeta(name){
-  if(V255_COLLECT_MAP[name]){
-    const a=V255_COLLECT_MAP[name];
-    return {type:'product',waitKey:a[0],stockKey:a[1],label:a[2]};
-  }
-  if(V255_MANURE_MAP[name]){
-    const a=V255_MANURE_MAP[name];
-    return {type:'manure',waitKey:a[0],label:a[1]};
-  }
-  return null;
-}
-
-window.v256Collect=function(name){
-  const meta=v256CollectMeta(name);
-  if(!meta){
-    try{toast('Collecte indisponible.');}catch(e){}
-    return false;
-  }
-
-  if(!state.stock||typeof state.stock!=='object')state.stock={};
-
-  const qty=Math.max(0,Math.floor(Number(state[meta.waitKey])||0));
-
-  if(qty<=0){
-    try{toast('Rien à récupérer pour le moment.');}catch(e){}
-    v256RefreshCollectBars();
-    return false;
-  }
-
-  if(meta.type==='manure'){
-    state.stock.manure=Math.max(0,Math.floor(Number(state.stock.manure)||0))+qty;
-    state[meta.waitKey]=0;
-    try{showFloatingText(`💩 +${qty}`);}catch(e){}
-  }else{
-    state.stock[meta.stockKey]=Math.max(0,Math.floor(Number(state.stock[meta.stockKey])||0))+qty;
-    state[meta.waitKey]=0;
-    try{showFloatingText(`${meta.label} +${qty}`);}catch(e){}
-  }
-
-  try{tone(920,.06);}catch(e){}
-
-  /* L'ordre est volontaire : on met à jour le jeu avant toute sauvegarde. */
-  try{render();}catch(e){console.error('V256 render collecte',e);}
-  try{saveGame();}catch(e){console.error('V256 save collecte',e);}
+  try{showFloatingText(`💩 +${qty}`);}catch(e){}
+  try{tone(760,.06);}catch(e){}
+  try{render();}catch(e){console.error('V2.5.7 render fumier:',e);}
+  try{saveGame();}catch(e){console.error('V2.5.7 sauvegarde fumier:',e);}
 
   return true;
+}
+
+/* On expose explicitement les fonctions sur window.
+   Les onclick HTML continuent donc de fonctionner normalement sur Safari/iPhone. */
+window.collectEggs=()=>v257Collect('eggWaiting','egg','🥚');
+window.collectMilk=()=>v257Collect('milkWaiting','milk','🥛');
+window.collectBacon=()=>v257Collect('baconWaiting','bacon','🥓');
+window.collectFlour=()=>v257Collect('flourWaiting','flour','🥣');
+window.collectBread=()=>v257Collect('breadWaiting','bread','🥖');
+window.collectCheese=()=>v257Collect('cheeseWaiting','cheese','🧀');
+window.collectPasta=()=>v257Collect('pastaWaiting','pasta','🍝');
+window.collectSauce=()=>v257Collect('sauceWaiting','tomatoSauce','🥫');
+window.collectSteak=()=>v257Collect('steakWaiting','groundSteak','🥩');
+window.collectBeef=()=>v257Collect('beefWaiting','beef','🥩');
+window.collectCream=()=>v257Collect('creamWaiting','cream','🥛');
+window.collectCake=()=>v257Collect('cakeWaiting','cake','🎂');
+window.collectStrawberryCake=()=>v257Collect('strawberryCakeWaiting','strawberryCake','🍰');
+window.collectMozzarella=()=>v257Collect('mozzarellaWaiting','mozzarella','⚪');
+window.collectParmesan=()=>v257Collect('parmesanWaiting','parmesan','🧀');
+window.collectBlueCheese=()=>v257Collect('blueCheeseWaiting','blueCheese','🧀');
+window.collectOil=()=>v257Collect('oilWaiting','sunflowerOil','🫙');
+window.collectFries=()=>v257Collect('friesWaiting','fries','🍟');
+window.collectPesto=()=>v257Collect('pestoWaiting','pesto','🫙');
+window.collectFertilizer=()=>v257Collect('fertilizerWaiting','fertilizer','🧪');
+window.collectGrapeJuice=()=>v257Collect('grapeJuiceWaiting','grapeJuice','🧃');
+window.collectWine=()=>v257Collect('wineWaiting','wine','🍷');
+window.collectPremiumWine=()=>v257Collect('premiumWineWaiting','premiumWine','🍾');
+window.collectWool=()=>v257Collect('woolWaiting','wool','🧶');
+
+window.collectWoolThread=()=>v257Collect('woolThreadWaiting','woolThread','🧵');
+window.collectCottonFabric=()=>v257Collect('cottonFabricWaiting','cottonFabric','🪡');
+window.collectScarf=()=>v257Collect('scarfWaiting','scarf','🧣');
+window.collectTshirt=()=>v257Collect('tshirtWaiting','tshirt','👕');
+window.collectPants=()=>v257Collect('pantsWaiting','pants','👖');
+window.collectSweater=()=>v257Collect('sweaterWaiting','sweater','🧶');
+window.collectDress=()=>v257Collect('dressWaiting','dress','👗');
+window.collectCoat=()=>v257Collect('coatWaiting','coat','🧥');
+
+window.collectTrout=()=>v257Collect('troutWaiting','trout','🐟');
+window.collectCarp=()=>v257Collect('carpWaiting','carp','🐠');
+window.collectPerch=()=>v257Collect('perchWaiting','perch','🐟');
+window.collectSalmon=()=>v257Collect('salmonWaiting','salmon','🐟');
+
+window.collectPlank=()=>v257Collect('plankWaiting','plank','🪚');
+window.collectWoodCrate=()=>v257Collect('woodCrateWaiting','woodCrate','📦');
+window.collectFurniture=()=>v257Collect('furnitureWaiting','furniture','🪑');
+
+window.collectCoopManure=()=>v257CollectManure('coopManureWaiting');
+window.collectCowManure=()=>v257CollectManure('cowManureWaiting');
+window.collectPigManure=()=>v257CollectManure('pigManureWaiting');
+window.collectSheepManure=()=>v257CollectManure('sheepManureWaiting');
+
+/* Compatibilité avec les cartes génériques de recettes. */
+collectWaiting=function(waitKey,stockKey,label){
+  return v257Collect(waitKey,stockKey,label);
 };
-
-function v256FindCollectName(btn){
-  if(btn.dataset && btn.dataset.v256Collect)return btn.dataset.v256Collect;
-
-  const inline=btn.getAttribute('onclick')||'';
-  const m=inline.match(/\b(collect[A-Za-z0-9_]+)\s*\(/);
-  if(m && v256CollectMeta(m[1]))return m[1];
-
-  return null;
-}
-
-function v256BuildCollectBar(name,oldBtn){
-  const meta=v256CollectMeta(name);
-  if(!meta)return oldBtn;
-
-  const qty=Math.max(0,Math.floor(Number(state[meta.waitKey])||0));
-  const b=document.createElement('button');
-  b.type='button';
-  b.className='v256CollectBar';
-  b.dataset.v256Collect=name;
-  b.disabled=qty<=0;
-
-  const icon=meta.type==='manure'?'💩':meta.label;
-  const title=qty>0?'STOCK PRÊT':'PRODUCTION EN COURS';
-  const sub=qty>0?'Toucher pour tout récupérer':'Rien à récupérer pour le moment';
-
-  b.innerHTML=`
-    <span class="v256CollectLeft">
-      <span class="v256CollectIcon">${icon}</span>
-      <span>
-        <span class="v256CollectMain">${title}</span>
-        <span class="v256CollectSub">${sub}</span>
-      </span>
-    </span>
-    <span class="v256CollectQty">${qty}</span>
-  `;
-
-  /* Un seul événement natif, direct, sans délégation ni touchend. */
-  b.onclick=function(ev){
-    ev.preventDefault();
-    ev.stopPropagation();
-    v256Collect(name);
-  };
-
-  return b;
-}
-
-function v256ReplaceOldCollectButtons(){
-  document.querySelectorAll('button').forEach(btn=>{
-    if(btn.classList.contains('v256CollectBar'))return;
-
-    const name=v256FindCollectName(btn);
-    if(!name)return;
-
-    const fresh=v256BuildCollectBar(name,btn);
-    btn.replaceWith(fresh);
-  });
-}
-
-function v256RefreshCollectBars(){
-  document.querySelectorAll('.v256CollectBar').forEach(btn=>{
-    const name=btn.dataset.v256Collect;
-    const meta=v256CollectMeta(name);
-    if(!meta)return;
-
-    const qty=Math.max(0,Math.floor(Number(state[meta.waitKey])||0));
-    btn.disabled=qty<=0;
-
-    const main=btn.querySelector('.v256CollectMain');
-    const sub=btn.querySelector('.v256CollectSub');
-    const q=btn.querySelector('.v256CollectQty');
-
-    if(main)main.textContent=qty>0?'STOCK PRÊT':'PRODUCTION EN COURS';
-    if(sub)sub.textContent=qty>0?'Toucher pour tout récupérer':'Rien à récupérer pour le moment';
-    if(q)q.textContent=String(qty);
-  });
-}
-
-/* Remplace les anciens boutons après chaque rendu de l'interface. */
-const renderV256Base=render;
-render=function(){
-  const result=renderV256Base.apply(this,arguments);
-  requestAnimationFrame(()=>{
-    v256ReplaceOldCollectButtons();
-    v256RefreshCollectBars();
-  });
-  return result;
+collectManure=function(waitKey){
+  return v257CollectManure(waitKey);
 };
-
-/* Idem lorsque le contenu d'une modale/producteur change sans render global. */
-const v256Observer=new MutationObserver(()=>{
-  requestAnimationFrame(()=>{
-    v256ReplaceOldCollectButtons();
-    v256RefreshCollectBars();
-  });
-});
-v256Observer.observe(document.body,{childList:true,subtree:true});
-
-requestAnimationFrame(()=>{
-  v256ReplaceOldCollectButtons();
-  v256RefreshCollectBars();
-});
 
 ensureV24Dom();
 
