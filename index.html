@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.6.1</title>
+<title>Farm Rush V2.6.2</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -10046,7 +10046,173 @@ if(typeof renderSheepfold==='function'){
     if(e)e.textContent=animalSpeedText(180,state.sheep,sheepInterval());
   };
 }
-setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"&&!v260UiBusy()){renderFields();renderBuildings();renderGoal()}},1000);
+
+
+/* =========================================================
+   FARM RUSH V2.6.2 — AUTOMATISATION VERGER + VIGNOBLE
+   Les temps de pousse existants ne sont pas modifiés.
+   ========================================================= */
+Object.assign(DEFAULT_STATE,{
+  orchardWorkerLevel:0,
+  orchardWorkerEnabled:false,
+  orchardWorkerCrop:'apple',
+  orchardWorkerPlots:5,
+  vineyardWorkerLevel:0,
+  vineyardWorkerEnabled:false
+});
+
+function normalizeZoneAutomationState(){
+  state.orchardWorkerLevel=Math.max(0,Math.min(4,Number(state.orchardWorkerLevel)||0));
+  state.orchardWorkerEnabled=!!state.orchardWorkerEnabled;
+  if(!CROPS[state.orchardWorkerCrop]||CROPS[state.orchardWorkerCrop].zone!=='orchard')state.orchardWorkerCrop='apple';
+  state.orchardWorkerPlots=Math.max(5,Number(state.orchardWorkerPlots)||5);
+  state.vineyardWorkerLevel=Math.max(0,Math.min(4,Number(state.vineyardWorkerLevel)||0));
+  state.vineyardWorkerEnabled=!!state.vineyardWorkerEnabled;
+}
+
+function orchardWorkerCapacity(){return [0,5,10,20,30][state.orchardWorkerLevel]||0;}
+function vineyardWorkerCapacity(){return [0,4,8,16,24][state.vineyardWorkerLevel]||0;}
+function orchardWorkerUpgradeCost(){return [45000,30000,60000,110000][state.orchardWorkerLevel]||110000;}
+function vineyardWorkerUpgradeCost(){return [90000,60000,120000,200000][state.vineyardWorkerLevel]||200000;}
+
+function buyOrchardWorkerUpgrade(){
+  normalizeZoneAutomationState();
+  if(state.level<24)return toast('Niveau 24 requis.');
+  if(!state.orchardBought)return toast('Débloque d’abord le verger.');
+  if(state.orchardWorkerLevel>=4)return toast('Automatiseur du verger au niveau maximum.');
+  const cost=orchardWorkerUpgradeCost();
+  if(state.money<cost)return toast("Pas assez d'argent.");
+  state.money-=cost;
+  state.orchardWorkerLevel++;
+  state.orchardWorkerPlots=Math.min(orchardWorkerCapacity(),Math.max(5,state.orchardWorkerPlots));
+  showFloatingText('🍎🤖 VERGER AUTO NIV. '+state.orchardWorkerLevel);
+  saveGame();render();openShop('automation');
+}
+function buyVineyardWorkerUpgrade(){
+  normalizeZoneAutomationState();
+  if(state.level<30)return toast('Niveau 30 requis.');
+  if(!state.vineyardBought)return toast('Débloque d’abord le vignoble.');
+  if(state.vineyardWorkerLevel>=4)return toast('Automatiseur du vignoble au niveau maximum.');
+  const cost=vineyardWorkerUpgradeCost();
+  if(state.money<cost)return toast("Pas assez d'argent.");
+  state.money-=cost;
+  state.vineyardWorkerLevel++;
+  showFloatingText('🍇🤖 VIGNOBLE AUTO NIV. '+state.vineyardWorkerLevel);
+  saveGame();render();openShop('automation');
+}
+function toggleOrchardWorker(){
+  normalizeZoneAutomationState();
+  if(state.orchardWorkerLevel<=0)return;
+  state.orchardWorkerEnabled=!state.orchardWorkerEnabled;
+  saveGame();renderZoneAutomationPanels();
+}
+function toggleVineyardWorker(){
+  normalizeZoneAutomationState();
+  if(state.vineyardWorkerLevel<=0)return;
+  state.vineyardWorkerEnabled=!state.vineyardWorkerEnabled;
+  saveGame();renderZoneAutomationPanels();
+}
+function changeOrchardWorkerCrop(v){
+  if(CROPS[v]&&CROPS[v].zone==='orchard'&&unlocked(v)){state.orchardWorkerCrop=v;saveGame();}
+}
+function changeOrchardWorkerPlots(v){
+  state.orchardWorkerPlots=Math.max(5,Math.min(Number(v)||5,orchardWorkerCapacity()));
+  saveGame();renderZoneAutomationPanels();
+}
+
+function ensureZoneAutomationPanels(){
+  const worker=document.getElementById('workerPanel');
+  if(!worker)return;
+  if(!document.getElementById('orchardWorkerPanel')){
+    const p=document.createElement('div');p.id='orchardWorkerPanel';p.className='panel automationPanel';p.style.display='none';
+    const feeder=document.getElementById('feederPanel');(feeder||worker).insertAdjacentElement('afterend',p);
+  }
+  if(!document.getElementById('vineyardWorkerPanel')){
+    const p=document.createElement('div');p.id='vineyardWorkerPanel';p.className='panel automationPanel';p.style.display='none';
+    const orchard=document.getElementById('orchardWorkerPanel');orchard.insertAdjacentElement('afterend',p);
+  }
+}
+function renderZoneAutomationPanels(){
+  normalizeZoneAutomationState();ensureZoneAutomationPanels();
+  const op=document.getElementById('orchardWorkerPanel');
+  if(op){
+    op.style.display=state.orchardWorkerLevel>0?'block':'none';
+    if(state.orchardWorkerLevel>0){
+      const cap=orchardWorkerCapacity();
+      const options=Object.keys(CROPS).filter(k=>CROPS[k].zone==='orchard'&&unlocked(k)).map(k=>`<option value="${k}" ${k===state.orchardWorkerCrop?'selected':''}>${CROPS[k].icon} ${CROPS[k].name}</option>`).join('');
+      const nums=[5,10,20,30].filter(n=>n<=cap&&n<=orchardPlotLimit()).map(n=>`<option value="${n}" ${n===Math.min(state.orchardWorkerPlots,cap)?'selected':''}>${n} parcelles</option>`).join('');
+      op.innerHTML=`<div class="panelTitle"><span>🍎🤖 OUVRIER DU VERGER</span><span class="tiny">Niv. ${state.orchardWorkerLevel}/4 • max ${cap}</span></div><div class="automationGrid"><div><div class="fieldLabel">Culture automatique</div><select class="select" onchange="changeOrchardWorkerCrop(this.value)">${options}</select></div><div><div class="fieldLabel">Zone automatisée</div><select class="select" onchange="changeOrchardWorkerPlots(this.value)">${nums}</select></div></div><div class="autoStatus">${state.orchardWorkerEnabled?'<span class="statusOn">● ACTIF</span> — récolte et replante automatiquement.':'<span class="statusOff">● ARRÊTÉ</span> — aucune action automatique.'}</div><div class="actions"><button class="btn blue" onclick="toggleOrchardWorker()">${state.orchardWorkerEnabled?'⏸ ARRÊTER':'▶ ACTIVER'}</button><button class="btn dark" onclick="openShop('automation')">⬆️ AMÉLIORER</button></div>`;
+    }
+  }
+  const vp=document.getElementById('vineyardWorkerPanel');
+  if(vp){
+    vp.style.display=state.vineyardWorkerLevel>0?'block':'none';
+    if(state.vineyardWorkerLevel>0){
+      const cap=vineyardWorkerCapacity();
+      vp.innerHTML=`<div class="panelTitle"><span>🍇🤖 OUVRIER DU VIGNOBLE</span><span class="tiny">Niv. ${state.vineyardWorkerLevel}/4 • max ${cap} pieds</span></div><div class="autoStatus">${state.vineyardWorkerEnabled?'<span class="statusOn">● ACTIF</span> — récolte automatiquement les raisins mûrs.':'<span class="statusOff">● ARRÊTÉ</span> — aucune récolte automatique.'}</div><div class="actions"><button class="btn blue" onclick="toggleVineyardWorker()">${state.vineyardWorkerEnabled?'⏸ ARRÊTER':'▶ ACTIVER'}</button><button class="btn dark" onclick="openShop('automation')">⬆️ AMÉLIORER</button></div>`;
+    }
+  }
+}
+
+const v262RenderWorkerBase=renderWorker;
+renderWorker=function(){v262RenderWorkerBase();renderZoneAutomationPanels();};
+
+const v262ShopAutomationBase=shopAutomation;
+shopAutomation=function(){
+  normalizeZoneAutomationState();
+  let html=v262ShopAutomationBase();
+  html+=`<div class="boostIntro"><b>🌳 AUTOMATISATION DES ZONES</b><br>Le verger récolte puis replante la culture choisie. Le vignoble récolte les raisins mûrs et les vignes repoussent normalement.</div>`;
+  if(state.orchardWorkerLevel>=4){html+=`<div class="shopCard"><b>🍎🤖 Verger automatique — niveau maximum</b><br><small>Jusqu'à 30 parcelles automatisées.</small></div>`;}
+  else{
+    const n=state.orchardWorkerLevel+1,cap=[0,5,10,20,30][n];
+    html+=shopCard('🍎🤖',state.orchardWorkerLevel?'Verger automatique Niv. '+n:'Ouvrier du verger',`Récolte et replante automatiquement jusqu'à ${cap} parcelles du verger.`,orchardWorkerUpgradeCost(),state.level>=24&&state.orchardBought,'buyOrchardWorkerUpgrade()',false,state.orchardBought?'Niveau 24':'Verger requis');
+  }
+  if(state.vineyardWorkerLevel>=4){html+=`<div class="shopCard"><b>🍇🤖 Vignoble automatique — niveau maximum</b><br><small>Jusqu'à 24 pieds récoltés automatiquement.</small></div>`;}
+  else{
+    const n=state.vineyardWorkerLevel+1,cap=[0,4,8,16,24][n];
+    html+=shopCard('🍇🤖',state.vineyardWorkerLevel?'Vignoble automatique Niv. '+n:'Ouvrier du vignoble',`Récolte automatiquement jusqu'à ${cap} pieds de vigne dès qu'ils sont mûrs.`,vineyardWorkerUpgradeCost(),state.level>=30&&state.vineyardBought,'buyVineyardWorkerUpgrade()',false,state.vineyardBought?'Niveau 30':'Vignoble requis');
+  }
+  return html;
+};
+
+function runOrchardWorker(){
+  normalizeZoneAutomationState();
+  if(!state.orchardWorkerEnabled||state.orchardWorkerLevel<=0||!state.orchardBought)return false;
+  const crop=CROPS[state.orchardWorkerCrop];
+  if(!crop||crop.zone!=='orchard'||!unlocked(state.orchardWorkerCrop))return false;
+  const max=Math.min(state.orchardWorkerPlots,orchardWorkerCapacity(),state.orchardPlots,orchardPlotLimit());
+  let changed=false,xp=0;
+  const now=Date.now();
+  for(let i=0;i<max;i++){
+    const f=state.orchardFields[i];
+    if(f&&f.ready<=now){const hc=CROPS[f.crop];state.stock[f.crop]=(state.stock[f.crop]||0)+1;state.orchardFields[i]=null;xp+=hc.xp;changed=true;}
+    if(!state.orchardFields[i]&&state.money>=crop.cost){state.money-=crop.cost;state.orchardFields[i]={crop:state.orchardWorkerCrop,ready:now+crop.time*1000};changed=true;}
+  }
+  if(xp>0)addXP(xp);
+  if(changed)saveGame();
+  return changed;
+}
+function runVineyardWorker(){
+  normalizeZoneAutomationState();
+  if(!state.vineyardWorkerEnabled||state.vineyardWorkerLevel<=0||!state.vineyardBought)return false;
+  const max=Math.min(vineyardWorkerCapacity(),state.vineyardPlots,vineyardPlotLimit());
+  let changed=false,xp=0;
+  for(let i=0;i<max;i++){
+    const vine=ensureVineField(i);
+    if(vine&&vine.ready<=Date.now()){
+      const qty=vineYield();
+      state.stock.grape=(state.stock.grape||0)+qty;
+      vine.ready=Date.now()+VINE_GROW_TIME*1000;
+      xp+=12+qty*2;changed=true;
+    }
+  }
+  if(xp>0)addXP(xp);
+  if(changed)saveGame();
+  return changed;
+}
+function runZoneAutomations(){runOrchardWorker();runVineyardWorker();}
+
+setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();runZoneAutomations();if(document.getElementById("game").style.display==="block"&&!v260UiBusy()){renderFields();renderBuildings();renderGoal()}},1000);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
 </body>
