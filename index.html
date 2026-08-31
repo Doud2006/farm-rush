@@ -11485,5 +11485,181 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 })();
 </script>
 
+
+<style id="v291-foundry-css">
+/* V2.9.1 — Fonderie & lingots */
+.foundryPanel{background:linear-gradient(145deg,#efe0c3,#c7ad84)!important;border-color:#8d6844!important;overflow:hidden}
+.foundryHeader{display:flex;align-items:center;gap:11px;margin-bottom:9px}.foundryBigIcon{font-size:48px;filter:drop-shadow(0 3px 2px rgba(55,30,15,.18))}.foundryTitle{font-size:14px;font-weight:1000}.foundrySub{font-size:10px;color:#654c37;line-height:1.45}
+.foundryScene{position:relative;height:92px;margin:8px 0 12px;border-radius:17px;overflow:hidden;background:linear-gradient(180deg,#7f8b89 0 45%,#755940 45% 100%);border:1px solid rgba(70,48,30,.22)}
+.foundryScene:before{content:"";position:absolute;left:18px;bottom:16px;width:72px;height:50px;border-radius:8px 8px 3px 3px;background:#4b3d35;border:3px solid #302621;box-shadow:inset 0 -8px #2c2522}
+.foundryScene:after{content:"🔥";position:absolute;left:39px;bottom:24px;font-size:31px;animation:v291Fire 1s ease-in-out infinite alternate;filter:drop-shadow(0 0 7px rgba(255,129,45,.55))}
+.foundryChimney{position:absolute;right:24px;bottom:19px;font-size:50px}.foundrySmoke{position:absolute;right:29px;top:3px;font-size:25px;opacity:.6;animation:v291Smoke 2.4s ease-in-out infinite}
+@keyframes v291Fire{to{transform:scale(1.1) translateY(-2px)}}@keyframes v291Smoke{50%{transform:translateY(-5px);opacity:.35}}
+.foundryGrid{display:grid;grid-template-columns:1fr;gap:10px}.foundryRecipe{background:rgba(255,250,236,.93);border:1px solid rgba(105,73,43,.2);border-radius:16px;padding:11px;box-shadow:0 4px 11px rgba(55,38,26,.1)}
+.foundryRecipe.locked{opacity:.63;filter:saturate(.5)}.foundryTop{display:flex;align-items:center;gap:9px}.foundryIcon{font-size:30px}.foundryName{font-weight:1000;font-size:12px}.foundryMeta{font-size:9px;color:#66594c;line-height:1.45}.foundryProgress{height:9px;border-radius:999px;background:#d6c7b1;overflow:hidden;margin:8px 0}.foundryProgress>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#e27535,#f6bd4b)}
+.foundryActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.foundryReady{animation:v291Ready 1.4s ease-in-out infinite}@keyframes v291Ready{50%{transform:translateY(-1px);filter:brightness(1.06)}}
+.foundryStore{margin-top:10px;padding:10px;border-radius:13px;background:rgba(255,255,255,.68);border:1px solid rgba(99,67,38,.17);font-size:10px}
+.foundryQtyBox{padding:3px}.foundryQtyInput{width:100%;box-sizing:border-box;padding:13px 12px;border-radius:13px;border:2px solid #d2b98d;background:#fffdf6;font-size:18px;font-weight:900;text-align:center;outline:none}.foundryQtyPreview{margin-top:10px;padding:10px;border-radius:12px;background:#fff7e5;border:1px solid #e0c597;font-size:10px;line-height:1.65}
+@media(prefers-reduced-motion:reduce){.foundryScene:after,.foundrySmoke,.foundryReady{animation:none!important}}
+</style>
+
+<script id="v291-foundry-js">
+(function(){
+  'use strict';
+  document.title='Farm Rush V2.9.1';
+  const ver=document.querySelector('.version');
+  if(ver)ver.textContent='V2.9.1 — Fonderie & lingots';
+
+  const FOUNDRY_UNLOCK=43;
+  const FOUNDRY_PRICE=650000;
+  const FOUNDRY_RECIPES={
+    ironIngot:{icon:'🔩',name:'Lingot de fer',level:43,time:240,req:{ironOre:2,coal:1},sell:18500,cap:12},
+    copperIngot:{icon:'🧱',name:'Lingot de cuivre',level:44,time:300,req:{copperOre:2,coal:1},sell:24500,cap:10},
+    goldIngot:{icon:'🏅',name:"Lingot d'or",level:45,time:480,req:{goldOre:2,coal:2},sell:52000,cap:8}
+  };
+
+  Object.entries(FOUNDRY_RECIPES).forEach(([k,r])=>{PRODUCTS[k]={icon:r.icon,name:r.name,sell:r.sell};});
+
+  function normalizeFoundry(){
+    state.foundryBought=!!state.foundryBought;
+    state.foundryStorageLevel=Math.max(0,Math.min(5,Math.floor(Number(state.foundryStorageLevel)||0)));
+    Object.keys(FOUNDRY_RECIPES).forEach(k=>{
+      const q=k+'Queue',w=k+'Waiting',l=k+'LastProduction';
+      state[q]=Math.max(0,Math.floor(Number(state[q])||0));
+      state[w]=Math.max(0,Math.floor(Number(state[w])||0));
+      if(!Number.isFinite(Number(state[l])))state[l]=Date.now();
+    });
+  }
+  normalizeFoundry();
+
+  function storageMul(){return 1+state.foundryStorageLevel*.5;}
+  function foundryCap(k){return Math.max(1,Math.round(FOUNDRY_RECIPES[k].cap*storageMul()));}
+  function storageCost(){return [55000,110000,220000,385000,605000][state.foundryStorageLevel]||0;}
+  function fmt(sec){sec=Math.max(0,Math.floor(sec));const m=Math.floor(sec/60),s=sec%60;return m?`${m}m ${String(s).padStart(2,'0')}s`:`${s}s`;}
+  function ingredientName(k){const p=PRODUCTS[k]||CROPS[k]||{};return `${p.icon||'📦'} ${p.name||k}`;}
+  function maxCraft(r){let max=Infinity;for(const [k,n] of Object.entries(r.req)){max=Math.min(max,Math.floor((state.stock[k]||0)/n));}return Number.isFinite(max)?Math.max(0,max):0;}
+
+  function processFoundry(){
+    normalizeFoundry();
+    if(!state.foundryBought)return false;
+    let changed=false,now=Date.now();
+    Object.entries(FOUNDRY_RECIPES).forEach(([k,r])=>{
+      const q=k+'Queue',w=k+'Waiting',l=k+'LastProduction',cap=foundryCap(k);
+      if(state[q]<=0||state[w]>=cap){state[l]=now;return;}
+      const ms=r.time*1000;
+      let elapsed=Math.max(0,now-state[l]);
+      let can=Math.floor(elapsed/ms);
+      if(can<=0)return;
+      can=Math.min(can,state[q],cap-state[w]);
+      if(can<=0)return;
+      state[q]-=can;state[w]+=can;state[l]+=can*ms;changed=true;
+      if(state[q]<=0||state[w]>=cap)state[l]=now;
+    });
+    if(changed){try{saveGame();}catch(e){}}
+    return changed;
+  }
+
+  function remaining(k){
+    const r=FOUNDRY_RECIPES[k],q=state[k+'Queue'],w=state[k+'Waiting'];
+    if(!q||w>=foundryCap(k))return 0;
+    return Math.max(0,Math.ceil((r.time*1000-(Date.now()-state[k+'LastProduction']))/1000));
+  }
+  function progress(k){
+    const r=FOUNDRY_RECIPES[k],q=state[k+'Queue'],w=state[k+'Waiting'];
+    if(!q||w>=foundryCap(k))return 0;
+    return Math.max(0,Math.min(100,((Date.now()-state[k+'LastProduction'])/(r.time*1000))*100));
+  }
+
+  function ensureFoundryDom(){
+    const anchor=document.getElementById('minePanel')||document.getElementById('sawmillPanel')||document.getElementById('restaurantPanel');
+    if(anchor&&!document.getElementById('foundryPanel')){
+      const p=document.createElement('div');p.id='foundryPanel';p.className='panel buildingPanel foundryPanel';p.style.display='none';anchor.insertAdjacentElement('afterend',p);
+    }
+  }
+
+  function recipeHtml(k){
+    const r=FOUNDRY_RECIPES[k],unlocked=state.level>=r.level,q=state[k+'Queue'],w=state[k+'Waiting'],cap=foundryCap(k),rem=remaining(k),pct=progress(k);
+    const req=Object.entries(r.req).map(([a,n])=>`${n} ${ingredientName(a)}`).join(' + ');
+    return `<div class="foundryRecipe ${unlocked?'':'locked'}">
+      <div class="foundryTop"><div class="foundryIcon">${r.icon}</div><div><div class="foundryName">${r.name}</div><div class="foundryMeta">Niv. ${r.level} • ${req} → 1 ${r.icon}<br>⏱️ ${fmt(r.time)} • vente ${r.sell.toLocaleString('fr-FR')} 🪙</div></div></div>
+      ${q>0?`<div class="foundryProgress"><i style="width:${pct}%"></i></div><div class="foundryMeta">⏳ ${rem?fmt(rem):'traitement…'} • file ${q}</div>`:''}
+      <div class="foundryStore">📦 Prêts : <b>${w}/${cap}</b> • File : <b>${q}</b></div>
+      <div class="foundryActions"><button class="btn dark" ${!unlocked?'disabled':''} onclick="openFoundryQty('${k}')">🔥 PRODUIRE</button><button class="btn orange ${w?'foundryReady':''}" ${w?'':'disabled'} onclick="collectFoundry('${k}')">📦 RÉCUPÉRER (${w})</button></div>
+    </div>`;
+  }
+
+  function renderFoundry(){
+    ensureFoundryDom();processFoundry();
+    const p=document.getElementById('foundryPanel');if(!p)return;
+    p.style.display=state.foundryBought?'block':'none';if(!state.foundryBought)return;
+    const cost=storageCost();
+    p.innerHTML=`<div class="foundryHeader"><div class="foundryBigIcon">🔥</div><div><div class="foundryTitle">FONDERIE</div><div class="foundrySub">Transforme les minerais de la mine en lingots à forte valeur.</div></div></div>
+      <div class="foundryScene"><span class="foundryChimney">🏭</span><span class="foundrySmoke">☁️</span></div>
+      <div class="foundryGrid">${Object.keys(FOUNDRY_RECIPES).map(recipeHtml).join('')}</div>
+      <div class="foundryStore"><b>📦 Stockage fonderie — niv. ${state.foundryStorageLevel}/5</b><br>Capacité de chaque recette : x${storageMul().toFixed(1).replace('.0','')}<br><button class="btn gold full" style="margin-top:8px" onclick="upgradeFoundryStorage()" ${state.foundryStorageLevel>=5?'disabled':''}>${state.foundryStorageLevel>=5?'✅ STOCKAGE MAX':`⬆️ AMÉLIORER — ${cost.toLocaleString('fr-FR')} 🪙`}</button></div>`;
+  }
+
+  window.openFoundryQty=function(k){
+    normalizeFoundry();processFoundry();const r=FOUNDRY_RECIPES[k];
+    if(!state.foundryBought)return toast("Achète d'abord la fonderie.");
+    if(!r||state.level<r.level)return toast(`Débloqué au niveau ${r?r.level:'?'}.`);
+    const max=maxCraft(r),free=Math.max(0,foundryCap(k)-state[k+'Waiting']-state[k+'Queue']);
+    const allowed=Math.min(max,free);
+    const req=Object.entries(r.req).map(([a,n])=>`${n} ${ingredientName(a)}`).join(' + ');
+    openModal('🔥 '+r.name,`<div class="foundryQtyBox"><div class="foundryQtyPreview"><b>${req} → 1 ${r.icon} ${r.name}</b><br>Maximum avec ton stock : <b>${max}</b><br>Places disponibles : <b>${free}</b></div><input id="foundryQtyInput" class="foundryQtyInput" type="number" inputmode="numeric" min="1" max="${allowed}" value="${allowed>0?1:0}" oninput="updateFoundryQtyPreview('${k}')"><div id="foundryQtyPreview" class="foundryQtyPreview"></div><button class="btn gold full" style="margin-top:10px" ${allowed<1?'disabled':''} onclick="confirmFoundryQty('${k}')">🔥 LANCER LA PRODUCTION</button></div>`);
+    updateFoundryQtyPreview(k);
+  };
+
+  window.updateFoundryQtyPreview=function(k){
+    const r=FOUNDRY_RECIPES[k],input=document.getElementById('foundryQtyInput'),box=document.getElementById('foundryQtyPreview');if(!r||!input||!box)return;
+    let q=Math.max(0,Math.floor(Number(input.value)||0));
+    box.innerHTML='<b>Pour '+q+' :</b><br>'+Object.entries(r.req).map(([a,n])=>`${ingredientName(a)} : <b>${n*q}</b> / ${state.stock[a]||0}`).join('<br>')+`<br>${r.icon} Production finale : <b>${q}</b>`;
+  };
+
+  window.confirmFoundryQty=function(k){
+    normalizeFoundry();processFoundry();const r=FOUNDRY_RECIPES[k],input=document.getElementById('foundryQtyInput');if(!r||!input)return;
+    let q=Math.max(0,Math.floor(Number(input.value)||0));const max=maxCraft(r),free=Math.max(0,foundryCap(k)-state[k+'Waiting']-state[k+'Queue']);q=Math.min(q,max,free);
+    if(q<1)return toast('Quantité impossible avec ton stock ou ton stockage.');
+    for(const [a,n] of Object.entries(r.req))state.stock[a]-=n*q;
+    if(state[k+'Queue']<=0)state[k+'LastProduction']=Date.now();
+    state[k+'Queue']+=q;closeModal();showFloatingText(`🔥 +${q} en production`);tone(560,.05);saveGame();renderStock();renderOrders();renderFoundry();
+  };
+
+  window.collectFoundry=function(k){
+    processFoundry();normalizeFoundry();const r=FOUNDRY_RECIPES[k];if(!r)return;
+    const w=k+'Waiting',q=state[w]||0;if(q<1)return toast('Rien à récupérer.');
+    state.stock[k]=(state.stock[k]||0)+q;state[w]=0;showFloatingText(`${r.icon} +${q}`);tone(940,.05);saveGame();renderStock();renderOrders();renderGoal();renderFoundry();
+  };
+
+  window.upgradeFoundryStorage=function(){
+    normalizeFoundry();if(!state.foundryBought)return;if(state.foundryStorageLevel>=5)return toast('Stockage déjà au maximum.');
+    const c=storageCost();if(state.money<c)return toast("Pas assez d'argent.");state.money-=c;state.foundryStorageLevel++;showFloatingText('📦 FONDERIE +50%');tone(980,.05);saveGame();render();
+  };
+
+  window.buyFoundry=function(){
+    normalizeFoundry();if(state.foundryBought)return;if(state.level<FOUNDRY_UNLOCK)return toast(`Fonderie débloquée au niveau ${FOUNDRY_UNLOCK}.`);if(!state.mineBought)return toast("Il faut d'abord acheter la Mine.");if(state.money<FOUNDRY_PRICE)return toast("Pas assez d'argent.");
+    state.money-=FOUNDRY_PRICE;state.foundryBought=true;Object.keys(FOUNDRY_RECIPES).forEach(k=>state[k+'LastProduction']=Date.now());showFloatingText('🔥 FONDERIE CONSTRUITE');tone(660,.08);saveGame();render();openShop('buildings');
+  };
+
+  const prevRenderBuildings=window.renderBuildings;
+  window.renderBuildings=function(){const r=prevRenderBuildings.apply(this,arguments);renderFoundry();return r;};
+
+  const prevUpdateProductions=window.updateProductions;
+  window.updateProductions=function(){const r=prevUpdateProductions.apply(this,arguments);const changed=processFoundry();if(changed&&!v260UiBusy())renderFoundry();return r;};
+
+  const prevShopBuildings=window.shopBuildings;
+  window.shopBuildings=function(){let html=prevShopBuildings.apply(this,arguments);html+=shopCard('🔥','Fonderie','Transforme fer, cuivre et or en lingots.',FOUNDRY_PRICE,state.level>=FOUNDRY_UNLOCK&&state.mineBought,'buyFoundry()',state.foundryBought,`Niveau ${FOUNDRY_UNLOCK} + Mine`);return html;};
+
+  const prevAvailable=window.availableOrderProducts;
+  window.availableOrderProducts=function(){const list=prevAvailable.apply(this,arguments);if(state.foundryBought)Object.entries(FOUNDRY_RECIPES).forEach(([k,r])=>{if(state.level>=r.level)list.push({key:k,sell:r.sell});});return list;};
+
+  const prevLevelReward=window.levelReward;
+  window.levelReward=function(level){const r=prevLevelReward.apply(this,arguments);const extra={43:'<br><b>🔥 Nouveau :</b> Fonderie + lingot de fer.',44:'<br><b>🧱 Nouveau :</b> Lingot de cuivre.',45:'<br><b>🏅 Nouveau :</b> Lingot d\'or.'};if(extra[level]){const el=document.getElementById('levelUpReward');if(el)el.innerHTML=(el.innerHTML||'')+extra[level];}return r;};
+
+  ensureFoundryDom();normalizeFoundry();processFoundry();
+  try{renderBuildings();renderStock();renderGoal();saveGame();}catch(e){console.error('V2.9.1 init fonderie',e);}
+})();
+</script>
+
 </body>
 </html>
