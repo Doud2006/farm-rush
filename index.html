@@ -858,6 +858,24 @@ main{padding-bottom:24px!important}
 @media(prefers-reduced-motion:reduce){#game .v282AnimalEmoji,#game .plot.readyPlot::after{animation:none!important}}
 </style>
 
+
+<style id="v283-effects-css">
+/* V2.8.3 — micro-animations de récolte / production, volontairement légères */
+.v283Burst{position:fixed;left:0;top:0;z-index:99999;pointer-events:none;width:8px;height:8px;transform:translate(-50%,-50%)}
+.v283Burst i{position:absolute;left:0;top:0;font-style:normal;font-size:20px;line-height:1;animation:v283Particle .62s cubic-bezier(.18,.7,.28,1) forwards;will-change:transform,opacity}
+@keyframes v283Particle{0%{transform:translate(0,0) scale(.55) rotate(0);opacity:0}12%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.08) rotate(var(--rot));opacity:0}}
+.v283CollectFlash{animation:v283CollectFlash .36s ease!important}
+@keyframes v283CollectFlash{0%{transform:scale(1)}45%{transform:scale(1.035);filter:brightness(1.11)}100%{transform:scale(1);filter:none}}
+.plot[data-stage="ready"].v283HarvestPop{animation:v283HarvestPop .33s ease!important}
+@keyframes v283HarvestPop{0%{transform:scale(1)}45%{transform:scale(1.08) rotate(-1deg)}100%{transform:scale(1)}}
+.v281IllustratedBuilding.v283ReadyGlow{box-shadow:0 9px 0 rgba(81,57,25,.12),0 0 0 3px rgba(255,196,73,.13),0 0 20px rgba(255,187,51,.15)}
+.v282AnimalScene.v283SceneBounce .v282AnimalEmoji{animation:v283AnimalBounce .42s ease}
+@keyframes v283AnimalBounce{0%,100%{transform:translateY(0)}45%{transform:translateY(-7px) scale(1.04)}}
+.v283CoinFly{position:fixed;z-index:99999;pointer-events:none;font-weight:1000;font-size:18px;text-shadow:0 2px 0 #fff;animation:v283CoinFly .7s ease-out forwards;will-change:transform,opacity}
+@keyframes v283CoinFly{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}15%{opacity:1}100%{transform:translate(-50%,-105px) scale(1.05);opacity:0}}
+@media (prefers-reduced-motion:reduce){.v283Burst,.v283CoinFly{display:none!important}.v283CollectFlash,.v283HarvestPop,.v283SceneBounce .v282AnimalEmoji{animation:none!important}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -11026,6 +11044,82 @@ window.addEventListener("beforeunload",saveGame);document.addEventListener("visi
   if(typeof baseBuildings==='function')window.renderBuildings=function(){const r=baseBuildings.apply(this,arguments);decorateAnimals();return r;};
 
   decorateFields();decorateAnimals();
+})();
+</script>
+
+
+<script id="v283-effects-js">
+(function(){
+  document.title='Farm Rush V2.8.3';
+  const ver=document.querySelector('.version');
+  if(ver)ver.textContent='V2.8.3 — Animations & effets de récolte';
+
+  function burst(x,y,icons){
+    if(!Number.isFinite(x)||!Number.isFinite(y))return;
+    const host=document.createElement('span');host.className='v283Burst';host.style.left=x+'px';host.style.top=y+'px';
+    const set=(icons&&icons.length?icons:['✨','🌿','✨']);
+    const dirs=[[-34,-45,-18],[5,-58,8],[38,-38,22],[-48,-18,-30],[48,-8,30]];
+    dirs.forEach((d,i)=>{const p=document.createElement('i');p.textContent=set[i%set.length];p.style.setProperty('--dx',d[0]+'px');p.style.setProperty('--dy',d[1]+'px');p.style.setProperty('--rot',d[2]+'deg');host.appendChild(p)});
+    document.body.appendChild(host);setTimeout(()=>host.remove(),760);
+  }
+  function center(el){const r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]}
+  function flash(el,cls){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),500)}
+  function coinFly(x,y,text){const n=document.createElement('span');n.className='v283CoinFly';n.textContent=text||'🪙';n.style.left=x+'px';n.style.top=y+'px';document.body.appendChild(n);setTimeout(()=>n.remove(),800)}
+
+  /* Indique visuellement les bâtiments ayant quelque chose à récupérer, sans scanner en boucle. */
+  function decorateReadyBuildings(){
+    document.querySelectorAll('.v281IllustratedBuilding').forEach(panel=>{
+      const ready=panel.querySelector('button.cartoonCollect.collectReady:not(:disabled),button.collectReady:not(:disabled)');
+      panel.classList.toggle('v283ReadyGlow',!!ready);
+    });
+  }
+  const oldBuildings=window.renderBuildings;
+  if(typeof oldBuildings==='function')window.renderBuildings=function(){const r=oldBuildings.apply(this,arguments);decorateReadyBuildings();return r};
+
+  /* Feedback des boutons : uniquement visuel, aucun preventDefault et aucune interception du gameplay. */
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest&&e.target.closest('button');
+    if(!btn)return;
+    const txt=(btn.textContent||'').toUpperCase();
+    if(txt.includes('RÉCUPÉRER')&&!btn.disabled){
+      const [x,y]=center(btn);flash(btn,'v283CollectFlash');burst(x,y,['✨','📦','✨']);
+      const panel=btn.closest('.panel,.animalCard,.recipeCard,.v281IllustratedBuilding');
+      if(panel){flash(panel,'v283CollectFlash');const scene=panel.querySelector('.v282AnimalScene');if(scene)flash(scene,'v283SceneBounce')}
+      setTimeout(decorateReadyBuildings,80);
+    }else if(txt.includes('VENDRE')&&!btn.disabled){
+      const [x,y]=center(btn);coinFly(x,y,'🪙 +');
+    }else if((txt.includes('PRODUIRE')||txt.includes('LANCER'))&&!btn.disabled){
+      const [x,y]=center(btn);burst(x,y,['⚙️','✨','💨']);
+    }
+  },{passive:true});
+
+  /* Récolte tactile/souris : l'effet part au premier contact sur une parcelle mûre. */
+  function harvestFx(e){
+    const plot=e.target.closest&&e.target.closest('.plot[data-stage="ready"]');
+    if(!plot)return;
+    flash(plot,'v283HarvestPop');const [x,y]=center(plot);
+    let icon='🌾';
+    const crop=plot.dataset.crop;if(crop&&window.CROPS&&CROPS[crop])icon=CROPS[crop].icon||icon;
+    burst(x,y,[icon,'✨',icon]);
+  }
+  document.addEventListener('touchstart',harvestFx,{passive:true});
+  document.addEventListener('mousedown',harvestFx,{passive:true});
+
+  /* Les textes de gain existants restent la source de vérité ; on ajoute seulement une micro-célébration. */
+  const oldFloat=window.showFloatingText;
+  if(typeof oldFloat==='function')window.showFloatingText=function(text){
+    const r=oldFloat.apply(this,arguments);
+    try{
+      const t=String(text||'');
+      if(/[+]\s*\d|RÉCOLT|RÉCUP|DÉBLOQU|CONSTRUIT/i.test(t)){
+        const x=Math.round(window.innerWidth*.5),y=Math.round(window.innerHeight*.38);
+        burst(x,y,['✨','⭐','✨']);
+      }
+    }catch(_e){}
+    return r;
+  };
+
+  decorateReadyBuildings();
 })();
 </script>
 
