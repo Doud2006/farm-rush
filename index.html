@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Farm Rush V2.7.2 — Bâtiments & animaux</title>
+<title>Farm Rush V2.7.3 — Bâtiments & animaux</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -333,7 +333,7 @@ main{padding:11px 10px 102px}
 
 <style id="v272-buildings-animals-design">
 /* =========================================================
-   FARM RUSH V2.7.2 — BÂTIMENTS & ANIMAUX
+   FARM RUSH V2.7.3 — BÂTIMENTS & ANIMAUX
    Passe visuelle uniquement : aucune mécanique modifiée.
    ========================================================= */
 
@@ -502,12 +502,37 @@ main{padding:11px 10px 102px}
 }
 </style>
 
+
+<style id="v273-ui-polish">
+/* V2.7.3 — Shop / Marché / Commandes / Stock */
+#modalSheet .shopGrid,#modalSheet .marketGrid,#modalSheet .stockGrid,#orders{gap:12px!important}
+.shopCategory,.marketCard,.stockCard,.orderCard,.recipeCard{
+  border-radius:20px!important;
+  box-shadow:0 8px 0 rgba(92,60,30,.12),0 12px 24px rgba(70,45,20,.10)!important;
+  border:2px solid rgba(128,91,50,.18)!important;
+}
+.shopCategory{position:relative;overflow:hidden;background:linear-gradient(180deg,#fffaf0,#f4e4bf)!important}
+.shopCategory::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.34),transparent 42%)}
+.shopCategory .emoji,.shopCategory .icon{filter:drop-shadow(0 3px 0 rgba(0,0,0,.08));transform:scale(1.06)}
+.marketCard,.stockCard{background:linear-gradient(180deg,#fffdf6,#f7ecd0)!important}
+.orderCard{background:linear-gradient(180deg,#fff8df,#f1dbac)!important;position:relative;overflow:hidden}
+.orderCard::before{content:"📋";position:absolute;right:10px;top:8px;font-size:22px;opacity:.16}
+#modalSheet h2,#modalSheet h3{letter-spacing:.2px}
+#modalSheet .sectionTitle{font-weight:900!important}
+#modalSheet button:not(.closeBtn){min-height:44px;border-radius:14px!important;font-weight:900!important}
+#modalSheet input[type="number"]{min-height:42px;border-radius:12px;border:2px solid rgba(92,60,30,.18);background:#fffdf7;padding:0 10px;font-weight:800}
+#stock .stockItem,.stockItem{border-radius:16px!important;background:linear-gradient(180deg,#fffdf7,#f3e5c6)!important;border:1px solid rgba(92,60,30,.12)!important;padding:10px!important}
+#stock .stockItem strong,.stockItem strong{font-weight:900}
+#orders .orderCard button{box-shadow:0 4px 0 rgba(92,60,30,.18)!important}
+.marketSellRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.v273Badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff4c6;border:1px solid rgba(92,60,30,.12);font-weight:900;font-size:12px}
+</style>
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.2 — Bâtiments & animaux</div></div>
+<div class="homeCard"><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><button class="playButton" onclick="startGame()">▶ JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()">🔊</button></div><div class="version">V2.7.3 — Bâtiments & animaux</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -10530,6 +10555,28 @@ function runZoneAutomations(){runOrchardWorker();runVineyardWorker();}
 
 setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();runZoneAutomations();if(document.getElementById("game").style.display==="block"&&!v260UiBusy()){renderFields();renderBuildings();renderGoal()}},1000);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
+</script>
+
+<script id="v273-decorator">
+(function(){
+  function decorate(){
+    document.querySelectorAll('.orderCard').forEach(function(card){
+      if(card.dataset.v273)return; card.dataset.v273='1';
+      var reward=[].find.call(card.querySelectorAll('*'),function(el){return /🪙|XP/i.test(el.textContent||'')});
+      if(reward) reward.style.fontWeight='900';
+    });
+    document.querySelectorAll('.stockItem').forEach(function(card){
+      if(card.dataset.v273)return; card.dataset.v273='1';
+      card.style.transition='transform .12s ease';
+    });
+  }
+  var baseRender=window.render;
+  if(typeof baseRender==='function'){
+    window.render=function(){var r=baseRender.apply(this,arguments);requestAnimationFrame(decorate);return r;};
+  }
+  document.addEventListener('click',function(){requestAnimationFrame(decorate);},{passive:true});
+  requestAnimationFrame(decorate);
+})();
 </script>
 </body>
 </html>
