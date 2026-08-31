@@ -643,12 +643,138 @@ body{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
 #game{padding-bottom:0!important}
 main{padding-bottom:24px!important}
 </style>
+
+<style id="v281-building-art-css">
+/* === V2.8.1 : bâtiments illustrés === */
+#game .buildingPanel,
+#game #restaurantPanel,
+#game #cellarPanel,
+#game #sheepfoldPanel,
+#game #textilePanel,
+#game #pondPanel,
+#game #sawmillPanel{
+  position:relative;
+  overflow:hidden;
+  padding-top:94px!important;
+}
+#game .buildingPanel::before,
+#game #restaurantPanel::before,
+#game #cellarPanel::before,
+#game #sheepfoldPanel::before,
+#game #textilePanel::before,
+#game #pondPanel::before,
+#game #sawmillPanel::before{
+  position:absolute;
+  left:10px;right:10px;top:10px;
+  height:72px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:0 10px 7px;
+  box-sizing:border-box;
+  border:2px solid #6f573c;
+  border-radius:17px;
+  box-shadow:inset 0 2px #ffffff80,0 3px 0 #5c472e35;
+  font-size:36px;
+  line-height:1;
+  letter-spacing:4px;
+  text-shadow:0 3px 0 #ffffff80,0 4px 7px #0003;
+  pointer-events:none;
+  z-index:0;
+}
+#game .buildingPanel::after,
+#game #restaurantPanel::after,
+#game #cellarPanel::after,
+#game #sheepfoldPanel::after,
+#game #textilePanel::after,
+#game #pondPanel::after,
+#game #sawmillPanel::after{
+  content:"";
+  position:absolute;
+  top:56px;left:19px;right:19px;
+  height:9px;
+  border-radius:50%;
+  background:#0000001f;
+  filter:blur(1.5px);
+  pointer-events:none;
+}
+#game .buildingPanel>* ,
+#game #restaurantPanel>* ,
+#game #cellarPanel>* ,
+#game #sheepfoldPanel>* ,
+#game #textilePanel>* ,
+#game #pondPanel>* ,
+#game #sawmillPanel>*{position:relative;z-index:1}
+
+#coopPanel::before{content:"🌿 🐔 🏠 🐔 🌼";background:linear-gradient(#9bdcf2 0 56%,#8ed06c 56% 100%)}
+#barnPanel::before{content:"🌾 🐄 🏡 🐖 🌾";background:linear-gradient(#a7def3 0 55%,#79bd5d 55% 100%)}
+#millPanel::before{content:"🌾 🌬️ 🏚️ ⚙️ 🌾";background:linear-gradient(#a9def5 0 55%,#d8c873 55% 100%)}
+#bakeryPanel::before{content:"🌼 🥖 🏠 🔥 🌼";background:linear-gradient(#acdff2 0 54%,#dfb277 54% 100%)}
+#dairyPanel::before{content:"☁️ 🥛 🏡 🧀 🌿";background:linear-gradient(#b9e7f7 0 56%,#90c978 56% 100%)}
+#pastaPanel::before{content:"⚙️ 🍝 🏭 🥫 ⚙️";background:linear-gradient(#b7dff0 0 55%,#a5aa8a 55% 100%)}
+#meatPanel::before{content:"🌾 🥩 🏚️ 🔪 🌾";background:linear-gradient(#b1e1f5 0 55%,#b88668 55% 100%)}
+#restaurantPanel::before{content:"🌳 🍽️ 🏡 🍷 🌼";background:linear-gradient(#a9ddf2 0 55%,#84c86e 55% 100%)}
+#cellarPanel::before{content:"🍇 🍷 🏚️ 🛢️ 🍇";background:linear-gradient(#c8d7f3 0 54%,#8f7658 54% 100%)}
+#sheepfoldPanel::before{content:"🌿 🐑 🛖 🐑 🌼";background:linear-gradient(#b8e5f5 0 56%,#8ac96f 56% 100%)}
+#textilePanel::before{content:"🧵 🪡 🏠 👕 🧶";background:linear-gradient(#c9e8f6 0 54%,#c5a87c 54% 100%)}
+#pondPanel::before{content:"🌿 🎣 🐟 🌊 🪷";background:linear-gradient(#b7e7f8 0 48%,#63b5d6 48% 100%)}
+#sawmillPanel::before{content:"🌲 🪵 🏚️ 🪚 🌲";background:linear-gradient(#a8dcf0 0 53%,#729c5b 53% 100%)}
+
+/* Une petite enseigne pour renforcer l'identité de chaque bâtiment */
+#game .buildingName{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:3px 8px;
+  border-radius:10px;
+  background:#fff8e9d9;
+  border:1px solid #8d704a55;
+  box-shadow:0 2px 0 #6f573c18;
+}
+#game .buildingHeader{align-items:flex-start}
+#game .buildingIcon{
+  width:46px;height:46px;min-width:46px;
+  display:grid;place-items:center;
+  border-radius:14px;
+  background:linear-gradient(#fffef6,#f4dfae);
+  border:2px solid #856841;
+  box-shadow:0 3px 0 #6d5234;
+  font-size:30px!important;
+}
+#game .productionBar{height:11px!important;border:2px solid #7e673d;background:#e7d7a8!important;box-shadow:inset 0 1px 2px #0002}
+#game .productionFill{border-radius:999px;background:linear-gradient(90deg,#86d44f,#f4c84d)!important}
+
+/* Cartes recettes façon comptoir / atelier */
+#game .recipeCardV19{
+  position:relative;
+  overflow:hidden;
+  border:2px solid #a98c5b!important;
+  background:linear-gradient(160deg,#fffdf5,#fff0c9)!important;
+  box-shadow:0 3px 0 #7d643a28!important;
+}
+#game .recipeCardV19::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:5px;
+  background:repeating-linear-gradient(90deg,#d99b4e 0 14px,#f4c867 14px 28px);
+  opacity:.8;
+}
+#game .animalCard{position:relative;overflow:hidden}
+#game #barnPanel .animalCard::after,#game #sheepfoldPanel .animalCard::after{
+  content:"";position:absolute;left:7px;right:7px;bottom:7px;height:4px;border-radius:999px;background:#7caf5a55;pointer-events:none
+}
+
+@media(max-width:430px){
+  #game .buildingPanel,#game #restaurantPanel,#game #cellarPanel,#game #sheepfoldPanel,#game #textilePanel,#game #pondPanel,#game #sawmillPanel{padding-top:88px!important}
+  #game .buildingPanel::before,#game #restaurantPanel::before,#game #cellarPanel::before,#game #sheepfoldPanel::before,#game #textilePanel::before,#game #pondPanel::before,#game #sawmillPanel::before{height:67px;font-size:30px;letter-spacing:2px}
+}
+@media(prefers-reduced-motion:reduce){#game .productionFill{transition:none!important}}
+</style>
+
 </head>
 <body>
 <div class="app">
 <section id="home">
 <div class="homeHill"></div><div class="homeDecor hHouse">🏡</div><div class="homeDecor hTractor">🚜</div><div class="homeDecor hTree">🌳</div>
-<div class="homeCard"><div class="homeKicker">🌱 TA FERME T’ATTEND</div><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><div class="homeFeatures"><span>🌾 Cultures</span><span>🏭 Production</span><span>🤖 Auto</span></div><button class="playButton" onclick="startGame()"><span class="playIcon">▶</span> JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()" aria-label="Activer ou couper le son">🔊</button></div><div class="version">V2.8.0 — Finition mobile</div></div>
+<div class="homeCard"><div class="homeKicker">🌱 TA FERME T’ATTEND</div><div class="homeLogo">🌾</div><div class="homeTitle">FARM RUSH</div><div class="homeSubtitle">Cultive. Transforme. Automatise.<br><b>Construis ton empire agricole.</b></div><div class="homeFeatures"><span>🌾 Cultures</span><span>🏭 Production</span><span>🤖 Auto</span></div><button class="playButton" onclick="startGame()"><span class="playIcon">▶</span> JOUER</button><div class="homeActions"><button id="soundHome" class="roundBtn" onclick="toggleSound()" aria-label="Activer ou couper le son">🔊</button></div><div class="version">V2.8.1 — Bâtiments illustrés</div></div>
 </section>
 <section id="game">
 <header><div class="top"><div class="avatar">👨‍🌾</div><div class="player"><div class="playerName">FERMIER — NIVEAU <span id="level">1</span></div><div class="xpText">XP <span id="xp">0</span> / <span id="xpNeed">100</span></div><div class="xpbar"><div id="xpFill" class="xpfill"></div></div></div><div class="money">🪙 <span id="money">100</span></div></div></header>
@@ -10749,5 +10875,18 @@ window.addEventListener("beforeunload",saveGame);document.addEventListener("visi
   setTimeout(addWorldDecor,150);
 })();
 </script>
+
+<script id="v281-building-art-js">
+(function(){
+  document.title='Farm Rush V2.8.1';
+  const v=document.querySelector('.version');
+  if(v)v.textContent='V2.8.1 — Bâtiments illustrés';
+
+  /* Ajoute une classe sémantique sans intercepter les boutons ni les gestes. */
+  const ids=['coopPanel','barnPanel','millPanel','bakeryPanel','dairyPanel','pastaPanel','meatPanel','restaurantPanel','cellarPanel','sheepfoldPanel','textilePanel','pondPanel','sawmillPanel'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('v281IllustratedBuilding')});
+})();
+</script>
+
 </body>
 </html>
