@@ -9877,7 +9877,134 @@ ensureV20Dom();
 ensureV19Dom();
 
 bindFieldArea("farmArea","farm");bindFieldArea("orchardArea","orchard");
-setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"){if(!paintGesture&&!activeFieldTouch)renderFields();renderBuildings();renderGoal()}},500);
+
+/* ======================================================
+   FARM RUSH V2.6.0 — STABILITÉ & PERFORMANCES
+   - évite de reconstruire les boutons pendant un toucher
+   - rafraîchissement visuel 1x/s au lieu de 2x/s
+   - supprime le scan global de tous les boutons
+   - sauvegarde regroupée pour réduire les écritures localStorage
+====================================================== */
+document.title='Farm Rush V2.6.0';
+const v260Version=document.querySelector('.version');
+if(v260Version)v260Version.textContent='V2.6.0 — Optimisation • boutons stabilisés • latence réduite';
+
+/* Verrou d'interaction : aucun panneau n'est détruit/recréé pendant que le doigt est posé. */
+let v260UiTouching=false;
+let v260UiReleaseAt=0;
+document.addEventListener('touchstart',()=>{v260UiTouching=true;},{capture:true,passive:true});
+document.addEventListener('touchend',()=>{v260UiTouching=false;v260UiReleaseAt=Date.now()+180;},{capture:true,passive:true});
+document.addEventListener('touchcancel',()=>{v260UiTouching=false;v260UiReleaseAt=Date.now()+180;},{capture:true,passive:true});
+document.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')v260UiTouching=true;},{capture:true,passive:true});
+document.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){v260UiTouching=false;v260UiReleaseAt=Date.now()+180;}},{capture:true,passive:true});
+function v260UiBusy(){return v260UiTouching||Date.now()<v260UiReleaseAt||paintGesture||!!activeFieldTouch;}
+
+/* Remplace le wrapper V2.5.2 : même rendu fonctionnel, mais plus de
+   requestAnimationFrame + document.querySelectorAll('button') sur toute la page. */
+renderBuildings=function(){
+  renderBuildingsV252Base();
+  document.querySelectorAll('#game .buildingPanel button, #game .animalCard button, #game .recipeCard button, #game .sheepfoldPanel button, #game .cellarPanel button').forEach(btn=>{
+    const t=(btn.textContent||'').toUpperCase();
+    if(!t.includes('RÉCUPÉRER'))return;
+    btn.classList.add('cartoonCollect');
+    const panel=btn.closest('.panel,.animalCard,.recipeCard');
+    if(!panel)return;
+    const m=(panel.textContent||'').match(/\b([1-9]\d*)\s*\/\s*\d+/);
+    btn.classList.toggle('collectReady',!!m);
+  });
+};
+
+/* Sauvegarde groupée : plusieurs render/actions rapprochés ne provoquent
+   plus plusieurs JSON.stringify + localStorage.setItem à la suite. */
+let v260SaveTimer=null;
+let v260SavePending=false;
+function v260WriteSave(){
+  if(v260SaveTimer){clearTimeout(v260SaveTimer);v260SaveTimer=null;}
+  v260SavePending=false;
+  state.lastSeen=Date.now();
+  try{normalizeV24State();}catch(e){}
+  try{normalizeV25State();}catch(e){}
+  try{localStorage.setItem('farmRushV260',JSON.stringify(state));}
+  catch(e){console.error('Farm Rush sauvegarde:',e);}
+}
+saveGame=function(immediate=false){
+  v260SavePending=true;
+  if(immediate){v260WriteSave();return;}
+  if(v260SaveTimer)return;
+  v260SaveTimer=setTimeout(v260WriteSave,140);
+};
+
+/* La V2.6 devient prioritaire, sans supprimer les anciennes sauvegardes. */
+const v260FindBestBase=v223FindBestSave;
+v223FindBestSave=function(){
+  try{
+    const raw=localStorage.getItem('farmRushV260');
+    if(raw){
+      const data=JSON.parse(raw);
+      if(data&&typeof data==='object'&&!v223LooksReset(data))
+        return {key:'farmRushV260',raw,data,score:v223ProgressScore(data)};
+    }
+  }catch(e){}
+  return v260FindBestBase();
+};
+
+/* Collecte légère : met à jour immédiatement les zones utiles au lieu de
+   reconstruire toute l'application. */
+collectWaiting=function(waitKey,stockKey,label){
+  if(!state.stock||typeof state.stock!=='object')state.stock={};
+  const qty=Math.max(0,Math.floor(Number(state[waitKey])||0));
+  if(qty<=0){toast('Aucune production prête.');return false;}
+  state.stock[stockKey]=Math.max(0,Math.floor(Number(state.stock[stockKey])||0))+qty;
+  state[waitKey]=0;
+  showFloatingText(`${label} +${qty}`);
+  tone(900,.045);
+  renderStock();
+  renderOrders();
+  renderGoal();
+  renderBuildings();
+  saveGame();
+  return true;
+};
+collectEggs=()=>collectWaiting('eggWaiting','egg','🥚');
+collectMilk=()=>collectWaiting('milkWaiting','milk','🥛');
+collectBacon=()=>collectWaiting('baconWaiting','bacon','🥓');
+collectFlour=()=>collectWaiting('flourWaiting','flour','🥣');
+collectBread=()=>collectWaiting('breadWaiting','bread','🥖');
+collectCheese=()=>collectWaiting('cheeseWaiting','cheese','🧀');
+collectPasta=()=>collectWaiting('pastaWaiting','pasta','🍝');
+collectSauce=()=>collectWaiting('sauceWaiting','tomatoSauce','🥫');
+collectSteak=()=>collectWaiting('steakWaiting','groundSteak','🥩');
+collectBeef=()=>collectWaiting('beefWaiting','beef','🥩');
+collectCream=()=>collectWaiting('creamWaiting','cream','🥛');
+collectCake=()=>collectWaiting('cakeWaiting','cake','🎂');
+collectStrawberryCake=()=>collectWaiting('strawberryCakeWaiting','strawberryCake','🍰');
+collectMozzarella=()=>collectWaiting('mozzarellaWaiting','mozzarella','⚪');
+collectParmesan=()=>collectWaiting('parmesanWaiting','parmesan','🧀');
+collectBlueCheese=()=>collectWaiting('blueCheeseWaiting','blueCheese','🧀');
+collectOil=()=>collectWaiting('oilWaiting','sunflowerOil','🫙');
+collectFries=()=>collectWaiting('friesWaiting','fries','🍟');
+collectPesto=()=>collectWaiting('pestoWaiting','pesto','🫙');
+collectWoolThread=()=>collectWaiting('woolThreadWaiting','woolThread','🧵');
+collectCottonFabric=()=>collectWaiting('cottonFabricWaiting','cottonFabric','🪡');
+collectScarf=()=>collectWaiting('scarfWaiting','scarf','🧣');
+collectTshirt=()=>collectWaiting('tshirtWaiting','tshirt','👕');
+collectPants=()=>collectWaiting('pantsWaiting','pants','👖');
+collectSweater=()=>collectWaiting('sweaterWaiting','sweater','🧶');
+collectDress=()=>collectWaiting('dressWaiting','dress','👗');
+collectCoat=()=>collectWaiting('coatWaiting','coat','🧥');
+collectTrout=()=>collectWaiting('troutWaiting','trout','🐟');
+collectCarp=()=>collectWaiting('carpWaiting','carp','🐠');
+collectPerch=()=>collectWaiting('perchWaiting','perch','🐟');
+collectSalmon=()=>collectWaiting('salmonWaiting','salmon','🐟');
+collectPlank=()=>collectWaiting('plankWaiting','plank','🪚');
+collectWoodCrate=()=>collectWaiting('woodCrateWaiting','woodCrate','📦');
+collectFurniture=()=>collectWaiting('furnitureWaiting','furniture','🪑');
+
+/* Force réellement l'écriture quand Safari met la page en arrière-plan. */
+window.addEventListener('pagehide',()=>v260WriteSave(),{capture:true});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')v260WriteSave();},{capture:true});
+
+setInterval(()=>{updateProductions();runWorker();runAnimalFeeder();if(document.getElementById("game").style.display==="block"&&!v260UiBusy()){renderFields();renderBuildings();renderGoal()}},1000);
 window.addEventListener("beforeunload",saveGame);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveGame()});document.getElementById("soundHome").textContent=soundOn?"🔊":"🔇";loadGame();
 </script>
 </body>
