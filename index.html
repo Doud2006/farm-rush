@@ -11834,5 +11834,83 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 })();
 </script>
 
+
+<style>
+#recoveryBox{margin:14px auto 4px;max-width:360px;padding:12px;border-radius:18px;background:#fff8df;border:3px solid #d89a39;box-shadow:0 6px 0 #a86d25;color:#4a3420;text-align:center}
+#recoveryBox .recoveryTitle{font-weight:1000;font-size:15px;margin-bottom:5px}
+#recoveryInfo{font-size:11px;font-weight:800;line-height:1.35;margin-bottom:9px}
+#recoveryBtn{width:100%;border:0;border-radius:14px;padding:12px 10px;font-weight:1000;font-size:13px;background:linear-gradient(180deg,#55c86a,#2e9d49);color:white;box-shadow:0 5px #237638;touch-action:manipulation}
+#recoveryBtn:active{transform:translateY(3px);box-shadow:0 2px #237638}
+</style>
+<script>
+/* ======================================================
+   FARM RUSH V2.9.1 MAX RECOVERY
+   - Ne touche jamais à farmRushV291TestMax
+   - Cherche la meilleure vraie sauvegarde dans toutes les anciennes clés
+   - N'écrase V260 qu'après appui explicite sur RÉCUPÉRER
+====================================================== */
+(function(){
+  const REAL_KEYS=[
+    'farmRushV260','farmRushV254','farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
+    'farmRushV223','farmRushV222','farmRushV221','farmRushV22','farmRushV21','farmRushV20','farmRushV192',
+    'farmRushV191','farmRushV19','farmRushV184','farmRushV183','farmRushV182','farmRushV181','farmRushV18',
+    'farmRushV173','farmRushV172','farmRushV171','farmRushV17','farmRushV161','farmRushV16','farmRushV15'
+  ];
+  let best=null;
+  function score(d){
+    try{return typeof v223ProgressScore==='function'?v223ProgressScore(d):((Number(d.level)||1)*1e9+(Number(d.xp)||0)*1e5+(Number(d.money)||0));}
+    catch(e){return (Number(d.level)||1)*1e9+(Number(d.xp)||0)*1e5+(Number(d.money)||0);}
+  }
+  function looksReal(d){
+    if(!d||typeof d!=='object')return false;
+    try{if(typeof v223LooksReset==='function')return !v223LooksReset(d);}catch(e){}
+    return (Number(d.level)||1)>1 || (Number(d.xp)||0)>0 || (Number(d.money)||0)>500 || d.orchardBought || d.coopBought || d.barnBought;
+  }
+  function scan(){
+    const found=[];
+    REAL_KEYS.forEach(k=>{
+      try{
+        const raw=localStorage.getItem(k); if(!raw)return;
+        const data=JSON.parse(raw); if(!looksReal(data))return;
+        found.push({key:k,raw,data,score:score(data),seen:Number(data.lastSeen)||0});
+      }catch(e){}
+    });
+    found.sort((a,b)=>b.score-a.score || b.seen-a.seen);
+    best=found[0]||null;
+    return best;
+  }
+  window.farmRushRecoverRealSave=function(){
+    const b=scan();
+    if(!b){toast('Aucune ancienne sauvegarde trouvée.');return;}
+    try{
+      // Copie vers la sauvegarde normale actuelle, sans supprimer la source.
+      localStorage.setItem('farmRushV260',b.raw);
+      // Garde en plus une copie de secours dédiée.
+      localStorage.setItem('farmRushRecoveryBackup',b.raw);
+      location.reload();
+    }catch(e){
+      console.error(e); toast('Impossible de restaurer la sauvegarde.');
+    }
+  };
+  function mount(){
+    const home=document.getElementById('home'); if(!home||document.getElementById('recoveryBox'))return;
+    const b=scan();
+    const box=document.createElement('div'); box.id='recoveryBox';
+    if(b){
+      const lvl=Math.max(1,Number(b.data.level)||1);
+      const money=Math.floor(Number(b.data.money)||0).toLocaleString('fr-FR');
+      box.innerHTML='<div class="recoveryTitle">💾 Sauvegarde retrouvée</div><div id="recoveryInfo">Meilleure copie détectée : niveau <b>'+lvl+'</b> • '+money+' 🪙<br><small>Source : '+b.key+' — aucune ancienne copie ne sera supprimée.</small></div><button id="recoveryBtn" type="button">💾 RÉCUPÉRER MA SAUVEGARDE</button>';
+      box.querySelector('#recoveryBtn').onclick=window.farmRushRecoverRealSave;
+    }else{
+      box.innerHTML='<div class="recoveryTitle">💾 Récupération</div><div id="recoveryInfo">Aucune ancienne progression exploitable détectée dans ce navigateur.</div>';
+    }
+    const play=document.querySelector('.playButton');
+    if(play) play.insertAdjacentElement('beforebegin',box); else home.appendChild(box);
+  }
+  mount();
+  const v=document.querySelector('.version'); if(v)v.textContent='V2.9.1 MAX RECOVERY — récupération protégée';
+})();
+</script>
+
 </body>
 </html>
