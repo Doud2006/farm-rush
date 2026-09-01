@@ -11838,8 +11838,8 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 <script id="v292-map-js">
 (function(){
 'use strict';
-document.title='Farm Rush V2.9.2 — Carte';
-const version=document.querySelector('.version');if(version)version.textContent='V2.9.2 — Carte de ferme';
+document.title='Farm Rush V2.9.2.1 — Carte';
+const version=document.querySelector('.version');if(version)version.textContent='V2.9.2.1 — Carte de ferme';
 const game=document.getElementById('game');
 if(!game)return;
 
@@ -11900,7 +11900,36 @@ viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.mapNode'))retu
 viewport.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)+Math.abs(dy)>7)moved=true;x=startMapX+dx;y=startMapY+dy;apply();});
 function endDrag(e){drag=false;viewport.classList.remove('dragging');try{viewport.releasePointerCapture(e.pointerId)}catch(_){} }
 viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
-shell.querySelectorAll('.mapNode').forEach(btn=>btn.addEventListener('click',()=>openNode(btn)));
+// V2.9.2.1 — ouverture robuste des lieux sur iPhone/Safari.
+// Le vieux drapeau `moved` restait parfois à true après avoir déplacé la carte,
+// ce qui bloquait ensuite tous les bâtiments. Chaque bouton gère maintenant
+// son propre petit geste tap, indépendamment du drag de la carte.
+shell.querySelectorAll('.mapNode').forEach(btn=>{
+  let bx=0,by=0,bpid=null,bmoved=false;
+  btn.addEventListener('pointerdown',e=>{
+    moved=false;
+    bx=e.clientX;by=e.clientY;bpid=e.pointerId;bmoved=false;
+    e.stopPropagation();
+  },{passive:true});
+  btn.addEventListener('pointermove',e=>{
+    if(bpid!==e.pointerId)return;
+    if(Math.abs(e.clientX-bx)+Math.abs(e.clientY-by)>10)bmoved=true;
+    e.stopPropagation();
+  },{passive:true});
+  btn.addEventListener('pointerup',e=>{
+    if(bpid!==e.pointerId)return;
+    e.stopPropagation();
+    const shouldOpen=!bmoved;
+    bpid=null;bmoved=false;moved=false;
+    if(shouldOpen){
+      e.preventDefault();
+      openNode(btn);
+    }
+  });
+  btn.addEventListener('pointercancel',()=>{bpid=null;bmoved=false;moved=false;});
+  // Empêche le click synthétique iOS de lancer une seconde ouverture.
+  btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();});
+});
 shell.querySelector('#mapCenterBtn').addEventListener('click',center);shell.querySelector('#mapListBtn').addEventListener('click',()=>showList('farmArea'));back.addEventListener('click',showMap);
 window.addEventListener('resize',apply);
 
