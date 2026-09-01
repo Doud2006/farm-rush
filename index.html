@@ -11784,5 +11784,133 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 })();
 </script>
 
+
+
+<style id="v292-map-css">
+/* V2.9.2 — Carte de ferme portrait (prototype jouable) */
+:root{--mapGrass:#79bc58;--mapGrass2:#6cad4c;--mapRoad:#d8b878;--mapWater:#65bfe6;--mapRock:#8a8375}
+#game.farmMapMode main{display:none!important}
+#farmMapShell{display:none;position:relative;height:calc(100dvh - 82px - 82px);min-height:520px;overflow:hidden;background:#86ca64;border-top:2px solid #5c963f;touch-action:none;user-select:none;-webkit-user-select:none}
+#game.farmMapMode #farmMapShell{display:block}
+#farmMapViewport{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:grab}
+#farmMapViewport.dragging{cursor:grabbing}
+#farmMapWorld{position:absolute;left:0;top:0;width:1200px;height:1600px;transform-origin:0 0;background:
+ radial-gradient(circle at 12% 15%,#96d874 0 5px,transparent 6px),
+ radial-gradient(circle at 78% 23%,#97d776 0 6px,transparent 7px),
+ radial-gradient(circle at 30% 72%,#8ed06c 0 5px,transparent 6px),
+ linear-gradient(135deg,var(--mapGrass),var(--mapGrass2));
+ overflow:hidden}
+#farmMapWorld:before{content:"";position:absolute;left:420px;top:-80px;width:150px;height:1800px;background:var(--mapRoad);transform:rotate(-8deg);border:8px solid #c69d5d;box-shadow:inset 0 0 0 4px #ebcf98}
+#farmMapWorld:after{content:"";position:absolute;left:-80px;top:880px;width:1400px;height:120px;background:var(--mapRoad);transform:rotate(4deg);border:7px solid #c69d5d;box-shadow:inset 0 0 0 4px #ebcf98}
+.mapRiver{position:absolute;left:875px;top:-80px;width:210px;height:1780px;background:linear-gradient(90deg,#55b0d8,#76d1f0,#55b0d8);transform:rotate(7deg);border-left:12px solid #d8cc88;border-right:12px solid #d8cc88;box-shadow:inset 0 0 20px #2f94bd55;z-index:1}
+.mapRiver:after{content:"≈  ≈  ≈  ≈  ≈  ≈  ≈";position:absolute;inset:20px 0;color:#dff8ff99;font-size:30px;line-height:180px;text-align:center;word-break:break-all}
+.mapMountain{position:absolute;left:650px;top:40px;width:390px;height:250px;background:linear-gradient(145deg,#8f8c7d,#68675d);clip-path:polygon(0 100%,17% 43%,29% 70%,45% 18%,60% 65%,75% 32%,100% 100%);z-index:2;filter:drop-shadow(0 10px 0 #52654466)}
+.mapForestPatch{position:absolute;left:45px;top:1040px;width:370px;height:410px;border-radius:48% 52% 38% 62%;background:#4f9342;border:9px solid #3c7a35;z-index:2;box-shadow:inset 0 0 0 8px #65a953}
+.mapLake{position:absolute;left:720px;top:1000px;width:330px;height:260px;border-radius:52% 48% 58% 42%;background:radial-gradient(circle at 35% 30%,#94e6ff,#56bfe4 58%,#3c9cc6);border:10px solid #c9b86e;box-shadow:0 8px 0 #4c7a3c55,inset 0 0 0 5px #b5f0ff66;z-index:2}
+.mapLake:after{content:"〰️   〰️";position:absolute;left:70px;top:85px;font-size:34px;opacity:.7}
+.mapFieldPatch{position:absolute;left:190px;top:650px;width:460px;height:340px;border-radius:30px;background:repeating-linear-gradient(90deg,#af7c3e 0 34px,#c78e48 34px 67px);border:12px solid #8c6334;box-shadow:inset 0 0 0 5px #d9a35b,0 10px 0 #4c7a3c55;z-index:2;transform:rotate(-2deg)}
+.mapOrchardPatch{position:absolute;left:70px;top:300px;width:350px;height:275px;border-radius:38px;background:radial-gradient(circle,#327b35 0 13px,transparent 14px) 0 0/64px 64px,#6dad4f;border:10px solid #508d40;z-index:2;box-shadow:0 9px 0 #4c7a3c55}
+.mapVinePatch{position:absolute;left:525px;top:360px;width:330px;height:245px;border-radius:34px;background:repeating-linear-gradient(165deg,#6b923e 0 15px,#85ad51 15px 30px,#7c5534 30px 34px);border:10px solid #5c843c;z-index:2;box-shadow:0 9px 0 #4c7a3c55}
+.mapVillagePatch{position:absolute;left:540px;top:720px;width:310px;height:240px;border-radius:34px;background:#d8c28e;border:9px solid #b29460;z-index:2;box-shadow:inset 0 0 0 6px #ead7a8}
+.mapNode{position:absolute;z-index:8;min-width:120px;max-width:170px;padding:10px 9px 8px;border:3px solid #fff4cf;border-radius:18px;background:linear-gradient(#fffdf4,#f5e4ba);box-shadow:0 7px 0 #53793d66,0 9px 18px #24452238;text-align:center;color:#4e402c;font-weight:1000;touch-action:manipulation;transition:transform .12s ease,filter .12s ease}
+.mapNode:active{transform:translateY(3px) scale(.98)}
+.mapNode .ico{display:block;font-size:38px;line-height:42px;filter:drop-shadow(0 3px 1px #0002)}
+.mapNode .nm{display:block;font-size:11px;line-height:1.2;margin-top:3px}
+.mapNode .sub{display:block;font-size:8px;color:#756650;margin-top:3px;font-weight:900}
+.mapNode.readyMap{animation:mapReadyPulse 1.6s ease-in-out infinite}
+@keyframes mapReadyPulse{50%{filter:brightness(1.08);transform:translateY(-2px)}}
+.mapNode.locked{filter:grayscale(.7);opacity:.72;background:linear-gradient(#dedbd0,#c9c4b8);border-color:#eee}.mapNode.locked .ico{filter:grayscale(1)}
+.mapNode.major{min-width:155px;padding:12px}.mapNode.major .ico{font-size:48px;line-height:50px}
+.mapLabel{position:absolute;z-index:5;padding:6px 11px;border-radius:999px;background:#3c6e36dd;color:#fff8db;border:2px solid #ffffff55;font-size:10px;font-weight:1000;letter-spacing:.6px;box-shadow:0 4px 9px #20412244;pointer-events:none}
+.mapDecoration{position:absolute;z-index:4;font-size:32px;filter:drop-shadow(0 4px 2px #24452255);pointer-events:none}
+.mapTopBar{position:absolute;left:10px;right:10px;top:10px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:7px;pointer-events:none}
+.mapTopBar>*{pointer-events:auto}
+.mapPill{border:2px solid #fff0c1;border-radius:14px;padding:9px 11px;background:#315e30e8;color:white;font-size:10px;font-weight:1000;box-shadow:0 4px 12px #183b2544;backdrop-filter:blur(5px)}
+.mapBtn{border:2px solid #fff0c1;border-radius:14px;padding:9px 12px;background:#fff5d9;color:#4f452f;font-size:10px;font-weight:1000;box-shadow:0 4px 12px #183b2544}
+.mapCompass{position:absolute;right:12px;bottom:18px;z-index:30;width:48px;height:48px;border-radius:50%;border:3px solid #fff0c1;background:#315e30e8;color:#fff;font-size:22px;box-shadow:0 5px 14px #183b2555}
+.mapBackBtn{position:fixed;right:13px;bottom:94px;z-index:1200;display:none;border:3px solid #fff3c8;border-radius:16px;padding:11px 13px;background:#315e30;color:white;font-weight:1000;box-shadow:0 6px 16px #183b2555}.farmListMode .mapBackBtn{display:block}
+.mapHint{position:absolute;left:50%;bottom:15px;transform:translateX(-50%);z-index:20;white-space:nowrap;padding:6px 10px;border-radius:999px;background:#213e2caf;color:#fff;font-size:9px;font-weight:900;pointer-events:none;animation:mapHintFade 5s forwards}
+@keyframes mapHintFade{0%,65%{opacity:1}100%{opacity:0}}
+@media(max-width:380px){#farmMapShell{height:calc(100dvh - 78px - 78px)}.mapNode{min-width:108px}.mapNode.major{min-width:140px}.mapTopBar{top:7px}.mapPill,.mapBtn{padding:8px 9px}}
+@media(prefers-reduced-motion:reduce){.mapNode.readyMap{animation:none!important}.mapHint{animation:none!important}}
+</style>
+
+<script id="v292-map-js">
+(function(){
+'use strict';
+document.title='Farm Rush V2.9.2 — Carte';
+const version=document.querySelector('.version');if(version)version.textContent='V2.9.2 — Carte de ferme';
+const game=document.getElementById('game');
+if(!game)return;
+
+const shell=document.createElement('div');shell.id='farmMapShell';
+shell.innerHTML=`<div id="farmMapViewport"><div id="farmMapWorld">
+  <div class="mapRiver"></div><div class="mapMountain"></div><div class="mapForestPatch"></div><div class="mapLake"></div><div class="mapFieldPatch"></div><div class="mapOrchardPatch"></div><div class="mapVinePatch"></div><div class="mapVillagePatch"></div>
+  <div class="mapLabel" style="left:305px;top:625px">🌾 GRANDES CULTURES</div>
+  <div class="mapLabel" style="left:145px;top:278px">🍎 VERGER</div>
+  <div class="mapLabel" style="left:625px;top:338px">🍇 VIGNOBLE</div>
+  <div class="mapLabel" style="left:620px;top:694px">🏭 VILLAGE DE PRODUCTION</div>
+  <div class="mapLabel" style="left:105px;top:1015px">🌲 FORÊT</div>
+  <div class="mapLabel" style="left:800px;top:972px">🎣 ÉTANG</div>
+  <div class="mapLabel" style="left:755px;top:160px">⛰️ ZONE MINIÈRE</div>
+  <button class="mapNode major" data-map-target="farmArea" style="left:340px;top:760px"><span class="ico">🌾</span><span class="nm">CHAMPS</span><span class="sub">Planter & récolter</span></button>
+  <button class="mapNode major" data-map-zone="orchard" data-owned="orchardBought" data-level="14" style="left:150px;top:385px"><span class="ico">🍎</span><span class="nm">VERGER</span><span class="sub">Cultures spéciales</span></button>
+  <button class="mapNode major" data-map-zone="vineyard" data-owned="vineyardBought" data-level="25" style="left:610px;top:445px"><span class="ico">🍇</span><span class="nm">VIGNOBLE</span><span class="sub">Raisin & vendanges</span></button>
+  <button class="mapNode" data-map-panel="coopPanel" data-owned="coopBought" data-level="5" style="left:190px;top:690px"><span class="ico">🐔</span><span class="nm">POULAILLER</span></button>
+  <button class="mapNode" data-map-panel="barnPanel" data-owned="barnBought" data-level="9" style="left:650px;top:825px"><span class="ico">🐄</span><span class="nm">GRANGE</span></button>
+  <button class="mapNode" data-map-panel="millPanel" data-owned="millBought" data-level="12" style="left:535px;top:760px"><span class="ico">⚙️</span><span class="nm">MOULIN</span></button>
+  <button class="mapNode" data-map-panel="bakeryPanel" data-owned="bakeryBought" data-level="13" style="left:690px;top:720px"><span class="ico">🥖</span><span class="nm">BOULANGERIE</span></button>
+  <button class="mapNode" data-map-panel="dairyPanel" data-owned="dairyBought" data-level="15" style="left:550px;top:885px"><span class="ico">🧀</span><span class="nm">LAITERIE</span></button>
+  <button class="mapNode" data-map-panel="pastaPanel" data-owned="pastaBought" data-level="17" style="left:700px;top:930px"><span class="ico">🏭</span><span class="nm">USINE</span></button>
+  <button class="mapNode" data-map-panel="meatPanel" data-owned="meatBought" data-level="18" style="left:835px;top:805px"><span class="ico">🥩</span><span class="nm">BOUCHERIE</span></button>
+  <button class="mapNode" data-map-panel="restaurantPanel" data-owned="restaurantBought" data-level="20" style="left:820px;top:690px"><span class="ico">🍽️</span><span class="nm">RESTAURANT</span></button>
+  <button class="mapNode" data-map-panel="cellarPanel" data-owned="cellarBought" data-level="26" style="left:735px;top:535px"><span class="ico">🍷</span><span class="nm">CAVE</span></button>
+  <button class="mapNode" data-map-panel="sheepfoldPanel" data-owned="sheepfoldBought" data-level="27" style="left:285px;top:1080px"><span class="ico">🐑</span><span class="nm">BERGERIE</span></button>
+  <button class="mapNode" data-map-panel="textilePanel" data-owned="textileBought" data-level="29" style="left:115px;top:1210px"><span class="ico">🧵</span><span class="nm">TEXTILE</span></button>
+  <button class="mapNode major" data-map-zone="pond" data-owned="pondBought" data-level="34" style="left:795px;top:1090px"><span class="ico">🎣</span><span class="nm">ÉTANG</span><span class="sub">Pêche</span></button>
+  <button class="mapNode major" data-map-zone="forest" data-owned="forestBought" data-level="38" style="left:120px;top:1320px"><span class="ico">🌲</span><span class="nm">FORÊT</span><span class="sub">Bois</span></button>
+  <button class="mapNode" data-map-panel="sawmillPanel" data-owned="sawmillBought" data-level="39" style="left:330px;top:1280px"><span class="ico">🪚</span><span class="nm">SCIERIE</span></button>
+  <button class="mapNode major" data-map-zone="mine" data-owned="mineBought" data-level="42" style="left:740px;top:205px"><span class="ico">⛏️</span><span class="nm">MINE</span><span class="sub">Minerais</span></button>
+  <button class="mapNode" data-map-panel="foundryPanel" data-owned="foundryBought" data-level="43" style="left:900px;top:300px"><span class="ico">🔥</span><span class="nm">FONDERIE</span></button>
+  <div class="mapDecoration" style="left:35px;top:650px">🌳</div><div class="mapDecoration" style="left:85px;top:720px">🌳</div><div class="mapDecoration" style="left:1030px;top:720px">🌳</div><div class="mapDecoration" style="left:1060px;top:840px">🌳</div><div class="mapDecoration" style="left:455px;top:1180px">🚜</div><div class="mapDecoration" style="left:500px;top:610px">🏡</div>
+</div></div>
+<div class="mapTopBar"><div class="mapPill">🗺️ CARTE DE TA FERME</div><button class="mapBtn" id="mapListBtn">📋 Vue classique</button></div>
+<button class="mapCompass" id="mapCenterBtn" aria-label="Recentrer">⌖</button><div class="mapHint">👆 Glisse pour explorer • touche un lieu pour l’ouvrir</div>`;
+const header=game.querySelector('header');if(header)header.insertAdjacentElement('afterend',shell);else game.prepend(shell);
+const back=document.createElement('button');back.className='mapBackBtn';back.id='mapBackBtn';back.textContent='🗺️ CARTE';document.body.appendChild(back);
+
+let x=-260,y=-560,drag=false,startX=0,startY=0,startMapX=0,startMapY=0,moved=false;
+const viewport=shell.querySelector('#farmMapViewport'),world=shell.querySelector('#farmMapWorld');
+function bounds(){const r=viewport.getBoundingClientRect();return {minX:Math.min(0,r.width-1200),minY:Math.min(0,r.height-1600),maxX:0,maxY:0};}
+function clamp(){const b=bounds();x=Math.max(b.minX,Math.min(b.maxX,x));y=Math.max(b.minY,Math.min(b.maxY,y));}
+function apply(){clamp();world.style.transform=`translate3d(${Math.round(x)}px,${Math.round(y)}px,0)`;}
+function center(){const r=viewport.getBoundingClientRect();x=r.width/2-600;y=r.height/2-820;apply();}
+function showMap(){document.body.classList.remove('farmListMode');game.classList.add('farmMapMode');window.scrollTo(0,0);refresh();requestAnimationFrame(()=>{if(!world.dataset.centered){center();world.dataset.centered='1';}else apply();});}
+function showList(target){game.classList.remove('farmMapMode');document.body.classList.add('farmListMode');try{render();}catch(e){};setTimeout(()=>{const el=document.getElementById(target);if(el){el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'start'});}},80);}
+function ownedFor(btn){const key=btn.dataset.owned;if(!key)return true;return !!state[key];}
+function refresh(){shell.querySelectorAll('.mapNode').forEach(btn=>{const lvl=Number(btn.dataset.level||1),owned=ownedFor(btn);btn.classList.toggle('locked',!owned);const sub=btn.querySelector('.sub');if(!owned&&sub)sub.textContent=state.level<lvl?`🔒 Niveau ${lvl}`:'🛒 À construire';const nm=btn.querySelector('.nm');if(!owned&&nm&&!nm.dataset.base){nm.dataset.base=nm.textContent;}if(nm&&nm.dataset.base)nm.textContent=(owned?'': '🔒 ')+nm.dataset.base;});
+  const ready={coopPanel:state.eggWaiting,barnPanel:(state.milkWaiting||0)+(state.baconWaiting||0),millPanel:state.flourWaiting,bakeryPanel:state.breadWaiting,dairyPanel:state.cheeseWaiting,pastaPanel:state.pastaWaiting,cellarPanel:(state.grapeJuiceWaiting||0)+(state.wineWaiting||0)+(state.premiumWineWaiting||0),sheepfoldPanel:state.woolWaiting,sawmillPanel:(state.plankWaiting||0)+(state.woodCrateWaiting||0)+(state.furnitureWaiting||0),foundryPanel:(state.ironIngotWaiting||0)+(state.copperIngotWaiting||0)+(state.goldIngotWaiting||0)};
+  shell.querySelectorAll('[data-map-panel]').forEach(b=>b.classList.toggle('readyMap',(ready[b.dataset.mapPanel]||0)>0));
+}
+function openNode(btn){if(moved)return;const lvl=Number(btn.dataset.level||1),owned=ownedFor(btn);if(!owned){if(state.level<lvl){showToast(`🔒 Disponible au niveau ${lvl}`);return;}const panel=btn.dataset.mapPanel,zone=btn.dataset.mapZone;if(zone&&['orchard','vineyard','pond','forest','mine'].includes(zone)){openShop('spaces');return;}openShop('buildings');return;}
+  if(btn.dataset.mapZone){const z=btn.dataset.mapZone;try{switchZone(z);}catch(e){};const ids={orchard:'orchardArea',vineyard:'vineyardArea',pond:'pondArea',forest:'forestArea',mine:'mineArea'};showList(ids[z]||'farmArea');return;}
+  showList(btn.dataset.mapPanel||btn.dataset.mapTarget||'farmArea');
+}
+viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.mapNode'))return;drag=true;moved=false;startX=e.clientX;startY=e.clientY;startMapX=x;startMapY=y;viewport.classList.add('dragging');try{viewport.setPointerCapture(e.pointerId)}catch(_){} });
+viewport.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)+Math.abs(dy)>7)moved=true;x=startMapX+dx;y=startMapY+dy;apply();});
+function endDrag(e){drag=false;viewport.classList.remove('dragging');try{viewport.releasePointerCapture(e.pointerId)}catch(_){} }
+viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
+shell.querySelectorAll('.mapNode').forEach(btn=>btn.addEventListener('click',()=>openNode(btn)));
+shell.querySelector('#mapCenterBtn').addEventListener('click',center);shell.querySelector('#mapListBtn').addEventListener('click',()=>showList('farmArea'));back.addEventListener('click',showMap);
+window.addEventListener('resize',apply);
+
+const nav=document.getElementById('mainNav');if(nav){const first=nav.querySelector('button');if(first){first.setAttribute('onclick','FarmRushMap.show()');first.innerHTML='<span>🗺️</span>CARTE';}}
+window.FarmRushMap={show:showMap,list:showList,refresh,center};
+const oldStart=window.startGame;if(typeof oldStart==='function')window.startGame=function(){oldStart.apply(this,arguments);setTimeout(showMap,60);};
+const oldRender=window.render;if(typeof oldRender==='function')window.render=function(){const r=oldRender.apply(this,arguments);refresh();return r;};
+setInterval(()=>{if(game.classList.contains('farmMapMode'))refresh();},1500);
+})();
+</script>
+
 </body>
 </html>
