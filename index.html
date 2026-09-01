@@ -11661,5 +11661,178 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 })();
 </script>
 
+
+<style>
+#testMaxBtn{margin-top:10px;background:linear-gradient(180deg,#7d5cff,#5737d9);box-shadow:0 6px #3d28a6;color:#fff}
+#testMaxBtn:active{transform:translateY(3px);box-shadow:0 3px #3d28a6}
+#testModeBadge{position:fixed;top:max(8px,env(safe-area-inset-top));right:8px;z-index:2147483646;background:#6b47e8;color:white;border:2px solid #fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:1000;box-shadow:0 4px 12px #0003;display:none;pointer-events:none}
+</style>
+<div id="testModeBadge">🧪 TEST NIV. 48</div>
+<script>
+/* ======================================================
+   FARM RUSH V2.9.1 MAX — MODE TEST SÉPARÉ
+   - La sauvegarde normale reste sur farmRushV260
+   - Le mode test utilise farmRushV291TestMax uniquement
+   - Niveau 48 + bâtiments/zones + ressources pour tester
+====================================================== */
+(function(){
+  const TEST_KEY='farmRushV291TestMax';
+  let testMode=false;
+  const normalSaveGame=saveGame;
+
+  function clone(obj){return JSON.parse(JSON.stringify(obj));}
+
+  function makeMaxState(){
+    const s=clone(state);
+    s.level=48;
+    s.xp=0;
+    s.money=99999999;
+
+    // Terrains et grandes zones
+    s.plots=60;
+    s.orchardBought=true;
+    s.orchardPlots=30;
+    s.vineyardBought=true;
+    s.vineyardPlots=24;
+    s.forestBought=true;
+    s.pondBought=true;
+    s.mineBought=true;
+    s.mineStorageLevel=5;
+    s.mineJob=null;
+    s.currentZone='farm';
+
+    // Bâtiments
+    [
+      'coopBought','barnBought','millBought','bakeryBought','dairyBought',
+      'pastaBought','meatBought','restaurantBought','cellarBought',
+      'sheepfoldBought','textileBought','sawmillBought','foundryBought'
+    ].forEach(k=>s[k]=true);
+
+    // Machines / automatisation
+    s.tractor=true;
+    s.workerLevel=4;
+    s.workerEnabled=false;
+    s.workerPlots=40;
+    s.orchardWorkerLevel=4;
+    s.orchardWorkerEnabled=false;
+    s.vineyardWorkerLevel=4;
+    s.vineyardWorkerEnabled=false;
+    s.feederLevel=5;
+    s.feederEnabled=false;
+
+    // Animaux au maximum utile
+    s.hens=Math.max(10,Number(s.hens)||1);
+    s.cows=Math.max(10,Number(s.cows)||1);
+    s.pigs=Math.max(10,Number(s.pigs)||1);
+    s.sheep=10;
+    s.coopFeed=100;
+    s.cowFeed=100;
+    s.pigFeed=100;
+    s.sheepFeed=100;
+
+    // Améliorations de vitesse et stockage
+    if(!s.boosts||typeof s.boosts!=='object')s.boosts={};
+    Object.keys(s.boosts).forEach(k=>s.boosts[k]=4);
+    ['coop','barn','mill','bakery','dairy','factory','meat','cellar','sheepfold','textile','pond','sawmill'].forEach(k=>s.boosts[k]=4);
+    if(!s.storageLevels||typeof s.storageLevels!=='object')s.storageLevels={};
+    ['coop','barn','mill','bakery','dairy','factory','meat','cellar','sheepfold','textile','pond','sawmill'].forEach(k=>s.storageLevels[k]=5);
+    s.foundryStorageLevel=5;
+
+    // Stock abondant : toutes les cultures et tous les produits existants
+    if(!s.stock||typeof s.stock!=='object')s.stock={};
+    try{Object.keys(CROPS).forEach(k=>s.stock[k]=999);}catch(e){}
+    try{Object.keys(PRODUCTS).forEach(k=>s.stock[k]=999);}catch(e){}
+    ['stone','coal','ironOre','copperOre','goldOre','ironIngot','copperIngot','goldIngot'].forEach(k=>s.stock[k]=999);
+
+    // Fonderie prête à tester sans attendre de minerai
+    ['ironIngot','copperIngot','goldIngot'].forEach(k=>{
+      s[k+'Queue']=0;
+      s[k+'Waiting']=0;
+      s[k+'LastProduction']=Date.now();
+    });
+
+    // Tableaux aux bonnes tailles, sans toucher aux mécaniques tactiles
+    if(!Array.isArray(s.fields))s.fields=[];
+    while(s.fields.length<60)s.fields.push(null);
+    if(!Array.isArray(s.orchardFields))s.orchardFields=[];
+    while(s.orchardFields.length<30)s.orchardFields.push(null);
+    if(!Array.isArray(s.vineyardFields))s.vineyardFields=[];
+    while(s.vineyardFields.length<24)s.vineyardFields.push(null);
+
+    s.lastSeen=Date.now();
+    return s;
+  }
+
+  saveGame=function(immediate=false){
+    if(testMode){
+      state.lastSeen=Date.now();
+      try{localStorage.setItem(TEST_KEY,JSON.stringify(state));}
+      catch(e){console.error('Sauvegarde test Farm Rush:',e);}
+      return;
+    }
+    return normalSaveGame(immediate);
+  };
+
+  window.startMaxTest=function(){
+    // Sécurise d'abord la vraie partie.
+    try{normalSaveGame(true);}catch(e){}
+    testMode=true;
+    window.__farmRushTestMax=true;
+
+    let loaded=null;
+    try{
+      const raw=localStorage.getItem(TEST_KEY);
+      if(raw)loaded=JSON.parse(raw);
+    }catch(e){}
+    state=loaded&&typeof loaded==='object'?loaded:makeMaxState();
+
+    // Une ancienne sauvegarde test est remise au niveau max automatiquement.
+    state.level=48;
+    state.money=Math.max(99999999,Number(state.money)||0);
+    state.mineBought=true;
+    state.foundryBought=true;
+    state.mineStorageLevel=5;
+    state.foundryStorageLevel=5;
+    if(!state.stock||typeof state.stock!=='object')state.stock={};
+    ['stone','coal','ironOre','copperOre','goldOre','ironIngot','copperIngot','goldIngot'].forEach(k=>state.stock[k]=Math.max(999,Number(state.stock[k])||0));
+
+    document.getElementById('testModeBadge').style.display='block';
+    document.getElementById('home').style.display='none';
+    document.getElementById('game').style.display='block';
+    const nav=document.getElementById('mainNav');if(nav)nav.style.display='grid';
+    try{render();}catch(e){console.error('Mode test render',e);}
+    saveGame(true);
+    toast('🧪 Mode test niveau 48 — sauvegarde séparée');
+  };
+
+  window.resetMaxTest=function(){
+    localStorage.removeItem(TEST_KEY);
+    toast('Sauvegarde test supprimée. Ta partie normale est intacte.');
+  };
+
+  function addTestButton(){
+    if(document.getElementById('testMaxBtn'))return;
+    const play=document.querySelector('.playButton');
+    if(!play)return;
+    const b=document.createElement('button');
+    b.id='testMaxBtn';
+    b.className='playButton';
+    b.type='button';
+    b.innerHTML='🧪 TESTER AU NIVEAU MAX';
+    b.onclick=window.startMaxTest;
+    play.insertAdjacentElement('afterend',b);
+
+    const note=document.createElement('div');
+    note.style.cssText='font-size:10px;color:#4e5f48;margin-top:8px;font-weight:800';
+    note.textContent='Sauvegarde test séparée — ta partie normale ne sera pas remplacée.';
+    b.insertAdjacentElement('afterend',note);
+  }
+
+  addTestButton();
+  const v=document.querySelector('.version');
+  if(v)v.textContent='V2.9.1 MAX — Partie normale + mode test niveau 48';
+})();
+</script>
+
 </body>
 </html>
