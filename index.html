@@ -11836,79 +11836,125 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 
 
 <style>
-#recoveryBox{margin:14px auto 4px;max-width:360px;padding:12px;border-radius:18px;background:#fff8df;border:3px solid #d89a39;box-shadow:0 6px 0 #a86d25;color:#4a3420;text-align:center}
+#recoveryBox{margin:14px auto 4px;max-width:380px;padding:12px;border-radius:18px;background:#fff8df;border:3px solid #d89a39;box-shadow:0 6px 0 #a86d25;color:#4a3420;text-align:center}
 #recoveryBox .recoveryTitle{font-weight:1000;font-size:15px;margin-bottom:5px}
 #recoveryInfo{font-size:11px;font-weight:800;line-height:1.35;margin-bottom:9px}
-#recoveryBtn{width:100%;border:0;border-radius:14px;padding:12px 10px;font-weight:1000;font-size:13px;background:linear-gradient(180deg,#55c86a,#2e9d49);color:white;box-shadow:0 5px #237638;touch-action:manipulation}
-#recoveryBtn:active{transform:translateY(3px);box-shadow:0 2px #237638}
+.recoveryCandidate{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fffdf3;border:2px solid #e7c578;border-radius:13px;padding:9px;margin:7px 0;text-align:left}
+.recoveryCandidate.best{border-color:#52ad64;background:#f0fff0}
+.recoveryCandidate .meta{font-size:11px;line-height:1.35;font-weight:900;min-width:0}
+.recoveryCandidate .meta small{font-size:9px;color:#78664f;font-weight:800;word-break:break-all}
+.recoveryUse{border:0;border-radius:11px;padding:9px 10px;font-weight:1000;font-size:10px;background:linear-gradient(180deg,#55c86a,#2e9d49);color:white;box-shadow:0 4px #237638;touch-action:manipulation;flex:0 0 auto}
+.recoveryUse:active{transform:translateY(2px);box-shadow:0 2px #237638}
+#recoveryWarning{margin-top:8px;padding:8px;border-radius:10px;background:#ffe7d5;color:#7b3d1f;font-size:10px;font-weight:900;line-height:1.35}
 </style>
 <script>
 /* ======================================================
-   FARM RUSH V2.9.1 MAX RECOVERY
-   - Ne touche jamais à farmRushV291TestMax
-   - Cherche la meilleure vraie sauvegarde dans toutes les anciennes clés
-   - N'écrase V260 qu'après appui explicite sur RÉCUPÉRER
+   FARM RUSH V2.9.1 MAX RECOVERY 2
+   - Ignore les sauvegardes contaminées par le mode MAX
+   - Affiche plusieurs vraies sauvegardes candidates
+   - L'utilisateur choisit exactement celle à restaurer
+   - Ne supprime aucune ancienne clé
 ====================================================== */
 (function(){
   const REAL_KEYS=[
     'farmRushV260','farmRushV254','farmRushV252','farmRushV25','farmRushV24','farmRushV23','farmRushV224',
     'farmRushV223','farmRushV222','farmRushV221','farmRushV22','farmRushV21','farmRushV20','farmRushV192',
     'farmRushV191','farmRushV19','farmRushV184','farmRushV183','farmRushV182','farmRushV181','farmRushV18',
-    'farmRushV173','farmRushV172','farmRushV171','farmRushV17','farmRushV161','farmRushV16','farmRushV15'
+    'farmRushV173','farmRushV172','farmRushV171','farmRushV17','farmRushV161','farmRushV16','farmRushV15',
+    'farmRushRecoveryBackup'
   ];
-  let best=null;
-  function score(d){
+  const TEST_KEY='farmRushV291TestMax';
+  let candidates=[];
+
+  function basicScore(d){
     try{return typeof v223ProgressScore==='function'?v223ProgressScore(d):((Number(d.level)||1)*1e9+(Number(d.xp)||0)*1e5+(Number(d.money)||0));}
     catch(e){return (Number(d.level)||1)*1e9+(Number(d.xp)||0)*1e5+(Number(d.money)||0);}
   }
-  function looksReal(d){
+  function looksReset(d){
+    if(!d||typeof d!=='object')return true;
+    try{if(typeof v223LooksReset==='function')return v223LooksReset(d);}catch(e){}
+    return (Number(d.level)||1)<=1 && (Number(d.xp)||0)<=0 && (Number(d.money)||0)<=500 && !d.coopBought && !d.barnBought && !d.orchardBought;
+  }
+  function maxSignature(d){
     if(!d||typeof d!=='object')return false;
-    try{if(typeof v223LooksReset==='function')return !v223LooksReset(d);}catch(e){}
-    return (Number(d.level)||1)>1 || (Number(d.xp)||0)>0 || (Number(d.money)||0)>500 || d.orchardBought || d.coopBought || d.barnBought;
+    const lvl=Number(d.level)||1;
+    const money=Number(d.money)||0;
+    const stock=(d.stock&&typeof d.stock==='object')?d.stock:{};
+    const testItems=['stone','coal','ironOre','copperOre','goldOre','ironIngot','copperIngot','goldIngot'];
+    let hugeItems=0;
+    testItems.forEach(k=>{if((Number(stock[k])||0)>=900)hugeItems++;});
+    let maxSystems=0;
+    if(d.mineStorageLevel>=5)maxSystems++;
+    if(d.foundryStorageLevel>=5)maxSystems++;
+    if(d.workerLevel>=4)maxSystems++;
+    if(d.orchardWorkerLevel>=4)maxSystems++;
+    if(d.vineyardWorkerLevel>=4)maxSystems++;
+    if(d.feederLevel>=5)maxSystems++;
+    // Signature volontairement stricte pour ne pas exclure une vraie partie avancée.
+    return lvl===48 && money>=90000000 && hugeItems>=6 && maxSystems>=4;
   }
   function scan(){
-    const found=[];
+    const out=[];
+    const seenRaw=new Set();
     REAL_KEYS.forEach(k=>{
       try{
-        const raw=localStorage.getItem(k); if(!raw)return;
-        const data=JSON.parse(raw); if(!looksReal(data))return;
-        found.push({key:k,raw,data,score:score(data),seen:Number(data.lastSeen)||0});
+        const raw=localStorage.getItem(k); if(!raw||seenRaw.has(raw))return;
+        seenRaw.add(raw);
+        const data=JSON.parse(raw); if(looksReset(data))return;
+        out.push({key:k,raw,data,score:basicScore(data),seen:Number(data.lastSeen)||0,isMax:maxSignature(data)});
       }catch(e){}
     });
-    found.sort((a,b)=>b.score-a.score || b.seen-a.seen);
-    best=found[0]||null;
-    return best;
+    // La clé de test n'est jamais candidate, mais on la lit uniquement pour reconnaître un clone exact éventuel.
+    let testRaw=''; try{testRaw=localStorage.getItem(TEST_KEY)||'';}catch(e){}
+    out.forEach(x=>{if(testRaw && x.raw===testRaw)x.isMax=true;});
+
+    // D'abord les sauvegardes non-MAX les plus récentes. Le score sert seulement en départage.
+    candidates=out.filter(x=>!x.isMax).sort((a,b)=>b.seen-a.seen || b.score-a.score);
+    const suspicious=out.filter(x=>x.isMax).sort((a,b)=>b.seen-a.seen);
+    return {candidates,suspicious};
   }
-  window.farmRushRecoverRealSave=function(){
-    const b=scan();
-    if(!b){toast('Aucune ancienne sauvegarde trouvée.');return;}
+  function fmtDate(ts){
+    if(!ts)return 'date inconnue';
+    try{return new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return 'date inconnue';}
+  }
+  window.farmRushRecoverCandidate=function(index){
+    const r=scan();
+    const b=r.candidates[index];
+    if(!b){toast('Cette sauvegarde n’est plus disponible.');return;}
     try{
-      // Copie vers la sauvegarde normale actuelle, sans supprimer la source.
+      // On garde une copie de ce qui est actuellement dans V260 avant restauration.
+      const current=localStorage.getItem('farmRushV260');
+      if(current)localStorage.setItem('farmRushBeforeManualRecovery',current);
       localStorage.setItem('farmRushV260',b.raw);
-      // Garde en plus une copie de secours dédiée.
       localStorage.setItem('farmRushRecoveryBackup',b.raw);
       location.reload();
-    }catch(e){
-      console.error(e); toast('Impossible de restaurer la sauvegarde.');
-    }
+    }catch(e){console.error(e);toast('Impossible de restaurer cette sauvegarde.');}
   };
   function mount(){
-    const home=document.getElementById('home'); if(!home||document.getElementById('recoveryBox'))return;
-    const b=scan();
-    const box=document.createElement('div'); box.id='recoveryBox';
-    if(b){
-      const lvl=Math.max(1,Number(b.data.level)||1);
-      const money=Math.floor(Number(b.data.money)||0).toLocaleString('fr-FR');
-      box.innerHTML='<div class="recoveryTitle">💾 Sauvegarde retrouvée</div><div id="recoveryInfo">Meilleure copie détectée : niveau <b>'+lvl+'</b> • '+money+' 🪙<br><small>Source : '+b.key+' — aucune ancienne copie ne sera supprimée.</small></div><button id="recoveryBtn" type="button">💾 RÉCUPÉRER MA SAUVEGARDE</button>';
-      box.querySelector('#recoveryBtn').onclick=window.farmRushRecoverRealSave;
+    const home=document.getElementById('home'); if(!home)return;
+    const old=document.getElementById('recoveryBox');if(old)old.remove();
+    const r=scan();
+    const box=document.createElement('div');box.id='recoveryBox';
+    let html='<div class="recoveryTitle">💾 Choisir ma vraie sauvegarde</div>';
+    if(r.candidates.length){
+      html+='<div id="recoveryInfo">Le mode niveau 48 est maintenant <b>ignoré</b>. Choisis la sauvegarde qui correspond à ta vraie progression :</div>';
+      r.candidates.slice(0,8).forEach((b,i)=>{
+        const lvl=Math.max(1,Number(b.data.level)||1);
+        const money=Math.floor(Number(b.data.money)||0).toLocaleString('fr-FR');
+        html+='<div class="recoveryCandidate '+(i===0?'best':'')+'"><div class="meta">'+(i===0?'⭐ ':'')+'Niveau <b>'+lvl+'</b> • '+money+' 🪙<br><small>'+b.key+' • '+fmtDate(b.seen)+'</small></div><button class="recoveryUse" type="button" onclick="farmRushRecoverCandidate('+i+')">RESTAURER</button></div>';
+      });
     }else{
-      box.innerHTML='<div class="recoveryTitle">💾 Récupération</div><div id="recoveryInfo">Aucune ancienne progression exploitable détectée dans ce navigateur.</div>';
+      html+='<div id="recoveryInfo">Aucune sauvegarde normale exploitable n’a été trouvée parmi les anciennes clés.</div>';
     }
+    if(r.suspicious.length){
+      html+='<div id="recoveryWarning">🧪 '+r.suspicious.length+' sauvegarde'+(r.suspicious.length>1?'s':'')+' niveau 48 de test détectée'+(r.suspicious.length>1?'s':'')+' et volontairement exclue'+(r.suspicious.length>1?'s':'')+'.</div>';
+    }
+    box.innerHTML=html;
     const play=document.querySelector('.playButton');
-    if(play) play.insertAdjacentElement('beforebegin',box); else home.appendChild(box);
+    if(play)play.insertAdjacentElement('beforebegin',box);else home.appendChild(box);
   }
   mount();
-  const v=document.querySelector('.version'); if(v)v.textContent='V2.9.1 MAX RECOVERY — récupération protégée';
+  const v=document.querySelector('.version');if(v)v.textContent='V2.9.1 MAX RECOVERY 2 — choix manuel sécurisé';
 })();
 </script>
 
