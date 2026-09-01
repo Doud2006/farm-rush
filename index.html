@@ -11989,5 +11989,195 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 })();
 </script>
 
+
+<style>
+#recoveryBox{display:none!important}
+#recovery4Box{margin:14px auto 6px;max-width:410px;padding:13px;border-radius:18px;background:#fff8df;border:3px solid #d89a39;box-shadow:0 6px 0 #a86d25;color:#4a3420;text-align:center}
+#recovery4Box .r4Title{font-weight:1000;font-size:15px;margin-bottom:5px}
+#recovery4Box .r4Info{font-size:10px;font-weight:850;line-height:1.4;margin-bottom:9px}
+.r4Candidate{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fffdf3;border:2px solid #e7c578;border-radius:13px;padding:9px;margin:7px 0;text-align:left}
+.r4Candidate.nearTarget{border-color:#52ad64;background:#f0fff0;box-shadow:0 0 0 2px rgba(82,173,100,.12)}
+.r4Candidate.testSave{border-color:#f09a69;background:#fff0e7;opacity:.78}
+.r4Meta{font-size:11px;line-height:1.35;font-weight:900;min-width:0}
+.r4Meta small{font-size:9px;color:#78664f;font-weight:800;word-break:break-all}
+.r4Use{border:0;border-radius:11px;padding:9px 10px;font-weight:1000;font-size:10px;background:linear-gradient(180deg,#55c86a,#2e9d49);color:white;box-shadow:0 4px #237638;touch-action:manipulation;flex:0 0 auto}
+.r4Use:active{transform:translateY(2px);box-shadow:0 2px #237638}
+.r4Use:disabled{background:#aaa;box-shadow:0 4px #777;opacity:.75}
+#recovery4Summary{margin:8px 0;padding:8px;border-radius:11px;background:#eef7ff;border:2px solid #a7cce9;font-size:10px;font-weight:900;line-height:1.4}
+#recovery4Warning{margin-top:8px;padding:8px;border-radius:10px;background:#ffe7d5;color:#7b3d1f;font-size:10px;font-weight:900;line-height:1.35}
+#recovery4Refresh{margin-top:8px;border:0;border-radius:11px;padding:9px 12px;font-weight:1000;font-size:10px;background:#6b8dff;color:#fff;box-shadow:0 4px #4966c7}
+</style>
+<script>
+/* ======================================================
+   FARM RUSH V2.9.1 MAX RECOVERY 4 — SCAN TOTAL
+   - parcourt TOUTES les clés localStorage + sessionStorage
+   - détecte aussi les sauvegardes imbriquées dans des objets JSON
+   - affiche niveau / XP / argent / clé / date
+   - marque et bloque les sauvegardes MAX de test
+   - restauration en deux temps, sans supprimer les anciennes clés
+====================================================== */
+(function(){
+  const R4_PENDING='farmRushRecovery4Pending';
+  const R4_BACKUP='farmRushRecovery4BeforeRestore';
+  let r4Candidates=[];
+
+  function num(v,d=0){v=Number(v);return Number.isFinite(v)?v:d;}
+  function isObj(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
+  function hasGameShape(d){
+    if(!isObj(d))return false;
+    let score=0;
+    if('level' in d)score+=3;
+    if('xp' in d)score+=1;
+    if('money' in d)score+=2;
+    if(isObj(d.stock))score+=2;
+    if(Array.isArray(d.fields))score+=2;
+    if('plots' in d)score+=1;
+    ['coopBought','barnBought','orchardBought','vineyardBought','sheepfoldBought','textileBought','pondBought','forestBought','sawmillBought','mineBought','foundryBought'].forEach(k=>{if(k in d)score+=1;});
+    return score>=5 && num(d.level,0)>=1 && num(d.level,0)<=500;
+  }
+  function maxSignature(d,key){
+    if(!isObj(d))return false;
+    const k=String(key||'').toLowerCase();
+    if(k.includes('testmax')||k.includes('max_test')||k.includes('maxtest'))return true;
+    const lvl=num(d.level,1), money=num(d.money,0), s=isObj(d.stock)?d.stock:{};
+    const testItems=['stone','coal','ironOre','copperOre','goldOre','ironIngot','copperIngot','goldIngot'];
+    let huge=0;testItems.forEach(x=>{if(num(s[x],0)>=900)huge++;});
+    let systems=0;['mineStorageLevel','foundryStorageLevel','workerLevel','orchardWorkerLevel','vineyardWorkerLevel','feederLevel'].forEach(x=>{if(num(d[x],0)>=4)systems++;});
+    return lvl===48 && money>=90000000 && huge>=6 && systems>=4;
+  }
+  function seenOf(d){
+    return Math.max(num(d.lastSeen,0),num(d.savedAt,0),num(d.updatedAt,0),num(d.timestamp,0),num(d.lastSave,0));
+  }
+  function stateScore(d){
+    let s=num(d.level,1)*1e12+num(d.xp,0)*1e8+Math.min(num(d.money,0),999999999);
+    ['coopBought','barnBought','orchardBought','vineyardBought','cellarBought','sheepfoldBought','textileBought','pondBought','forestBought','sawmillBought','mineBought','foundryBought','tractorBought'].forEach(k=>{if(d[k])s+=1e7;});
+    s+=num(d.plots,0)*1e5+num(d.orchardPlots,0)*1e5;
+    return s;
+  }
+  function fp(d){
+    try{return JSON.stringify([num(d.level,1),num(d.xp,0),num(d.money,0),seenOf(d),num(d.plots,0),num(d.orchardPlots,0),!!d.mineBought,!!d.foundryBought,isObj(d.stock)?Object.keys(d.stock).length:0]);}
+    catch(e){return Math.random().toString(36);}
+  }
+  function walk(value,source,path,depth,out,seenObjs){
+    if(depth>4||!value||typeof value!=='object')return;
+    if(seenObjs.has(value))return;seenObjs.add(value);
+    if(hasGameShape(value)){
+      out.push({source,path:path||'(racine)',data:value,isMax:maxSignature(value,source),seen:seenOf(value),score:stateScore(value)});
+    }
+    if(depth===4)return;
+    if(Array.isArray(value)){
+      for(let i=0;i<Math.min(value.length,40);i++) if(value[i]&&typeof value[i]==='object') walk(value[i],source,(path||'')+'['+i+']',depth+1,out,seenObjs);
+    }else{
+      Object.keys(value).slice(0,120).forEach(k=>{
+        const v=value[k];
+        if(v&&typeof v==='object')walk(v,source,(path?path+'.':'')+k,depth+1,out,seenObjs);
+      });
+    }
+  }
+  function scanStorage(storage,label,out){
+    if(!storage)return;
+    let n=0;try{n=storage.length}catch(e){return}
+    for(let i=0;i<n;i++){
+      let key='',raw='';
+      try{key=storage.key(i)||'';raw=storage.getItem(key)||'';}catch(e){continue}
+      if(!raw)continue;
+      let parsed;
+      try{parsed=JSON.parse(raw);}catch(e){continue}
+      if(parsed&&typeof parsed==='object')walk(parsed,label+':'+key,'',0,out,new WeakSet());
+    }
+  }
+  function scanAll(){
+    const out=[];
+    try{scanStorage(localStorage,'localStorage',out);}catch(e){}
+    try{scanStorage(sessionStorage,'sessionStorage',out);}catch(e){}
+    // Déduplique uniquement les clones strictement identiques de progression,
+    // mais garde la version avec la date la plus récente et les chemins alternatifs.
+    const map=new Map();
+    out.forEach(c=>{
+      const key=fp(c.data)+(c.isMax?'|MAX':'|REAL');
+      if(!map.has(key))map.set(key,{...c,aliases:[c.source+(c.path&&c.path!=='(racine)'?' → '+c.path:'')]});
+      else{
+        const m=map.get(key);m.aliases.push(c.source+(c.path&&c.path!=='(racine)'?' → '+c.path:''));
+        if(c.seen>m.seen){m.source=c.source;m.path=c.path;m.seen=c.seen;}
+      }
+    });
+    r4Candidates=[...map.values()].sort((a,b)=>{
+      // niveaux 25-27 en premier pour retrouver la partie attendue, puis date, puis progression.
+      const at=(num(a.data.level,1)>=25&&num(a.data.level,1)<=27&&!a.isMax)?1:0;
+      const bt=(num(b.data.level,1)>=25&&num(b.data.level,1)<=27&&!b.isMax)?1:0;
+      return bt-at || (a.isMax-b.isMax) || b.seen-a.seen || b.score-a.score;
+    });
+    return r4Candidates;
+  }
+  function fmtDate(ts){
+    if(!ts)return 'date inconnue';
+    try{return new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});}catch(e){return 'date inconnue';}
+  }
+  function esc(s){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+
+  window.farmRushRecovery4Restore=function(index){
+    const c=r4Candidates[index];
+    if(!c||c.isMax){try{toast('Cette sauvegarde de test MAX ne peut pas être restaurée ici.');}catch(e){}return;}
+    try{
+      const current=localStorage.getItem('farmRushV260');
+      if(current)localStorage.setItem(R4_BACKUP,current);
+      localStorage.setItem(R4_PENDING,JSON.stringify(c.data));
+      location.reload();
+    }catch(e){console.error(e);alert('Impossible de préparer la restauration.');}
+  };
+
+  function applyPending(){
+    let raw='';try{raw=localStorage.getItem(R4_PENDING)||'';}catch(e){}
+    if(!raw)return false;
+    try{
+      const d=JSON.parse(raw);if(!hasGameShape(d))throw new Error('format invalide');
+      state={...DEFAULT_STATE,...d};
+      // Normalisations non destructives déjà présentes dans le jeu.
+      const fns=['normalizeV19State','normalizeV20State','normalizeV21State','normalizeV22State','normalizeV23State','normalizeV24State','normalizeV25State','normalizeFoundry'];
+      fns.forEach(fn=>{try{if(typeof window[fn]==='function')window[fn]();else if(typeof globalThis[fn]==='function')globalThis[fn]();}catch(e){}});
+      try{if(typeof normalizeOrders==='function')normalizeOrders();}catch(e){}
+      try{if(typeof normalizeRestaurantOrders==='function')normalizeRestaurantOrders();}catch(e){}
+      // Écrit la restauration dans les clés actuelles utilisées par les couches récentes.
+      const safe=JSON.stringify(state);
+      localStorage.setItem('farmRushV260',safe);
+      localStorage.setItem('farmRushV254',safe);
+      localStorage.setItem('farmRushRecoveryBackup',safe);
+      localStorage.removeItem(R4_PENDING);
+      try{render();}catch(e){console.error('render recovery4',e);}
+      return true;
+    }catch(e){console.error('Recovery4 apply',e);return false;}
+  }
+
+  function mount(){
+    const home=document.getElementById('home');if(!home)return;
+    const old=document.getElementById('recovery4Box');if(old)old.remove();
+    const list=scanAll();
+    const real=list.filter(c=>!c.isMax), maxes=list.filter(c=>c.isMax);
+    const box=document.createElement('div');box.id='recovery4Box';
+    let html='<div class="r4Title">🔎 RECOVERY 4 — SCAN TOTAL</div>';
+    html+='<div class="r4Info">Toutes les clés JSON du navigateur sont analysées, pas seulement les anciennes clés Farm Rush connues. Cherche surtout une sauvegarde <b>niveau 26</b> avec ton XP et ton argent habituels.</div>';
+    html+='<div id="recovery4Summary">'+real.length+' sauvegarde'+(real.length>1?'s':'')+' normale'+(real.length>1?'s':'')+' détectée'+(real.length>1?'s':'')+' • '+maxes.length+' sauvegarde'+(maxes.length>1?'s':'')+' MAX/test mise'+(maxes.length>1?'s':'')+' à l’écart.</div>';
+    if(real.length){
+      list.forEach((c,i)=>{
+        const d=c.data,lvl=num(d.level,1),xp=Math.floor(num(d.xp,0)),money=Math.floor(num(d.money,0));
+        const near=lvl>=25&&lvl<=27&&!c.isMax;
+        const cls='r4Candidate '+(near?'nearTarget ':'')+(c.isMax?'testSave':'');
+        const source=esc(c.aliases.slice(0,3).join(' | ')+(c.aliases.length>3?' | +'+(c.aliases.length-3):''));
+        html+='<div class="'+cls+'"><div class="r4Meta">'+(near?'🎯 ':'')+(c.isMax?'🧪 ':'')+'Niveau <b>'+lvl+'</b> • XP '+xp.toLocaleString('fr-FR')+' • '+money.toLocaleString('fr-FR')+' 🪙<br><small>'+source+' • '+fmtDate(c.seen)+'</small></div><button class="r4Use" type="button" '+(c.isMax?'disabled':'onclick="farmRushRecovery4Restore('+i+')"')+'>'+(c.isMax?'TEST MAX':'RESTAURER')+'</button></div>';
+      });
+    }else html+='<div id="recovery4Warning">Aucune sauvegarde de jeu exploitable n’a été trouvée dans localStorage/sessionStorage.</div>';
+    html+='<button id="recovery4Refresh" type="button" onclick="location.reload()">🔄 RELANCER LE SCAN</button>';
+    if(!real.some(c=>num(c.data.level,1)>=25&&num(c.data.level,1)<=27))html+='<div id="recovery4Warning">⚠️ Aucune sauvegarde niveau 25–27 n’est visible dans le stockage actuel. N’écrase rien : si le niveau 26 n’apparaît pas ici, il a probablement déjà été remplacé dans localStorage et il faudra regarder les copies/exports éventuels.</div>';
+    box.innerHTML=html;
+    const play=document.querySelector('.playButton');if(play)play.insertAdjacentElement('beforebegin',box);else home.appendChild(box);
+  }
+
+  const applied=applyPending();
+  mount();
+  if(applied){try{toast('✅ Sauvegarde Recovery 4 appliquée. Tu peux appuyer sur JOUER.');}catch(e){}}
+  const v=document.querySelector('.version');if(v)v.textContent='V2.9.1 MAX RECOVERY 4 — scan total du navigateur';
+})();
+</script>
+
 </body>
 </html>
