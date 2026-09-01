@@ -11925,11 +11925,40 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
       // On garde une copie de ce qui est actuellement dans V260 avant restauration.
       const current=localStorage.getItem('farmRushV260');
       if(current)localStorage.setItem('farmRushBeforeManualRecovery',current);
-      localStorage.setItem('farmRushV260',b.raw);
+      localStorage.setItem('farmRushForcedRecovery',b.raw);
       localStorage.setItem('farmRushRecoveryBackup',b.raw);
       location.reload();
     }catch(e){console.error(e);toast('Impossible de restaurer cette sauvegarde.');}
   };
+  function applyForcedRecovery(){
+    let raw='';
+    try{raw=localStorage.getItem('farmRushForcedRecovery')||'';}catch(e){}
+    if(!raw)return false;
+    try{
+      const data=JSON.parse(raw);
+      if(!data||typeof data!=='object')throw new Error('Sauvegarde invalide');
+      state={...DEFAULT_STATE,...data};
+      // Normalise seulement avec les fonctions déjà présentes dans la version actuelle.
+      ['normalizeV19State','normalizeV20State','normalizeV21State','normalizeV22State','normalizeV23State','normalizeV24State','normalizeV25State','normalizeFoundry'].forEach(fn=>{
+        try{if(typeof window[fn]==='function')window[fn]();}catch(e){}
+      });
+      try{if(typeof normalizeOrders==='function')normalizeOrders();}catch(e){}
+      try{if(typeof normalizeRestaurantOrders==='function')normalizeRestaurantOrders();}catch(e){}
+      // Écrit maintenant la vraie sauvegarde dans la clé courante, après chargement complet du jeu.
+      try{localStorage.setItem('farmRushV260',JSON.stringify(state));}catch(e){}
+      try{localStorage.removeItem('farmRushForcedRecovery');}catch(e){}
+      try{render();}catch(e){console.error('Rendu après restauration',e);}
+      try{if(typeof renderStock==='function')renderStock();}catch(e){}
+      try{if(typeof renderBuildings==='function')renderBuildings();}catch(e){}
+      try{if(typeof renderGoal==='function')renderGoal();}catch(e){}
+      return true;
+    }catch(e){
+      console.error('Restauration forcée impossible',e);
+      try{localStorage.removeItem('farmRushForcedRecovery');}catch(_){}
+      return false;
+    }
+  }
+
   function mount(){
     const home=document.getElementById('home'); if(!home)return;
     const old=document.getElementById('recoveryBox');if(old)old.remove();
@@ -11953,8 +11982,10 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
     const play=document.querySelector('.playButton');
     if(play)play.insertAdjacentElement('beforebegin',box);else home.appendChild(box);
   }
+  const forcedApplied=applyForcedRecovery();
   mount();
-  const v=document.querySelector('.version');if(v)v.textContent='V2.9.1 MAX RECOVERY 2 — choix manuel sécurisé';
+  if(forcedApplied){try{toast('✅ Sauvegarde restaurée. Tu peux appuyer sur JOUER.');}catch(e){}}
+  const v=document.querySelector('.version');if(v)v.textContent='V2.9.1 MAX RECOVERY 3 — restauration corrigée';
 })();
 </script>
 
