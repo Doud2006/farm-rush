@@ -13929,5 +13929,202 @@ window.FarmRushV331={clean:true,width:1500,height:2150};
 })();
 </script>
 
+
+<!-- =========================================================
+ FARM RUSH V3.3.2 — BARRE DES PROCHAINS BÂTIMENTS
+========================================================= -->
+<style id="v332-next-buildings-css">
+:root{--v332barH:142px}
+#v332NextBar{
+ position:fixed;left:8px;right:8px;
+ bottom:calc(82px + env(safe-area-inset-bottom));
+ height:var(--v332barH);z-index:168;
+ border:3px solid #d9b979;border-radius:21px;
+ background:linear-gradient(#fff6d9,#f5dfb2);
+ box-shadow:0 5px 0 #7c5d35,0 9px 20px #0004;
+ padding:8px 7px 7px;overflow:hidden;
+}
+#v332NextHead{
+ display:flex;align-items:center;justify-content:space-between;
+ height:24px;padding:0 4px 5px;color:#583d23;
+ font-size:10px;font-weight:1000;
+}
+#v332NextHead small{font-size:8px;opacity:.7;font-weight:900}
+#v332NextScroll{
+ display:flex;gap:7px;height:102px;overflow-x:auto;overflow-y:hidden;
+ -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:0 2px 4px;
+}
+.v332BuildCard{
+ flex:0 0 122px;height:96px;scroll-snap-align:start;
+ border:2px solid #d5b77d;border-radius:13px;background:#fffaf0;
+ padding:6px;display:grid;grid-template-rows:18px 1fr 25px;
+ box-shadow:inset 0 1px #fff,0 2px 4px #0001;color:#4e3925;
+}
+.v332BuildCard.ready{border-color:#82ad4c;background:#fffce9}
+.v332BuildCard.locked{filter:saturate(.65);opacity:.88}
+.v332BuildCard.owned{display:none}
+.v332BuildName{
+ font-size:9px;font-weight:1000;text-align:center;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis
+}
+.v332BuildMiddle{display:flex;align-items:center;justify-content:center;gap:5px;min-height:42px}
+.v332BuildIcon{font-size:28px;filter:drop-shadow(0 2px 1px #0002)}
+.v332BuildReq{font-size:7px;line-height:1.15;text-align:left;font-weight:900}
+.v332BuildReq b{display:block;font-size:8px}
+.v332BuildBtn{
+ width:100%;border:0;border-radius:8px;background:#858178;color:#fff;
+ font-size:8px;font-weight:1000;box-shadow:inset 0 -2px #0002;padding:4px 2px
+}
+.v332BuildCard.ready .v332BuildBtn{
+ background:linear-gradient(#50b83c,#278c2c);
+ box-shadow:inset 0 -2px #17681e,0 1px 2px #0002
+}
+.v332BuildBtn:disabled{opacity:.78}
+#v332NextBar.hidden{display:none!important}
+
+/* La barre de navigation reste juste en dessous */
+#mainNav{
+ bottom:max(8px,env(safe-area-inset-bottom))!important;
+ z-index:170!important
+}
+/* Le shop plein écran/panneau n'est plus nécessaire quand on appuie sur SHOP */
+#v310Shop.v332Suppressed{display:none!important}
+
+/* Sur très petit écran : cartes légèrement plus compactes */
+@media(max-width:390px){
+ :root{--v332barH:134px}
+ #v332NextBar{height:134px}
+ #v332NextScroll{height:95px}
+ .v332BuildCard{flex-basis:112px;height:89px}
+}
+</style>
+
+<script id="v332-next-buildings-js">
+(function(){
+'use strict';
+
+function S(){
+  try{ if(typeof state!=='undefined' && state) return state; }catch(e){}
+  return window.state||{};
+}
+function save(){
+  try{ if(typeof saveGame==='function') saveGame(); }catch(e){}
+}
+const defs=[
+ {key:'coop',name:'Poulailler',icon:'🐔',lvl:5,price:1000,prop:'coopBought',map:'Poulailler',buy:()=>buyBuilding('coop')},
+ {key:'barn',name:'Étable',icon:'🐄',lvl:9,price:4000,prop:'barnBought',map:'Grange',buy:()=>buyBuilding('barn')},
+ {key:'mill',name:'Moulin',icon:'🌾',lvl:12,price:10000,prop:'millBought',map:'Moulin',buy:()=>buyBuilding('mill')},
+ {key:'bakery',name:'Boulangerie',icon:'🥖',lvl:13,price:15000,prop:'bakeryBought',map:'Boulangerie',buy:()=>buyBuilding('bakery')},
+ {key:'orchard',name:'Verger',icon:'🍎',lvl:14,price:20000,prop:'orchardBought',map:'Verger',buy:()=>buyOrchard()},
+ {key:'dairy',name:'Laiterie',icon:'🥛',lvl:15,price:18000,prop:'dairyBought',map:'Laiterie',buy:()=>buyBuilding('dairy')},
+ {key:'factory',name:'Usine à pâtes',icon:'🍝',lvl:17,price:30000,prop:'pastaBought',map:'Usine',buy:()=>buyBuilding('pasta')},
+ {key:'meat',name:'Boucherie',icon:'🥩',lvl:18,price:35000,prop:'meatBought',map:'Usine',buy:()=>buyBuilding('meat')},
+ {key:'restaurant',name:'Restaurant',icon:'🍽️',lvl:20,price:60000,prop:'restaurantBought',map:'Boulangerie',buy:()=>buyBuilding('restaurant')},
+ {key:'vineyard',name:'Vignoble',icon:'🍇',lvl:25,price:100000,prop:'vineyardBought',map:'Vignoble',buy:()=>buyVineyard()},
+ {key:'cellar',name:'Cave',icon:'🍷',lvl:26,price:150000,prop:'cellarBought',map:'Cave',buy:()=>buyBuilding('cellar')},
+ {key:'sheep',name:'Bergerie',icon:'🐑',lvl:27,price:180000,prop:'sheepfoldBought',map:'Grange',buy:()=>buySheepfold()},
+ {key:'textile',name:'Atelier textile',icon:'🧵',lvl:29,price:220000,prop:'textileBought',map:'Atelier industriel',buy:()=>buyTextile()},
+ {key:'pond',name:'Étang',icon:'🐟',lvl:34,price:280000,prop:'pondBought',map:'Étang',buy:()=>buyPond()},
+ {key:'forest',name:'Forêt',icon:'🌲',lvl:38,price:360000,prop:'forestBought',map:'Scierie',buy:()=>buyForest()},
+ {key:'sawmill',name:'Scierie',icon:'🪵',lvl:39,price:320000,prop:'sawmillBought',map:'Scierie',buy:()=>buySawmill()},
+ {key:'mine',name:'Mine',icon:'⛏️',lvl:42,price:480000,prop:'mineBought',map:'Mine',buy:()=>buyMine()},
+ {key:'foundry',name:'Fonderie',icon:'🔥',lvl:43,price:650000,prop:'foundryBought',map:'Fonderie',buy:()=>buyFoundry()},
+ {key:'industrial',name:'Atelier industriel',icon:'⚙️',lvl:46,price:850000,prop:'industrialBought',map:'Atelier industriel',buy:()=>buyIndustrial()},
+ {key:'irrigation',name:"Station d’irrigation",icon:'💧',lvl:48,price:950000,prop:'irrigationBought',map:'Station irrigation',buy:()=>buyIrrigation()}
+];
+
+const shell=document.getElementById('v3MapShell')||document.body;
+let bar=document.getElementById('v332NextBar');
+if(!bar){
+  bar=document.createElement('section');
+  bar.id='v332NextBar';
+  bar.innerHTML='<div id="v332NextHead"><span>🏗️ PROCHAINS BÂTIMENTS</span><small>Débloque • achète • place</small></div><div id="v332NextScroll"></div>';
+  document.body.appendChild(bar);
+}
+
+function findHot(name){
+  const world=document.getElementById('v3World');
+  if(!world)return null;
+  return [...world.querySelectorAll('.v3Hotspot')].find(x=>(x.getAttribute('aria-label')||'')===name);
+}
+function startPlacement(d){
+  const b=findHot(d.map);
+  const panel=document.getElementById('v310Placement');
+  if(!b||!panel)return;
+  b.classList.remove('v310Hidden');
+  b.classList.add('v310Ghost');
+  // On ne remet pas les bâtiments déjà positionnés au centre.
+  if(!b.style.left)b.style.left='750px';
+  if(!b.style.top)b.style.top='1050px';
+  window.__v312Placement={r:{key:d.map},b};
+  panel.classList.add('on');
+}
+function tryBuy(d){
+  const s=S();
+  if(s[d.prop])return;
+  if(Number(s.level||1)<d.lvl)return;
+  const before=!!s[d.prop];
+  try{d.buy()}catch(err){console.error(err);return}
+  const after=S();
+  if(!before && after[d.prop]){
+    save();
+    startPlacement(d);
+    render();
+  }
+}
+function render(){
+  const s=S(), lvl=Number(s.level||1), money=Number(s.money||0);
+  const scroll=document.getElementById('v332NextScroll');if(!scroll)return;
+  scroll.innerHTML='';
+  const upcoming=defs.filter(d=>!s[d.prop]).slice(0,6);
+  if(!upcoming.length){
+    scroll.innerHTML='<div style="padding:24px 12px;font-weight:1000;color:#5a4128">🎉 Tous les bâtiments disponibles sont construits !</div>';
+    return;
+  }
+  upcoming.forEach(d=>{
+    const unlocked=lvl>=d.lvl;
+    const affordable=money>=d.price;
+    const card=document.createElement('article');
+    card.className='v332BuildCard '+(unlocked?'ready':'locked');
+    const req=unlocked
+      ? (affordable?'<b>Disponible</b>Place-le sur la ferme':'<b>Disponible</b>Économise encore')
+      : '<b>🔒 Niveau '+d.lvl+'</b>À débloquer';
+    card.innerHTML=
+      '<div class="v332BuildName">'+d.name+'</div>'+
+      '<div class="v332BuildMiddle"><div class="v332BuildIcon">'+d.icon+'</div><div class="v332BuildReq">'+req+'</div></div>'+
+      '<button class="v332BuildBtn" '+(!unlocked?'disabled':'')+'>'+
+      (unlocked?d.price.toLocaleString('fr-FR')+' 🪙':'NIV. '+d.lvl)+
+      '</button>';
+    const btn=card.querySelector('button');
+    if(unlocked)btn.onclick=()=>tryBuy(d);
+    scroll.appendChild(card);
+  });
+}
+
+/* SHOP = sélectionne cette barre, sans ouvrir l'ancien panneau. */
+const nav=document.getElementById('mainNav');
+if(nav){
+  [...nav.querySelectorAll('button')].forEach(btn=>{
+    if((btn.textContent||'').toUpperCase().includes('SHOP')){
+      btn.addEventListener('click',e=>{
+        e.preventDefault();e.stopImmediatePropagation();
+        try{window.FarmRushV3Map?.show?.()}catch(err){}
+        bar.classList.remove('hidden');
+        render();
+        [...nav.children].forEach(x=>x.classList.remove('v3Active'));
+        btn.classList.add('v3Active');
+        document.getElementById('v310Shop')?.classList.add('v332Suppressed');
+      },true);
+    }
+  });
+}
+
+/* La barre reste visible sur la ferme et se met à jour avec la progression. */
+render();
+setInterval(render,2500);
+window.FarmRushV332={renderNextBuildings:render};
+})();
+</script>
+
 </body>
 </html>
