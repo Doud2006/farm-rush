@@ -14126,5 +14126,226 @@ window.FarmRushV332={renderNextBuildings:render};
 })();
 </script>
 
+
+<!-- ======================================================
+ FARM RUSH V3.4 — REWORK MAP / VISUAL CLEANUP
+====================================================== -->
+<style id="v340-map-rework-css">
+#v3MapShell{background:linear-gradient(#6fbe5a,#5aa047)!important}
+#v3Viewport{background:linear-gradient(#7dd0ff 0 10%,#8bd35d 16% 100%)!important}
+#v3World{
+  background-color:#6cb34a!important;
+  background-size:1500px 2150px!important;
+  image-rendering:auto;
+}
+#v3World:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.11) 0 2px, transparent 3px),
+    radial-gradient(circle at 83% 12%, rgba(255,255,255,.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 71% 64%, rgba(255,255,255,.10) 0 2px, transparent 3px),
+    radial-gradient(circle at 42% 48%, rgba(255,255,255,.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 91% 82%, rgba(255,255,255,.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 25% 81%, rgba(255,255,255,.10) 0 2px, transparent 3px);
+  background-size:190px 190px,210px 210px,180px 180px,220px 220px,240px 240px,170px 170px;
+  opacity:.7;
+}
+#v340Decor{position:absolute;inset:0;z-index:2;pointer-events:none}
+.v340Patch,.v340Field,.v340Grove,.v340Pond,.v340Vines,.v340Label,.v340Hay{
+  position:absolute;pointer-events:none;
+}
+.v340Patch{
+  border-radius:28px;
+  background:rgba(120,180,74,.45);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);
+}
+.v340Field{
+  border-radius:26px;
+  background:
+    repeating-linear-gradient(90deg, rgba(103,74,36,.17) 0 5px, transparent 5px 21px),
+    linear-gradient(#c99a5a,#b57d43);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.18), 0 3px 8px rgba(63,88,29,.18);
+}
+.v340Vines{
+  border-radius:26px;
+  background:
+    repeating-linear-gradient(90deg, rgba(73,46,31,.18) 0 5px, transparent 5px 28px),
+    repeating-linear-gradient(0deg, rgba(99,151,56,.95) 0 14px, rgba(74,126,43,.95) 14px 28px);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.16), 0 3px 8px rgba(63,88,29,.18);
+}
+.v340Pond{
+  border-radius:42% 58% 51% 49% / 58% 44% 56% 42%;
+  background:radial-gradient(circle at 30% 28%, #baf1ff 0 18%, #64c6f0 34%, #2f8ccd 72%, #226ca4 100%);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.42), 0 5px 10px rgba(32,73,105,.22);
+}
+.v340Grove span,.v340Hay span{
+  position:absolute;display:block;
+}
+.v340Grove span{
+  width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle at 36% 30%, #5dc25c 0 35%, #2f8c3e 60%, #226e33 100%);
+  box-shadow:0 3px 0 rgba(55,91,32,.24);
+}
+.v340Grove span:after{
+  content:"";position:absolute;left:13px;bottom:-8px;width:5px;height:11px;border-radius:4px;background:#6e4b2a;
+}
+.v340Hay span{
+  width:18px;height:13px;border-radius:6px;background:linear-gradient(#ffd76c,#e0af3a);box-shadow:0 2px 0 rgba(133,90,23,.25);
+}
+.v340Label{
+  padding:5px 10px;border-radius:999px;background:rgba(40,63,40,.78);color:#fffbe8;
+  border:1px solid rgba(255,255,255,.6);font-size:11px;font-weight:1000;letter-spacing:.2px;
+  box-shadow:0 4px 10px rgba(0,0,0,.16);
+}
+#v3Quest{
+  left:12px!important;right:auto!important;top:78px!important;max-width:360px!important;min-height:unset!important;
+  padding:11px 14px!important;border-radius:22px!important;background:rgba(255,247,228,.95)!important;
+  box-shadow:0 8px 18px rgba(49,73,33,.18)!important;border:2px solid rgba(255,255,255,.92)!important;z-index:55!important;
+}
+#v3Quest b{font-size:12px!important;letter-spacing:.3px}
+#v3Quest span{font-size:10px!important;opacity:.84!important}
+#v3Hud{left:12px!important;right:12px!important;top:12px!important;z-index:60!important}
+.v3Avatar{width:58px!important;height:58px!important;border-radius:18px!important;box-shadow:0 6px 12px rgba(0,0,0,.16)!important}
+.v3LevelBox{padding:6px 9px!important;min-width:116px!important;border-radius:18px!important}
+.v3Level{width:34px!important;height:34px!important;font-size:15px!important}
+.v3Xp{height:14px!important}
+.v3XpText{font-size:9px!important}
+.v3Money{padding:10px 14px!important;border-radius:20px!important;font-size:13px!important}
+.v3Money .coin{font-size:18px!important}
+#v3Center{right:14px!important;bottom:222px!important;width:54px!important;height:54px!important;font-size:24px!important;z-index:165!important}
+#v332NextBar{height:154px!important;bottom:calc(84px + env(safe-area-inset-bottom))!important}
+#v332NextScroll{height:112px!important}
+.v332BuildCard{height:104px!important;flex-basis:128px!important;border-radius:15px!important}
+.v332BuildName{font-size:10px!important}
+.v332BuildBtn{font-size:9px!important}
+#mainNav{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#mainNav button:nth-child(n+4){display:none!important}
+#v3World .v3Hotspot{z-index:25!important}
+#v3World .v305Asset{width:min(88%,170px)!important;max-height:150px!important;top:46%!important;filter:drop-shadow(0 8px 8px rgba(31,58,24,.30))!important}
+#v3World .v305AssetName{
+  bottom:2px!important;background:rgba(28,72,46,.92)!important;border:1px solid rgba(255,255,255,.7)!important;
+  font-size:9px!important;padding:4px 8px!important;box-shadow:0 4px 8px rgba(0,0,0,.14)!important
+}
+#v3World .v305AssetBadge{top:15%!important;right:16%!important}
+#v330Tools,#v330Edit{right:10px!important;z-index:166!important}
+@media (max-width: 420px){
+  #v3Quest{max-width:300px!important;top:74px!important;padding:10px 12px!important}
+  .v3Avatar{width:52px!important;height:52px!important}
+  #v332NextBar{height:148px!important}
+  #v332NextScroll{height:106px!important}
+}
+</style>
+<script id="v340-map-rework-js">
+(function(){
+  'use strict';
+  const world=document.getElementById('v3World');
+  const shell=document.getElementById('v3MapShell');
+  if(!world||!shell) return;
+  document.title='Farm Rush V3.4 — Rework map';
+  const version=document.querySelector('.version');
+  if(version) version.textContent='V3.4 — Map plus vivante';
+
+  function findHot(name){
+    return [...world.querySelectorAll('.v3Hotspot')].find(el => (el.getAttribute('aria-label')||'')===name);
+  }
+
+  const layout={
+    'Mine':[150,165,230,175],
+    'Fonderie':[390,185,200,170],
+    'Atelier industriel':[670,200,210,175],
+    'Station irrigation':[980,220,235,190],
+    'Scierie':[170,520,205,170],
+    'Vignoble':[1000,540,290,190],
+    'Cave':[820,485,180,160],
+    'Verger':[1115,860,285,205],
+    'Poulailler':[155,930,210,175],
+    'Maison ferme':[430,825,220,195],
+    'Grange':[665,940,225,190],
+    'Champs':[260,1140,620,265],
+    'Moulin':[170,1490,170,180],
+    'Boulangerie':[385,1460,185,185],
+    'Laiterie':[610,1490,190,180],
+    'Fromagerie':[820,1450,180,175],
+    'Usine':[1045,1430,205,195],
+    'Étang':[1165,1200,250,210]
+  };
+  Object.entries(layout).forEach(([name,vals])=>{
+    const el=findHot(name); if(!el) return;
+    el.style.left=vals[0]+'px';
+    el.style.top=vals[1]+'px';
+    el.style.width=vals[2]+'px';
+    el.style.height=vals[3]+'px';
+  });
+
+  let decor=document.getElementById('v340Decor');
+  if(!decor){
+    decor=document.createElement('div');
+    decor.id='v340Decor';
+    world.insertBefore(decor, world.firstChild);
+  }
+  decor.innerHTML='';
+
+  function add(type,left,top,width,height,text){
+    const el=document.createElement('div');
+    el.className=type;
+    el.style.left=left+'px';
+    el.style.top=top+'px';
+    if(width!=null) el.style.width=width+'px';
+    if(height!=null) el.style.height=height+'px';
+    if(text) el.textContent=text;
+    decor.appendChild(el);
+    return el;
+  }
+  // zones colorées / champs
+  add('v340Patch', 20, 25, 1460, 250);
+  add('v340Patch', 10, 430, 420, 820);
+  add('v340Patch', 930, 420, 530, 780);
+  add('v340Patch', 60, 1090, 1350, 660);
+  add('v340Field', 300, 1165, 515, 210);
+  add('v340Field', 1035, 1460, 160, 105);
+  add('v340Field', 1235, 1550, 170, 120);
+  add('v340Vines', 1035, 575, 215, 120);
+  add('v340Pond', 1220, 1245, 170, 140);
+  add('v340Label', 1080, 708, null, null, 'Vignoble');
+  add('v340Label', 1185, 1060, null, null, 'Verger');
+  add('v340Label', 1225, 1388, null, null, 'Étang');
+  add('v340Label', 390, 1388, null, null, 'Grandes cultures');
+  // bosquets
+  const groves=[
+    [68,310],[120,350],[195,322],[1225,350],[1290,312],[1365,370],[1260,725],[1345,760],[1220,790],[1300,980],[1390,930],[110,760],[220,812],[88,1030],[146,1085],[178,1740],[260,1800],[360,1730],[910,1740],[1010,1810],[1140,1768]
+  ];
+  groves.forEach(([x,y],i)=>{
+    const g=add('v340Grove', x, y, 80, 60);
+    [[10,18],[28,8],[46,18],[32,28]].forEach(([lx,ly])=>{
+      const s=document.createElement('span');
+      s.style.left=lx+'px';
+      s.style.top=ly+'px';
+      g.appendChild(s);
+    });
+  });
+  // bottes de foin
+  [[560,1080],[620,1088],[680,1075],[940,1380],[990,1360],[1180,1690]].forEach(([x,y])=>{
+    const h=add('v340Hay',x,y,44,20);
+    [[0,4],[12,0],[24,4]].forEach(([lx,ly])=>{
+      const s=document.createElement('span');
+      s.style.left=lx+'px';
+      s.style.top=ly+'px';
+      h.appendChild(s);
+    });
+  });
+
+  // petites améliorations de texte
+  const questTitle=document.getElementById('v3QuestTitle');
+  const questText=document.getElementById('v3QuestText');
+  if(questTitle) questTitle.textContent='📋 OBJECTIF : ATELIER TEXTILE';
+  if(questText) questText.textContent='Continue d’agrandir la ferme et place les prochains bâtiments sur une carte plus vivante.';
+
+  // recale la caméra sur la zone centrale au chargement
+  requestAnimationFrame(()=>{
+    try{ window.FarmRushV3Map?.center?.(); }catch(e){}
+  });
+})();
+</script>
+
 </body>
 </html>
