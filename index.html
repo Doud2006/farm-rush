@@ -12558,9 +12558,9 @@ const world=document.getElementById('v3World');
 const shell=document.getElementById('v3MapShell');
 if(!game||!viewport||!world||!shell)return;
 
-document.title='Farm Rush V3.0.1.2 — Map propre + zoom';
+document.title='Farm Rush V3.0.2 — Bâtiments séparés';
 const ver=document.querySelector('.version');
-if(ver)ver.textContent='V3.0.1.2 — Map propre + zoom';
+if(ver)ver.textContent='V3.0.2 — Bâtiments séparés';
 
 const WORLD_W=853,WORLD_H=1430;
 const MIN_SCALE=.55,MAX_SCALE=1.55;
@@ -12619,13 +12619,19 @@ function openCandidate(btn){
     try{openShop(btn.dataset.zone?'spaces':'buildings')}catch(_){}
     return;
   }
+  const label=btn.getAttribute('aria-label')||'Bâtiment';
   if(btn.dataset.zone){
-    const z=btn.dataset.zone;try{switchZone(z)}catch(_){}
+    const z=btn.dataset.zone;
+    try{switchZone(z)}catch(_){}
     const ids={mine:'mineArea',vineyard:'vineyardArea',orchard:'orchardArea',pond:'pondArea',forest:'forestArea'};
-    if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(ids[z]||'farmArea');
+    const target=ids[z]||'farmArea';
+    if(window.FarmRushV3Solo?.open)window.FarmRushV3Solo.open(target,label,{zone:z});
+    else if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(target);
     return;
   }
-  if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(btn.dataset.panel||btn.dataset.target||'farmArea');
+  const target=btn.dataset.panel||btn.dataset.target||'farmArea';
+  if(window.FarmRushV3Solo?.open)window.FarmRushV3Solo.open(target,label);
+  else if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(target);
 }
 function beginGesture(){
   const vals=[...pointers.values()];
@@ -12728,5 +12734,115 @@ requestAnimationFrame(()=>centerMap(.78));
 })();
 </script>
 
+
+
+<!-- =====================================================
+     FARM RUSH V3.0.2 — PAGES BÂTIMENTS SÉPARÉES
+     - un tap bâtiment ouvre uniquement son lieu
+     - aucun autre bâtiment n'est affiché dans la page
+     - bouton RETOUR obligatoire pour revenir à la carte
+     - la caméra map/zoom reste conservée
+====================================================== -->
+<style id="v302-building-pages-css">
+#v302SoloTop{display:none}
+body.v302SoloMode{overflow-x:hidden;background:#f4edcf}
+body.v302SoloMode #v3MapShell{display:none!important}
+body.v302SoloMode #game{display:block!important;min-height:100dvh;background:linear-gradient(#8ed16c 0 92px,#f7efd5 92px 100%)}
+body.v302SoloMode #game>header{display:none!important}
+body.v302SoloMode #game>main{display:block!important;padding:96px 12px 112px!important;max-width:760px;margin:0 auto}
+body.v302SoloMode #game>main>*{display:none!important}
+body.v302SoloMode #game>main>.v302SoloActive{display:block!important;margin:0!important}
+body.v302SoloMode #game>main>.v302SoloActive.panel,
+body.v302SoloMode #game>main>.v302SoloActive.farm{width:100%!important;max-width:none!important}
+body.v302SoloMode #game>main>.v302SoloActive.farm{min-height:calc(100dvh - 225px);border-radius:28px;overflow:hidden}
+body.v302SoloMode #v3Back{display:none!important}
+body.v302SoloMode #v302SoloTop{
+  display:flex;position:fixed;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));height:70px;z-index:9000;
+  align-items:center;gap:10px;padding:8px 10px;border-radius:22px;
+  background:rgba(255,248,220,.97);border:2px solid rgba(255,255,255,.96);
+  box-shadow:0 6px 20px rgba(67,65,38,.24);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+#v302SoloBack{
+  flex:0 0 auto;height:50px;min-width:104px;border:0;border-radius:16px;padding:0 14px;
+  background:linear-gradient(#48be5a,#239d41);color:white;font-weight:1000;font-size:12px;
+  box-shadow:0 4px 0 #187e31,0 5px 12px #0002;touch-action:manipulation
+}
+#v302SoloBack:active{transform:translateY(2px);box-shadow:0 2px 0 #187e31}
+#v302SoloTitle{min-width:0;flex:1;color:#684325;font-weight:1000;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
+#v302SoloIcon{font-size:28px;line-height:1}
+body.v302SoloMode #mainNav{z-index:8500!important}
+body.v302SoloMode #mainNav button:first-child{background:#e8fff0!important}
+@media(max-width:430px){
+  body.v302SoloMode #game>main{padding-left:9px!important;padding-right:9px!important}
+  #v302SoloTitle{font-size:15px}#v302SoloBack{min-width:96px;padding:0 10px}
+}
+</style>
+<script id="v302-building-pages-js">
+(function(){
+'use strict';
+const game=document.getElementById('game');
+const main=game&&game.querySelector('main');
+if(!game||!main)return;
+let currentId=null;
+
+const ICONS={
+  coopPanel:'🐔',barnPanel:'🐄',millPanel:'⚙️',bakeryPanel:'🥖',dairyPanel:'🥛',pastaPanel:'🏭',
+  meatPanel:'🥩',restaurantPanel:'🍽️',cellarPanel:'🍷',sheepfoldPanel:'🐑',textilePanel:'🧵',pondPanel:'🎣',
+  sawmillPanel:'🪚',minePanel:'⛏️',foundryPanel:'🔥',industrialPanel:'🏭',irrigationPanel:'💦',
+  farmArea:'🌾',orchardArea:'🍎',vineyardArea:'🍇',pondArea:'🎣',forestArea:'🌲',mineArea:'⛏️'
+};
+let top=document.getElementById('v302SoloTop');
+if(!top){
+  top=document.createElement('div');top.id='v302SoloTop';
+  top.innerHTML='<button id="v302SoloBack" type="button">← FERME</button><div id="v302SoloIcon">🏡</div><div id="v302SoloTitle">BÂTIMENT</div>';
+  document.body.appendChild(top);
+}
+function clearActive(){main.querySelectorAll('.v302SoloActive').forEach(el=>el.classList.remove('v302SoloActive'))}
+function titleFor(el,fallback){
+  if(fallback)return fallback;
+  const t=el?.querySelector('.panelTitle,.buildingHeader,.animalTitle');
+  return (t?.textContent||el?.getAttribute('aria-label')||'Bâtiment').trim().replace(/\s+/g,' ');
+}
+function open(id,label,opts={}){
+  try{if(typeof render==='function')render()}catch(_){}
+  const el=document.getElementById(id);
+  if(!el){try{toast('Cette zone n’est pas encore disponible.')}catch(_){}return false}
+  clearActive();currentId=id;el.classList.add('v302SoloActive');
+  /* Les zones peuvent être remises visibles par renderZone; le CSS solo garde uniquement la cible. */
+  el.style.display='';
+  document.body.classList.remove('farmListMode','v3ClassicMode');
+  document.body.classList.add('v302SoloMode');
+  game.classList.remove('farmMapMode','v3MapMode');
+  const ti=document.getElementById('v302SoloTitle');if(ti)ti.textContent=titleFor(el,label);
+  const ic=document.getElementById('v302SoloIcon');if(ic)ic.textContent=ICONS[id]||'🏡';
+  window.scrollTo(0,0);
+  try{if(typeof renderBuildings==='function')renderBuildings()}catch(_){}
+  /* renderBuildings ne doit pas nous faire perdre la cible. */
+  requestAnimationFrame(()=>{const target=document.getElementById(currentId);if(target)target.classList.add('v302SoloActive')});
+  return true;
+}
+function close(){
+  clearActive();currentId=null;document.body.classList.remove('v302SoloMode');
+  if(window.FarmRushV3Map?.show)window.FarmRushV3Map.show();
+}
+document.getElementById('v302SoloBack')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();close()});
+
+/* Le bouton FERME de la barre basse devient aussi une vraie sortie de la page bâtiment. */
+const nav=document.getElementById('mainNav');
+if(nav){const first=nav.querySelector('button');if(first)first.addEventListener('click',()=>{if(document.body.classList.contains('v302SoloMode'))close()},true)}
+
+/* Si une fonction de rendu recrée/masque les panneaux pendant qu'on est dedans, on réaffiche seulement la page active. */
+const oldRB=window.renderBuildings;
+if(typeof oldRB==='function')window.renderBuildings=function(){
+  const r=oldRB.apply(this,arguments);
+  if(document.body.classList.contains('v302SoloMode')&&currentId){
+    const el=document.getElementById(currentId);if(el){clearActive();el.classList.add('v302SoloActive')}
+  }
+  return r;
+};
+
+window.FarmRushV3Solo={open,close,get current(){return currentId}};
+})();
+</script>
 </body>
 </html>
