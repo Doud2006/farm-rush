@@ -12318,10 +12318,10 @@ function refresh(){hud();shell.querySelectorAll('.v3Hotspot').forEach(b=>{const 
 function show(){document.body.classList.remove('farmListMode','v3ClassicMode');game.classList.remove('farmMapMode');game.classList.add('v3MapMode');if(oldShell)oldShell.style.display='none';window.scrollTo(0,0);refresh();requestAnimationFrame(()=>{if(!world.dataset.v3centered){center();world.dataset.v3centered='1'}else apply()});setActive(0)}
 function classic(target){game.classList.remove('farmMapMode','v3MapMode');document.body.classList.add('farmListMode','v3ClassicMode');if(oldShell)oldShell.style.display='none';try{render()}catch(_){}setTimeout(()=>{const el=document.getElementById(target);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},80)}
 function openHotspot(btn){const level=Number(btn.dataset.level||1),owned=!btn.dataset.owned||!!state[btn.dataset.owned];if(!owned){if((state.level||1)<level){toast(`🔒 Disponible au niveau ${level}`);return}if(btn.dataset.zone){openShop('spaces');return}openShop('buildings');return}if(btn.dataset.zone){const z=btn.dataset.zone;try{switchZone(z)}catch(_){}const ids={mine:'mineArea',vineyard:'vineyardArea',orchard:'orchardArea',pond:'pondArea',forest:'forestArea'};classic(ids[z]||'farmArea');return}classic(btn.dataset.panel||btn.dataset.target||'farmArea')}
-viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.v3Hotspot'))return;drag=true;dragMoved=false;sx=e.clientX;sy=e.clientY;bx=x;by=y;try{viewport.setPointerCapture(e.pointerId)}catch(_){}});
-viewport.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)+Math.abs(dy)>6)dragMoved=true;x=bx+dx;y=by+dy;apply()});
-function end(e){drag=false;try{viewport.releasePointerCapture(e.pointerId)}catch(_){}}viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
-shell.querySelectorAll('.v3Hotspot').forEach(btn=>{let px=0,py=0,pid=null,mv=false;btn.addEventListener('pointerdown',e=>{px=e.clientX;py=e.clientY;pid=e.pointerId;mv=false;e.stopPropagation()},{passive:true});btn.addEventListener('pointermove',e=>{if(pid!==e.pointerId)return;if(Math.abs(e.clientX-px)+Math.abs(e.clientY-py)>10)mv=true;e.stopPropagation()},{passive:true});btn.addEventListener('pointerup',e=>{if(pid!==e.pointerId)return;e.stopPropagation();const ok=!mv;pid=null;mv=false;if(ok){e.preventDefault();openHotspot(btn)}});btn.addEventListener('pointercancel',()=>{pid=null;mv=false});btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()})});
+/* V3.0.1.2: ancien pointerdown remplacé par le contrôleur pan/zoom */
+/* V3.0.1.2: ancien pointermove remplacé par le contrôleur pan/zoom */
+/* V3.0.1.2: anciens pointerup/cancel remplacés par le contrôleur pan/zoom */
+/* V3.0.1.2: listeners directs hotspots remplacés par délégation au viewport */
 document.getElementById('v3Center').addEventListener('click',center);back.addEventListener('click',show);window.addEventListener('resize',apply);
 function setActive(i){const nav=document.getElementById('mainNav');if(!nav)return;[...nav.querySelectorAll('button')].forEach((b,j)=>b.classList.toggle('v3Active',i===j))}
 const nav=document.getElementById('mainNav');if(nav){const bs=[...nav.querySelectorAll('button')];if(bs[0]){bs[0].innerHTML='<span>🗺️</span>FERME';bs[0].onclick=()=>show()}if(bs[1]){bs[1].innerHTML='<span>📦</span>STOCK';bs[1].onclick=()=>{classic('stock');setActive(1)}}if(bs[2]){bs[2].innerHTML='<span>📋</span>COMMANDES';bs[2].onclick=()=>{classic('orders');setActive(2)}}if(bs[3]){bs[3].innerHTML='<span>🛒</span>SHOP';bs[3].onclick=()=>{openShop();setActive(3)}}}
@@ -12492,6 +12492,239 @@ if(oldShow){
   window.FarmRushV3Map.show=function(){const r=oldShow.apply(this,arguments);cleanupTopBar();return r};
 }
 setTimeout(cleanupTopBar,100);
+})();
+</script>
+
+
+
+<!-- =====================================================
+     FARM RUSH V3.0.1.2 — CLEAN MAP + PINCH ZOOM
+     - hotspots 100% invisibles (plus de gros aplats/carrés)
+     - pan depuis n'importe où
+     - pinch-to-zoom iPhone + boutons +/-
+     - un bâtiment ne s'ouvre que sur un vrai tap
+====================================================== -->
+<style id="v3012-clean-zoom-css">
+/* Les zones tactiles ne doivent JAMAIS modifier le dessin de la carte. */
+#v3World .v3Hotspot,
+#v3World .v3Hotspot:active,
+#v3World .v3Hotspot:focus,
+#v3World .v3Hotspot:focus-visible,
+#v3World .v3Hotspot.locked{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+/* On garde seulement les petits indicateurs utiles, sans rectangle autour. */
+#v3World .v3Hotspot.locked:after{filter:none!important}
+#v3World .v3Hotspot.readyV3:before{filter:none!important}
+
+#v3Viewport{touch-action:none!important;overscroll-behavior:none!important}
+#v3World{will-change:transform;transform-origin:0 0!important}
+
+#v3012ZoomControls{
+  position:absolute;right:12px;bottom:105px;z-index:70;
+  display:flex;flex-direction:column;gap:8px;pointer-events:auto;
+}
+#v3012ZoomControls button{
+  width:45px;height:45px;border-radius:15px;border:2px solid rgba(255,255,255,.92);
+  background:rgba(255,248,220,.94);color:#654426;font-weight:1000;font-size:23px;
+  box-shadow:0 4px 12px rgba(45,55,34,.28);display:grid;place-items:center;padding:0;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#v3012ZoomControls button:active{transform:scale(.94)}
+#v3012ZoomLabel{
+  position:absolute;right:13px;bottom:205px;z-index:69;min-width:42px;text-align:center;
+  border-radius:999px;background:rgba(41,66,43,.78);color:white;padding:4px 7px;
+  font-size:9px;font-weight:1000;pointer-events:none;
+}
+#v3Hint{bottom:14px!important}
+@media(max-width:430px){#v3012ZoomControls{right:9px;bottom:98px}#v3012ZoomControls button{width:42px;height:42px}}
+</style>
+<script id="v3012-clean-zoom-js">
+(function(){
+'use strict';
+const game=document.getElementById('game');
+const viewport=document.getElementById('v3Viewport');
+const world=document.getElementById('v3World');
+const shell=document.getElementById('v3MapShell');
+if(!game||!viewport||!world||!shell)return;
+
+document.title='Farm Rush V3.0.1.2 — Map propre + zoom';
+const ver=document.querySelector('.version');
+if(ver)ver.textContent='V3.0.1.2 — Map propre + zoom';
+
+const WORLD_W=853,WORLD_H=1430;
+const MIN_SCALE=.55,MAX_SCALE=1.55;
+let scale=1,x=0,y=0;
+let pointers=new Map();
+let gesture=null;
+let tapCandidate=null;
+let tapStart=null;
+let gestureMoved=false;
+const TAP_THRESHOLD=12;
+
+function viewportPoint(clientX,clientY){
+  const r=viewport.getBoundingClientRect();
+  return {x:clientX-r.left,y:clientY-r.top};
+}
+function clamp(){
+  const r=viewport.getBoundingClientRect();
+  const sw=WORLD_W*scale,sh=WORLD_H*scale;
+  if(sw<=r.width)x=(r.width-sw)/2;
+  else x=Math.max(r.width-sw,Math.min(0,x));
+  if(sh<=r.height)y=(r.height-sh)/2;
+  else y=Math.max(r.height-sh,Math.min(0,y));
+}
+function apply(){
+  clamp();
+  world.style.transform=`translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${scale.toFixed(4)})`;
+  const label=document.getElementById('v3012ZoomLabel');
+  if(label)label.textContent=Math.round(scale*100)+'%';
+}
+function centerMap(newScale){
+  if(Number.isFinite(newScale))scale=Math.max(MIN_SCALE,Math.min(MAX_SCALE,newScale));
+  const r=viewport.getBoundingClientRect();
+  x=(r.width-WORLD_W*scale)/2;
+  y=(r.height-WORLD_H*scale)/2;
+  apply();
+}
+function zoomAt(nextScale,cx,cy){
+  nextScale=Math.max(MIN_SCALE,Math.min(MAX_SCALE,nextScale));
+  if(Math.abs(nextScale-scale)<.001)return;
+  const p=viewportPoint(cx,cy);
+  const wx=(p.x-x)/scale,wy=(p.y-y)/scale;
+  scale=nextScale;
+  x=p.x-wx*scale;y=p.y-wy*scale;
+  apply();
+}
+function zoomCenter(mult){
+  const r=viewport.getBoundingClientRect();
+  zoomAt(scale*mult,r.left+r.width/2,r.top+r.height/2);
+}
+function openCandidate(btn){
+  if(!btn)return;
+  const level=Number(btn.dataset.level||1);
+  const owned=!btn.dataset.owned||!!state[btn.dataset.owned];
+  if(!owned){
+    if((state.level||1)<level){try{toast(`🔒 Disponible au niveau ${level}`)}catch(_){}return;}
+    try{openShop(btn.dataset.zone?'spaces':'buildings')}catch(_){}
+    return;
+  }
+  if(btn.dataset.zone){
+    const z=btn.dataset.zone;try{switchZone(z)}catch(_){}
+    const ids={mine:'mineArea',vineyard:'vineyardArea',orchard:'orchardArea',pond:'pondArea',forest:'forestArea'};
+    if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(ids[z]||'farmArea');
+    return;
+  }
+  if(window.FarmRushV3Map?.classic)window.FarmRushV3Map.classic(btn.dataset.panel||btn.dataset.target||'farmArea');
+}
+function beginGesture(){
+  const vals=[...pointers.values()];
+  if(vals.length===1){
+    const p=vals[0];gesture={type:'pan',sx:p.x,sy:p.y,bx:x,by:y};
+  }else if(vals.length>=2){
+    const a=vals[0],b=vals[1];
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    const vp=viewportPoint(mx,my);
+    const dist=Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));
+    gesture={type:'pinch',dist,startScale:scale,worldX:(vp.x-x)/scale,worldY:(vp.y-y)/scale};
+    gestureMoved=true;tapCandidate=null;
+  }
+}
+function updateGesture(){
+  const vals=[...pointers.values()];
+  if(!gesture||!vals.length)return;
+  if(vals.length>=2){
+    if(gesture.type!=='pinch')beginGesture();
+    const a=vals[0],b=vals[1];
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    const vp=viewportPoint(mx,my);
+    const dist=Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));
+    scale=Math.max(MIN_SCALE,Math.min(MAX_SCALE,gesture.startScale*(dist/gesture.dist)));
+    x=vp.x-gesture.worldX*scale;y=vp.y-gesture.worldY*scale;
+    apply();return;
+  }
+  const p=vals[0];
+  if(gesture.type!=='pan')beginGesture();
+  const dx=p.x-gesture.sx,dy=p.y-gesture.sy;
+  if(Math.hypot(dx,dy)>=TAP_THRESHOLD)gestureMoved=true;
+  x=gesture.bx+dx;y=gesture.by+dy;apply();
+}
+
+/* Capture unique : pan, tap et pinch passent tous par le même contrôleur. */
+viewport.addEventListener('pointerdown',function(e){
+  if(e.target.closest('#v3Hud,#v3Quest,#v3Center,#v3012ZoomControls'))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){
+    tapCandidate=e.target.closest('.v3Hotspot');
+    tapStart={x:e.clientX,y:e.clientY,id:e.pointerId};gestureMoved=false;
+  }else{gestureMoved=true;tapCandidate=null;}
+  beginGesture();
+  try{viewport.setPointerCapture(e.pointerId)}catch(_){}
+  e.preventDefault();e.stopImmediatePropagation();
+},true);
+viewport.addEventListener('pointermove',function(e){
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  updateGesture();
+  e.preventDefault();e.stopImmediatePropagation();
+},true);
+function endPointer(e,cancelled){
+  if(!pointers.has(e.pointerId))return;
+  const wasSingle=pointers.size===1;
+  const candidate=tapCandidate;
+  const ts=tapStart;
+  if(ts&&ts.id===e.pointerId&&Math.hypot(e.clientX-ts.x,e.clientY-ts.y)>=TAP_THRESHOLD)gestureMoved=true;
+  pointers.delete(e.pointerId);
+  try{viewport.releasePointerCapture(e.pointerId)}catch(_){}
+  if(pointers.size)beginGesture();else gesture=null;
+  e.preventDefault();e.stopImmediatePropagation();
+  if(!cancelled&&wasSingle&&!gestureMoved&&candidate)openCandidate(candidate);
+  if(!pointers.size){tapCandidate=null;tapStart=null;gestureMoved=false;}
+}
+viewport.addEventListener('pointerup',e=>endPointer(e,false),true);
+viewport.addEventListener('pointercancel',e=>endPointer(e,true),true);
+viewport.addEventListener('click',function(e){if(e.target.closest('.v3Hotspot')){e.preventDefault();e.stopImmediatePropagation()}},true);
+viewport.addEventListener('wheel',function(e){
+  e.preventDefault();zoomAt(scale*(e.deltaY<0?1.1:.9),e.clientX,e.clientY);
+},{passive:false});
+
+/* Contrôles + / - très pratiques à une main sur iPhone. */
+let controls=document.getElementById('v3012ZoomControls');
+if(!controls){
+  controls=document.createElement('div');controls.id='v3012ZoomControls';
+  controls.innerHTML='<button id="v3012Plus" aria-label="Zoomer">＋</button><button id="v3012Minus" aria-label="Dézoomer">−</button>';
+  shell.appendChild(controls);
+  const label=document.createElement('div');label.id='v3012ZoomLabel';shell.appendChild(label);
+}
+document.getElementById('v3012Plus').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();zoomCenter(1.18)});
+document.getElementById('v3012Minus').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();zoomCenter(1/1.18)});
+const centerBtn=document.getElementById('v3Center');
+if(centerBtn)centerBtn.addEventListener('click',()=>centerMap(.78));
+
+/* La V3.0.1 peut réécrire transform quand elle affiche la map : on réapplique notre caméra ensuite. */
+const oldShow=window.FarmRushV3Map&&window.FarmRushV3Map.show;
+if(oldShow){
+  window.FarmRushV3Map.show=function(){
+    const r=oldShow.apply(this,arguments);
+    requestAnimationFrame(()=>{if(!world.dataset.v3012init){world.dataset.v3012init='1';centerMap(.78)}else apply()});
+    return r;
+  };
+  window.FarmRushV3Map.center=()=>centerMap(.78);
+  window.FarmRushV3Map.zoomIn=()=>zoomCenter(1.18);
+  window.FarmRushV3Map.zoomOut=()=>zoomCenter(1/1.18);
+}
+window.addEventListener('resize',apply);
+requestAnimationFrame(()=>centerMap(.78));
 })();
 </script>
 
