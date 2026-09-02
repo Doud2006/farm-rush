@@ -14461,5 +14461,160 @@ body.v341Home #v330Edit{display:none!important}
 })();
 </script>
 
+
+<!-- ======================================================
+ FARM RUSH V3.4.2 — MAP CLEAN / MOBILE COMPOSITION
+====================================================== -->
+<style id="v342-map-clean-css">
+/* 1) Retire tous les faux décors ajoutés en V3.4 : ce sont eux qui créaient
+   les gros rectangles marron/jaune visibles sur iPhone. Le fond V3.3 reste. */
+#v340Decor{display:none!important}
+
+/* 2) La carte reste propre : pas de couches de test ni d'anciennes zones. */
+#v3World:after,
+#v3World .v330Zone,
+#v3World .v305OriginLot,
+#v3World .v312ZoneVisual,
+#v3World .v311ZoneArt,
+#v320MapTitle,
+#v311OwnedArea,
+.v311Future,
+.v310Expansion,
+#v310Expand{display:none!important}
+
+/* 3) Bâtiments bien lisibles, sans cadre autour. */
+#v3World .v3Hotspot{
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+#v3World .v330Building{
+  width:88%!important;height:88%!important;top:48%!important;
+  filter:drop-shadow(0 8px 6px rgba(28,48,24,.28))!important;
+}
+#v3World .v305AssetName{
+  font-size:8px!important;padding:3px 7px!important;
+  background:rgba(39,67,40,.84)!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+}
+
+/* 4) Objectif plus compact et moins envahissant. */
+#v3Quest{
+  top:76px!important;left:12px!important;
+  width:min(315px,calc(100vw - 92px))!important;
+  padding:11px 12px 11px 50px!important;
+  min-height:50px!important;border-radius:18px!important;
+  box-shadow:0 5px 12px rgba(47,69,34,.16)!important;
+}
+#v3Quest:before{left:12px!important;top:10px!important;font-size:25px!important}
+#v3Quest b{font-size:10.5px!important}
+#v3Quest span{font-size:8.5px!important;margin-top:3px!important}
+
+/* 5) HUD du haut : tout tient proprement dans la largeur. */
+#v3Hud{left:10px!important;right:10px!important;top:10px!important;gap:6px!important}
+.v3Avatar{width:51px!important;height:51px!important;flex-basis:51px!important;border-radius:16px!important}
+.v3LevelBox{width:34px!important;min-width:34px!important;flex-basis:34px!important}
+.v3Level{width:43px!important;height:43px!important;left:-12px!important;font-size:14px!important}
+.v3Money{min-width:92px!important;padding:8px 9px!important;font-size:10.5px!important;border-radius:18px!important}
+#v330Gems{min-width:56px!important;padding:7px!important;border-radius:18px!important}
+
+/* 6) Outils de droite légèrement réduits pour laisser respirer la carte. */
+#v330Tools{right:9px!important;top:145px!important;gap:7px!important}
+#v330Tools button{width:43px!important;height:43px!important;border-radius:13px!important;font-size:19px!important}
+#v330Edit{right:9px!important;top:346px!important;padding:8px 9px!important;font-size:8.5px!important;border-radius:15px!important}
+
+/* 7) Barre "Prochains bâtiments" plus basse et moins haute. */
+#v332NextBar{
+  left:10px!important;right:10px!important;
+  height:132px!important;
+  bottom:calc(70px + env(safe-area-inset-bottom))!important;
+  border-radius:19px!important;padding:7px 6px 6px!important;
+}
+#v332NextHead{height:22px!important;font-size:9.5px!important}
+#v332NextHead small{font-size:7.5px!important}
+#v332NextScroll{height:94px!important;gap:6px!important}
+.v332BuildCard{height:88px!important;flex-basis:116px!important;padding:5px!important;border-radius:12px!important;grid-template-rows:16px 1fr 23px!important}
+.v332BuildName{font-size:8.5px!important}
+.v332BuildIcon{font-size:24px!important}
+.v332BuildReq{font-size:6.8px!important}
+.v332BuildReq b{font-size:7.5px!important}
+.v332BuildBtn{font-size:8px!important;border-radius:7px!important}
+
+/* 8) Navigation : corrige le décalage vers la gauche hérité de .nav (translateX -50%). */
+#mainNav{
+  left:10px!important;right:10px!important;bottom:max(7px,env(safe-area-inset-bottom))!important;
+  width:auto!important;max-width:none!important;transform:none!important;
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:2px!important;border-radius:20px!important;padding:3px!important;
+}
+#mainNav button{display:block!important;min-width:0!important;padding:4px 1px!important;font-size:6.7px!important}
+#mainNav button span{font-size:18px!important}
+
+/* En mode accueil : aucune interface de la ferme ne dépasse sous JOUER. */
+body.v341Home #v332NextBar,
+body.v341Home #mainNav,
+body.v341Home #v330Tools,
+body.v341Home #v330Edit,
+body.v341Home #v3MapShell{display:none!important}
+
+@media(max-width:390px){
+  #v3Quest{width:270px!important;padding-left:48px!important}
+  #v332NextBar{height:128px!important}
+  #v332NextScroll{height:90px!important}
+  .v332BuildCard{height:84px!important;flex-basis:111px!important}
+  #mainNav button{font-size:6.2px!important}
+  #mainNav button span{font-size:17px!important}
+}
+</style>
+<script id="v342-map-clean-js">
+(function(){
+  'use strict';
+  const world=document.getElementById('v3World');
+  if(!world)return;
+  document.title='Farm Rush V3.4.2 — Map clean';
+  const ver=document.querySelector('.version');
+  if(ver) ver.textContent='V3.4.2 — Map clean';
+
+  /* Supprime réellement le décor V3.4, même si un ancien script l'a déjà injecté. */
+  document.getElementById('v340Decor')?.remove();
+
+  /* Positions plus proches d'une vraie ferme : bâtiments autour des routes et
+     davantage d'espace vert, sans ajouter de rectangles artificiels. */
+  const positions={
+    'Mine':[150,180,220,170],
+    'Fonderie':[405,205,195,165],
+    'Atelier industriel':[670,205,205,170],
+    'Station irrigation':[955,225,220,180],
+    'Scierie':[170,500,195,165],
+    'Cave':[735,470,175,150],
+    'Vignoble':[1010,515,270,180],
+    'Poulailler':[135,790,190,165],
+    'Maison ferme':[420,770,205,185],
+    'Grange':[690,800,205,180],
+    'Verger':[1110,800,275,200],
+    'Champs':[315,1080,555,240],
+    'Moulin':[165,1430,160,175],
+    'Boulangerie':[385,1405,175,180],
+    'Laiterie':[610,1435,180,175],
+    'Fromagerie':[820,1395,175,170],
+    'Usine':[1030,1390,195,185],
+    'Étang':[1195,1190,245,205]
+  };
+  const hotspots=[...world.querySelectorAll('.v3Hotspot')];
+  for(const [name,p] of Object.entries(positions)){
+    const el=hotspots.find(x=>(x.getAttribute('aria-label')||'')===name);
+    if(!el)continue;
+    el.style.left=p[0]+'px';el.style.top=p[1]+'px';
+    el.style.width=p[2]+'px';el.style.height=p[3]+'px';
+  }
+
+  /* Recentrage après application du layout. */
+  requestAnimationFrame(()=>{
+    try{window.FarmRushV3Map?.center?.()}catch(e){}
+  });
+})();
+</script>
+
 </body>
 </html>
