@@ -12332,5 +12332,168 @@ setInterval(()=>{if(game.classList.contains('v3MapMode'))refresh()},1500);
 })();
 </script>
 
+
+
+<!-- =====================================================
+     FARM RUSH V3.0.1.1 — MAP TOUCH / HEADER HOTFIX
+     - déplacement possible depuis n'importe quelle zone de la carte
+     - un bâtiment ne s'ouvre que sur un vrai tap, jamais pendant un drag
+     - suppression de l'ancien bandeau Domaine + badge sauvegarde
+====================================================== -->
+<style id="v3011-map-touchfix-css">
+/* L'ancien décor V2.8 n'a plus sa place dans la nouvelle carte V3. */
+#game.v3MapMode > #v280WorldStrip,
+#game.v3MapMode > .v280WorldStrip,
+#game.v3MapMode > .v280Path,
+body:has(#game.v3MapMode) #starter26Badge{
+  display:none!important;
+}
+/* Même en mode classique, le badge de reconstruction n'est plus utile visuellement. */
+#starter26Badge{display:none!important}
+
+#v3MapShell{margin:0!important;padding:0!important}
+#v3Viewport,
+#v3World,
+.v3Hotspot{
+  touch-action:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+#v3Viewport{cursor:grab}
+#v3Viewport.v3011Dragging{cursor:grabbing}
+/* Les hotspots restent invisibles mais ne "volent" plus le geste de déplacement. */
+.v3Hotspot{cursor:pointer}
+</style>
+<script id="v3011-map-touchfix-js">
+(function(){
+'use strict';
+const game=document.getElementById('game');
+const viewport=document.getElementById('v3Viewport');
+const world=document.getElementById('v3World');
+if(!game||!viewport||!world)return;
+
+document.title='Farm Rush V3.0.1.1 — Carte tactile corrigée';
+const ver=document.querySelector('.version');
+if(ver)ver.textContent='V3.0.1.1 — Carte tactile corrigée';
+
+/*
+  Les listeners V3.0.1 attachés directement aux bâtiments bloquaient le pan :
+  pointerdown sur un hotspot => le viewport ne commençait jamais le drag.
+  On gère maintenant le geste au niveau du viewport EN CAPTURE.
+*/
+let active=false;
+let pointerId=null;
+let startX=0,startY=0;
+let startTX=0,startTY=0;
+let moved=false;
+let candidate=null;
+const DRAG_THRESHOLD=11;
+
+function currentTranslate(){
+  const m=world.style.transform && world.style.transform.match(/translate3d\((-?[\d.]+)px,\s*(-?[\d.]+)px/i);
+  if(m)return {x:Number(m[1])||0,y:Number(m[2])||0};
+  try{
+    const tr=getComputedStyle(world).transform;
+    if(tr&&tr!=='none'){
+      const d=new DOMMatrixReadOnly(tr);
+      return {x:d.m41||0,y:d.m42||0};
+    }
+  }catch(_){}
+  return {x:0,y:0};
+}
+function clampPos(nx,ny){
+  const r=viewport.getBoundingClientRect();
+  const ww=853, wh=1430;
+  const minX=Math.min(0,r.width-ww), minY=Math.min(0,r.height-wh);
+  return {x:Math.max(minX,Math.min(0,nx)),y:Math.max(minY,Math.min(0,ny))};
+}
+function applyPos(nx,ny){
+  const p=clampPos(nx,ny);
+  world.style.transform=`translate3d(${Math.round(p.x)}px,${Math.round(p.y)}px,0)`;
+}
+function openCandidate(btn){
+  if(!btn)return;
+  const level=Number(btn.dataset.level||1);
+  const owned=!btn.dataset.owned||!!state[btn.dataset.owned];
+  if(!owned){
+    if((state.level||1)<level){try{toast(`🔒 Disponible au niveau ${level}`)}catch(_){}return;}
+    try{openShop(btn.dataset.zone?'spaces':'buildings')}catch(_){}
+    return;
+  }
+  /* Utilise les fonctions publiques de la V3.0.1 pour conserver toute la logique existante. */
+  if(btn.dataset.zone){
+    const z=btn.dataset.zone;
+    try{switchZone(z)}catch(_){}
+    const ids={mine:'mineArea',vineyard:'vineyardArea',orchard:'orchardArea',pond:'pondArea',forest:'forestArea'};
+    if(window.FarmRushV3Map&&typeof window.FarmRushV3Map.classic==='function')window.FarmRushV3Map.classic(ids[z]||'farmArea');
+    return;
+  }
+  if(window.FarmRushV3Map&&typeof window.FarmRushV3Map.classic==='function')window.FarmRushV3Map.classic(btn.dataset.panel||btn.dataset.target||'farmArea');
+}
+
+viewport.addEventListener('pointerdown',function(e){
+  /* Laisse les contrôles HUD (recentrer etc.) fonctionner normalement. */
+  if(e.target.closest('#v3Center,#v3Hud,#v3Quest'))return;
+  active=true;
+  pointerId=e.pointerId;
+  startX=e.clientX;startY=e.clientY;
+  const p=currentTranslate();startTX=p.x;startTY=p.y;
+  moved=false;
+  candidate=e.target.closest('.v3Hotspot');
+  viewport.classList.add('v3011Dragging');
+  try{viewport.setPointerCapture(e.pointerId)}catch(_){}
+  e.preventDefault();
+  e.stopPropagation();
+},true);
+
+viewport.addEventListener('pointermove',function(e){
+  if(!active||e.pointerId!==pointerId)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  if(!moved&&Math.hypot(dx,dy)>=DRAG_THRESHOLD)moved=true;
+  if(moved)applyPos(startTX+dx,startTY+dy);
+  e.preventDefault();
+  e.stopPropagation();
+},true);
+
+function finish(e,cancelled){
+  if(!active||e.pointerId!==pointerId)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  const wasMoved=moved||Math.hypot(dx,dy)>=DRAG_THRESHOLD;
+  const btn=candidate;
+  active=false;pointerId=null;candidate=null;moved=false;
+  viewport.classList.remove('v3011Dragging');
+  try{viewport.releasePointerCapture(e.pointerId)}catch(_){}
+  e.preventDefault();
+  e.stopPropagation();
+  /* Seulement un vrai tap ouvre le bâtiment. */
+  if(!cancelled&&!wasMoved&&btn)openCandidate(btn);
+}
+viewport.addEventListener('pointerup',e=>finish(e,false),true);
+viewport.addEventListener('pointercancel',e=>finish(e,true),true);
+
+/* Bloque le click synthétique Safari après un drag/tap traité ci-dessus. */
+viewport.addEventListener('click',function(e){
+  if(e.target.closest('.v3Hotspot')){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+},true);
+
+/* Nettoyage immédiat des anciens éléments qui peuvent déjà avoir été injectés. */
+function cleanupTopBar(){
+  const strip=document.getElementById('v280WorldStrip');if(strip)strip.style.display='none';
+  document.querySelectorAll('#game>.v280Path').forEach(el=>el.style.display='none');
+  const badge=document.getElementById('starter26Badge');if(badge)badge.style.display='none';
+}
+cleanupTopBar();
+const oldShow=window.FarmRushV3Map&&window.FarmRushV3Map.show;
+if(oldShow){
+  window.FarmRushV3Map.show=function(){const r=oldShow.apply(this,arguments);cleanupTopBar();return r};
+}
+setTimeout(cleanupTopBar,100);
+})();
+</script>
+
 </body>
 </html>
