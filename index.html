@@ -13197,5 +13197,49 @@ window.FarmRushV305Separated={assets:true};
 })();
 </script>
 
+
+<style id="v310-bigmap-shop-css">
+#v3World{width:1180px!important;height:1780px!important;background-position:center 170px!important;background-repeat:no-repeat!important;background-color:#70b84a!important}
+#v3World:before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(135deg,#83cf54,#5fa942 50%,#7ac34e)}
+#v310Shop{position:absolute;inset:0;z-index:190;display:none;overflow:auto;background:#e4f3c9;padding:72px 14px 105px}
+#v310Shop.open{display:block}.v310Grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.v310Card{background:#fff7df;border:2px solid #d5b97c;border-radius:17px;padding:11px;box-shadow:0 5px 12px #0002}
+.v310Card h3{margin:0 0 4px;font-size:14px}.v310Card p{margin:0 0 8px;font-size:10px;color:#655}
+.v310Card button{width:100%;border:0;border-radius:11px;padding:9px;background:#55a934;color:white;font-weight:1000}.v310Card.locked{filter:saturate(.5)}
+#v310Close{position:absolute;right:14px;top:58px;width:42px;height:42px;border:0;border-radius:50%;background:#345b31;color:white;font-size:22px}
+#v310Placement{display:none;position:absolute;left:50%;bottom:95px;transform:translateX(-50%);z-index:195;background:#244e3aee;color:white;border-radius:17px;padding:10px;width:min(92%,420px);text-align:center;font-weight:900}
+#v310Placement.on{display:block}#v310Placement button{border:0;border-radius:10px;padding:8px 12px;margin:6px 3px 0;font-weight:1000}
+.v310Hidden{display:none!important}.v310Ghost{opacity:.72!important;outline:3px dashed white!important}
+.v310Expansion{position:absolute!important;z-index:12!important;border:3px dashed #fff9;border-radius:30px;background:#6abf4933;display:grid;place-items:center;color:white;font-weight:1000;text-shadow:0 2px 3px #0007}
+</style>
+<script id="v310-bigmap-shop-js">
+(function(){
+const world=document.getElementById('v3World'),shell=document.getElementById('v3MapShell');if(!world||!shell)return;
+document.title='Farm Rush V3.1 — Grande ferme';
+const SAVE='farmRushV310Layout';let data={owned:{},pos:{}};try{Object.assign(data,JSON.parse(localStorage.getItem(SAVE)||'{}'))}catch(e){}
+const save=()=>localStorage.setItem(SAVE,JSON.stringify(data));
+const level=()=>Number(window.state?.level||27), money=()=>Number(window.state?.money||0);
+const cat=[
+['Poulailler','Poulailler',5,1000,'coopBought'],['Grange','Étable',9,4000,'barnBought'],['Moulin','Moulin',12,10000,'millBought'],
+['Boulangerie','Boulangerie',13,15000,'bakeryBought'],['Laiterie','Laiterie',15,18000,'dairyBought'],['Usine','Usine à pâtes',17,30000,'factoryBought'],
+['Cave','Cave',26,150000,'cellarBought'],['Scierie','Scierie',39,320000,'sawmillBought'],['Fonderie','Fonderie',43,650000,'foundryBought'],
+['Atelier industriel','Atelier industriel',46,850000,'industrialBought'],['Station irrigation',"Station d’irrigation",48,950000,'irrigationBought']];
+const hs=k=>[...world.querySelectorAll('.v3Hotspot')].find(x=>(x.getAttribute('aria-label')||'')===k);
+cat.forEach(c=>{if(window.state?.[c[4]])data.owned[c[0]]=true;const b=hs(c[0]);if(b&&!data.owned[c[0]])b.classList.add('v310Hidden')});
+[['🌲 FUTURE PARCELLE',20,90,240,600],['🌳 FUTURE PARCELLE',920,400,230,700],['🌾 FUTURE PARCELLE',270,1510,650,210]].forEach(a=>{let d=document.createElement('div');d.className='v310Expansion';d.textContent=a[0];Object.assign(d.style,{left:a[1]+'px',top:a[2]+'px',width:a[3]+'px',height:a[4]+'px'});world.appendChild(d)});
+let shop=document.createElement('section');shop.id='v310Shop';shop.innerHTML='<button id="v310Close">×</button><h2>🛒 SHOP</h2><p>Achète un bâtiment puis place-le où tu veux sur ta ferme.</p><div class="v310Grid"></div>';shell.appendChild(shop);
+function render(){let g=shop.querySelector('.v310Grid');g.innerHTML='';cat.forEach(c=>{let own=!!data.owned[c[0]],ok=level()>=c[2],x=document.createElement('div');x.className='v310Card'+(!ok?' locked':'');x.innerHTML='<h3>'+c[1]+'</h3><p>'+(ok?'Disponible':'🔒 Niveau '+c[2]+' requis')+'</p><button '+(own||!ok?'disabled':'')+'>'+(own?'✓ POSSÉDÉ':ok?c[3].toLocaleString('fr-FR')+' 🪙':'VERROUILLÉ')+'</button>';if(ok&&!own)x.querySelector('button').onclick=()=>buy(c);g.appendChild(x)})}
+function open(){render();shop.classList.add('open')}shop.querySelector('#v310Close').onclick=()=>shop.classList.remove('open');
+let place=null,panel=document.createElement('div');panel.id='v310Placement';panel.innerHTML='📍 Déplace le bâtiment sur la carte<br><button id="v310Ok">✓ PLACER</button><button id="v310No">ANNULER</button>';shell.appendChild(panel);
+function buy(c){if(money()<c[3])return alert("Pas assez d’argent.");if(window.state&&typeof state.money==='number'){state.money-=c[3];if(typeof saveGame==='function')saveGame()}data.owned[c[0]]=true;let b=hs(c[0]);if(!b)return;b.classList.remove('v310Hidden');b.classList.add('v310Ghost');b.style.left='590px';b.style.top='900px';place={c,b};shop.classList.remove('open');panel.classList.add('on');save()}
+world.addEventListener('pointerdown',e=>{if(!place)return;e.preventDefault();e.stopImmediatePropagation();let r=world.getBoundingClientRect(),sx=1180/r.width,sy=1780/r.height,x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy;place.b.style.left=Math.max(60,Math.min(1120,Math.round(x/20)*20))+'px';place.b.style.top=Math.max(80,Math.min(1700,Math.round(y/20)*20))+'px'},true);
+panel.querySelector('#v310Ok').onclick=()=>{if(!place)return;data.pos[place.c[0]]={x:place.b.style.left,y:place.b.style.top};place.b.classList.remove('v310Ghost');place=null;panel.classList.remove('on');save()};
+panel.querySelector('#v310No').onclick=()=>{if(!place)return;data.owned[place.c[0]]=false;place.b.classList.add('v310Hidden');place.b.classList.remove('v310Ghost');place=null;panel.classList.remove('on');save()};
+cat.forEach(c=>{let b=hs(c[0]),q=data.pos[c[0]];if(b&&q){b.style.left=q.x;b.style.top=q.y}});
+document.querySelectorAll('nav button,#mainNav button').forEach(b=>{if((b.textContent||'').toUpperCase().includes('SHOP'))b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open()},true)});
+window.FarmRushV310={openShop:open};save();
+})();
+</script>
+
 </body>
 </html>
