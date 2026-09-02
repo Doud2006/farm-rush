@@ -12844,5 +12844,71 @@ if(typeof oldRB==='function')window.renderBuildings=function(){
 window.FarmRushV3Solo={open,close,get current(){return currentId}};
 })();
 </script>
+
+
+<!-- =====================================================
+     FARM RUSH V3.0.3 — MAISON = STOCK / CHAMPS CLIQUABLES
+     - toucher la maison ouvre uniquement le stock
+     - toucher les champs ouvre uniquement les parcelles
+     - retour FERME pour revenir à la carte
+====================================================== -->
+<style id="v303-house-fields-css">
+body.v302SoloMode #stockPanel.v302SoloActive{display:block!important;width:100%!important;max-width:none!important}
+body.v302SoloMode #stockPanel.v302SoloActive .stockGrid{display:grid!important}
+</style>
+<script id="v303-house-fields-js">
+(function(){
+'use strict';
+document.title='Farm Rush V3.0.3 — Maison & Champs';
+const ver=document.querySelector('.version');
+if(ver)ver.textContent='V3.0.3 — Maison & Champs';
+
+/* Donne un identifiant stable au panneau de stock déjà présent dans le jeu. */
+const stock=document.getElementById('stock');
+const stockPanel=stock&&stock.closest('.panel');
+if(stockPanel&&!stockPanel.id)stockPanel.id='stockPanel';
+
+/* La maison de la map devient l'entrée du stock. */
+const house=document.querySelector('#v3World .v3Hotspot[aria-label="Maison ferme"]');
+if(house){
+  house.removeAttribute('data-target');
+  house.removeAttribute('data-panel');
+  house.removeAttribute('data-zone');
+  house.dataset.target='stockPanel';
+  house.setAttribute('aria-label','Maison — Stock');
+}
+
+/* Les champs restent une vraie entrée vers la page de culture. */
+const fields=document.querySelector('#v3World .v3Hotspot[aria-label="Champs"]');
+if(fields){
+  fields.removeAttribute('data-panel');
+  fields.removeAttribute('data-zone');
+  fields.dataset.target='farmArea';
+}
+
+/* Ajoute les icônes des deux nouvelles pages au bandeau solo. */
+const oldSolo=window.FarmRushV3Solo;
+if(oldSolo&&typeof oldSolo.open==='function'){
+  const oldOpen=oldSolo.open.bind(oldSolo);
+  oldSolo.open=function(id,label,opts){
+    const ok=oldOpen(id,label,opts);
+    if(ok){
+      const icon=document.getElementById('v302SoloIcon');
+      const title=document.getElementById('v302SoloTitle');
+      if(id==='stockPanel'){
+        if(icon)icon.textContent='🏡';
+        if(title)title.textContent='MAISON — STOCK';
+        try{if(typeof renderStock==='function')renderStock()}catch(_){}
+      }else if(id==='farmArea'){
+        if(icon)icon.textContent='🌾';
+        if(title)title.textContent='CHAMPS';
+        try{if(typeof renderFields==='function')renderFields()}catch(_){}
+      }
+    }
+    return ok;
+  };
+}
+})();
+</script>
 </body>
 </html>
