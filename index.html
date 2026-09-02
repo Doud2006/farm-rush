@@ -12083,5 +12083,158 @@ setInterval(()=>{if(game.classList.contains('farmMapMode'))refresh();},1500);
 })();
 </script>
 
+<style id="v294-irrigation-css">
+/* V2.9.4 — Station d'irrigation */
+.irrigationPanel{background:linear-gradient(145deg,#e8f8ff,#bfe6ef)!important;border-color:#55a8bd!important;overflow:hidden}
+.irrigationHeader{display:flex;align-items:center;gap:11px;margin-bottom:9px}.irrigationBigIcon{font-size:48px;filter:drop-shadow(0 3px 2px rgba(20,80,100,.18))}.irrigationTitle{font-size:14px;font-weight:1000}.irrigationSub{font-size:10px;color:#3d6874;line-height:1.45}
+.irrigationScene{position:relative;height:110px;margin:8px 0 12px;border-radius:17px;overflow:hidden;background:linear-gradient(180deg,#86d8f0 0 48%,#7fc66a 48% 100%);border:1px solid rgba(35,110,130,.25)}
+.irrigationScene:before{content:"";position:absolute;left:18px;right:18px;bottom:16px;height:8px;border-radius:999px;background:#4d8796;box-shadow:0 0 0 3px #d8f7ff inset}
+.irrigationScene:after{content:"💧   💧   💧   💧";position:absolute;left:50%;top:27px;transform:translateX(-50%);font-size:23px;white-space:nowrap;animation:v294Water 1.25s ease-in-out infinite alternate;filter:drop-shadow(0 2px 2px #0878)}
+.irrigationSprinkler{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);font-size:31px}.irrigationSun{position:absolute;right:17px;top:10px;font-size:28px}.irrigationCloud{position:absolute;left:18px;top:9px;font-size:27px;opacity:.8}
+@keyframes v294Water{to{transform:translateX(-50%) translateY(7px);opacity:.72}}
+.irrigationStats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.irrigationStat{background:rgba(255,255,255,.78);border:1px solid rgba(55,130,150,.2);border-radius:14px;padding:10px;text-align:center}.irrigationStat b{display:block;font-size:16px}.irrigationStat small{font-size:9px;color:#52727a}
+.irrigationStatus{padding:10px;border-radius:13px;background:rgba(255,255,255,.74);border:1px solid rgba(55,130,150,.2);font-size:10px;line-height:1.55}.irrigationOn{color:#13814c;font-weight:1000}.irrigationOff{color:#a6533b;font-weight:1000}
+.irrigationReq{margin-top:8px;padding:9px;border-radius:12px;background:#f4fbfd;border:1px solid #b8dfe8;font-size:9px;line-height:1.55}.irrigationReq.ok{border-color:#8ccaa4;background:#f0fbf3}.irrigationReq.bad{border-color:#e3b5a8;background:#fff5f1}
+.irrigationActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.irrigationActions .full{grid-column:1/-1}
+.irrigationMapNode{border-color:#72cce0!important;background:linear-gradient(180deg,#eaffff,#bdeaf4)!important}
+.irrigationMapNode .ico{filter:drop-shadow(0 2px 1px #fff)}
+@media(prefers-reduced-motion:reduce){.irrigationScene:after{animation:none!important}}
+</style>
+<script id="v294-irrigation-js">
+(function(){
+  'use strict';
+  document.title='Farm Rush V2.9.4';
+  const ver=document.querySelector('.version');if(ver)ver.textContent='V2.9.4 — Station d’irrigation';
+
+  const IRRIGATION_UNLOCK=48;
+  const IRRIGATION_PRICE=950000;
+  const IRRIGATION_REDUCTIONS=[0,.10,.18,.25,.33,.40];
+  const IRRIGATION_UPGRADES={
+    1:{money:350000,req:{mechanicalParts:2,toolKit:1}},
+    2:{money:550000,req:{mechanicalParts:3,toolKit:2,machineCore:1}},
+    3:{money:850000,req:{mechanicalParts:4,toolKit:2,machineCore:2}},
+    4:{money:1200000,req:{mechanicalParts:5,toolKit:3,machineCore:3,goldIngot:1}}
+  };
+  const BUY_REQ={machineCore:1,mechanicalParts:2};
+
+  function normalizeIrrigation(){
+    state.irrigationBought=!!state.irrigationBought;
+    state.irrigationLevel=Math.max(0,Math.min(5,Math.floor(Number(state.irrigationLevel)||0)));
+    if(state.irrigationBought&&state.irrigationLevel<1)state.irrigationLevel=1;
+    if(typeof state.irrigationEnabled!=='boolean')state.irrigationEnabled=state.irrigationBought;
+    const n=Number(state.irrigationLastTick);state.irrigationLastTick=Number.isFinite(n)&&n>0?n:Date.now();
+  }
+  normalizeIrrigation();
+
+  function reduction(){return IRRIGATION_REDUCTIONS[state.irrigationLevel]||0;}
+  function pct(){return Math.round(reduction()*100);}
+  function itemLabel(k){const p=(window.PRODUCTS&&PRODUCTS[k])||(window.CROPS&&CROPS[k])||{};return `${p.icon||'📦'} ${p.name||k}`;}
+  function hasReq(req){return Object.entries(req||{}).every(([k,n])=>(state.stock[k]||0)>=n);}
+  function reqHtml(req){return Object.entries(req||{}).map(([k,n])=>`${itemLabel(k)} <b>${state.stock[k]||0}/${n}</b>`).join(' • ');}
+  function consumeReq(req){Object.entries(req||{}).forEach(([k,n])=>state.stock[k]=Math.max(0,(state.stock[k]||0)-n));}
+
+  function irrigatedArrays(){
+    const out=[];
+    if(Array.isArray(state.fields))out.push(state.fields);
+    if(state.orchardBought&&Array.isArray(state.orchardFields))out.push(state.orchardFields);
+    if(state.vineyardBought&&Array.isArray(state.vineyardFields))out.push(state.vineyardFields);
+    return out;
+  }
+  function processIrrigation(force){
+    normalizeIrrigation();
+    const now=Date.now();
+    let elapsed=Math.max(0,now-state.irrigationLastTick);
+    // Même hors-ligne, le bonus est calculé au retour, mais limité à 2 h comme le reste du jeu.
+    elapsed=Math.min(elapsed,2*60*60*1000);
+    state.irrigationLastTick=now;
+    const r=reduction();
+    if(!state.irrigationBought||!state.irrigationEnabled||r<=0||elapsed<=0)return false;
+    // Pour obtenir exactement -X % sur le temps total, on retire un temps supplémentaire r/(1-r).
+    const extra=elapsed*(r/(1-r));
+    let changed=false;
+    irrigatedArrays().forEach(arr=>arr.forEach(f=>{
+      if(f&&Number(f.ready)>now){f.ready=Math.max(now,Number(f.ready)-extra);changed=true;}
+    }));
+    if(force&&changed){try{saveGame();}catch(e){}}
+    return changed;
+  }
+
+  function ensurePanel(){
+    const anchor=document.getElementById('industrialPanel')||document.getElementById('foundryPanel')||document.getElementById('minePanel');
+    if(anchor&&!document.getElementById('irrigationPanel')){const p=document.createElement('div');p.id='irrigationPanel';p.className='panel buildingPanel irrigationPanel';p.style.display='none';anchor.insertAdjacentElement('afterend',p);}
+  }
+  function nextUpgrade(){return IRRIGATION_UPGRADES[state.irrigationLevel]||null;}
+  function renderIrrigation(){
+    ensurePanel();normalizeIrrigation();processIrrigation(false);
+    const p=document.getElementById('irrigationPanel');if(!p)return;
+    p.style.display=state.irrigationBought?'block':'none';if(!state.irrigationBought)return;
+    const next=nextUpgrade();
+    const ready=next?state.money>=next.money&&hasReq(next.req):false;
+    p.innerHTML=`<div class="irrigationHeader"><div class="irrigationBigIcon">💦</div><div><div class="irrigationTitle">STATION D’IRRIGATION</div><div class="irrigationSub">Accélère automatiquement la pousse des champs, du verger et du vignoble sans remplacer tes ouvriers.</div></div></div>
+      <div class="irrigationScene"><span class="irrigationCloud">☁️</span><span class="irrigationSun">☀️</span><span class="irrigationSprinkler">🚿</span></div>
+      <div class="irrigationStats"><div class="irrigationStat"><b>Niv. ${state.irrigationLevel}/5</b><small>Station</small></div><div class="irrigationStat"><b>−${pct()}%</b><small>Temps de pousse</small></div></div>
+      <div class="irrigationStatus">${state.irrigationEnabled?'<span class="irrigationOn">● ACTIVE</span> — l’arrosage fonctionne sur toutes tes cultures.':'<span class="irrigationOff">● EN PAUSE</span> — aucun bonus appliqué.'}<br>🌾 Champs • 🍎 Verger • 🍇 Vignoble</div>
+      ${next?`<div class="irrigationReq ${ready?'ok':'bad'}"><b>Prochaine amélioration : −${Math.round(IRRIGATION_REDUCTIONS[state.irrigationLevel+1]*100)}%</b><br>💰 ${next.money.toLocaleString('fr-FR')} 🪙 • ${reqHtml(next.req)}</div>`:'<div class="irrigationReq ok"><b>✅ STATION AU NIVEAU MAXIMUM</b><br>Temps de pousse réduit de 40 % sur toutes les cultures.</div>'}
+      <div class="irrigationActions"><button class="btn ${state.irrigationEnabled?'orange':'blue'}" onclick="toggleIrrigation()">${state.irrigationEnabled?'⏸ PAUSE':'▶ ACTIVER'}</button><button class="btn gold" onclick="upgradeIrrigation()" ${next?'':'disabled'}>${next?'⬆️ AMÉLIORER':'✅ MAX'}</button></div>`;
+  }
+
+  window.toggleIrrigation=function(){normalizeIrrigation();if(!state.irrigationBought)return;processIrrigation(true);state.irrigationEnabled=!state.irrigationEnabled;state.irrigationLastTick=Date.now();showFloatingText(state.irrigationEnabled?'💦 IRRIGATION ACTIVE':'⏸ IRRIGATION EN PAUSE');tone(state.irrigationEnabled?980:520,.05);saveGame();renderIrrigation();if(window.FarmRushMap)FarmRushMap.refresh();};
+
+  window.buyIrrigation=function(){
+    normalizeIrrigation();
+    if(state.irrigationBought)return;
+    if(state.level<IRRIGATION_UNLOCK)return toast(`Station d’irrigation débloquée au niveau ${IRRIGATION_UNLOCK}.`);
+    if(!state.industrialBought)return toast("Il faut d’abord construire l’Atelier industriel.");
+    if(state.money<IRRIGATION_PRICE)return toast("Pas assez d’argent.");
+    if(!hasReq(BUY_REQ))return toast('Il faut 1 module de machine et 2 pièces mécaniques.');
+    state.money-=IRRIGATION_PRICE;consumeReq(BUY_REQ);state.irrigationBought=true;state.irrigationLevel=1;state.irrigationEnabled=true;state.irrigationLastTick=Date.now();
+    showFloatingText('💦 STATION D’IRRIGATION CONSTRUITE');tone(1080,.08);saveGame();render();openShop('buildings');if(window.FarmRushMap)FarmRushMap.refresh();
+  };
+
+  window.upgradeIrrigation=function(){
+    normalizeIrrigation();processIrrigation(true);if(!state.irrigationBought)return;
+    const next=nextUpgrade();if(!next)return toast('Station déjà au niveau maximum.');
+    if(state.money<next.money)return toast("Pas assez d’argent.");
+    if(!hasReq(next.req))return toast('Il manque des composants industriels.');
+    state.money-=next.money;consumeReq(next.req);state.irrigationLevel++;state.irrigationLastTick=Date.now();
+    showFloatingText(`💦 IRRIGATION −${pct()}%`);tone(1040,.06);saveGame();render();renderIrrigation();if(window.FarmRushMap)FarmRushMap.refresh();
+  };
+
+  const prevUpdate=window.updateProductions;
+  if(typeof prevUpdate==='function')window.updateProductions=function(){const r=prevUpdate.apply(this,arguments);processIrrigation(false);return r;};
+
+  const prevRenderBuildings=window.renderBuildings;
+  if(typeof prevRenderBuildings==='function')window.renderBuildings=function(){const r=prevRenderBuildings.apply(this,arguments);renderIrrigation();return r;};
+
+  const prevShopBuildings=window.shopBuildings;
+  if(typeof prevShopBuildings==='function')window.shopBuildings=function(){let html=prevShopBuildings.apply(this,arguments);const req=`Niveau ${IRRIGATION_UNLOCK} + Atelier + 1 🛠️ + 2 ⚙️`;html+=shopCard('💦','Station d’irrigation','Réduit automatiquement le temps de pousse des champs, du verger et du vignoble. Niveau 1 : −10 %, jusqu’à −40 % au niveau 5.',IRRIGATION_PRICE,state.level>=IRRIGATION_UNLOCK&&state.industrialBought,'buyIrrigation()',state.irrigationBought,req);return html;};
+
+  const prevGoal=window.renderGoal;
+  if(typeof prevGoal==='function')window.renderGoal=function(){const r=prevGoal.apply(this,arguments);if(state.level>=IRRIGATION_UNLOCK&&state.industrialBought&&!state.irrigationBought){const ic=document.getElementById('goalIcon'),ti=document.getElementById('goalTitle'),tx=document.getElementById('goalText'),fi=document.getElementById('goalFill');if(ic)ic.textContent='💦';if(ti)ti.textContent='OBJECTIF : STATION D’IRRIGATION';if(tx)tx.textContent=`${Math.floor(state.money).toLocaleString('fr-FR')} / ${IRRIGATION_PRICE.toLocaleString('fr-FR')} 🪙 + composants`;if(fi)fi.style.width=Math.min(100,state.money/IRRIGATION_PRICE*100)+'%';}return r;};
+
+  const prevLevelReward=window.levelReward;
+  if(typeof prevLevelReward==='function')window.levelReward=function(level){const r=prevLevelReward.apply(this,arguments);if(level===48){const el=document.getElementById('levelUpReward');if(el)el.innerHTML=(el.innerHTML||'')+'<br><b>💦 Nouveau :</b> Station d’irrigation (jusqu’à −40 % de temps de pousse).';}return r;};
+
+  function addMapNode(){
+    const world=document.getElementById('farmMapWorld');if(!world||document.getElementById('irrigationMapNode'))return;
+    const btn=document.createElement('button');btn.id='irrigationMapNode';btn.className='mapNode irrigationMapNode';btn.dataset.mapPanel='irrigationPanel';btn.dataset.owned='irrigationBought';btn.dataset.level=String(IRRIGATION_UNLOCK);btn.style.left='1010px';btn.style.top='545px';btn.innerHTML='<span class="ico">💦</span><span class="nm">IRRIGATION</span><span class="sub">Arrosage auto</span>';
+    world.appendChild(btn);
+    let sx=0,sy=0,pid=null,mv=false;
+    btn.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;pid=e.pointerId;mv=false;e.stopPropagation();},{passive:true});
+    btn.addEventListener('pointermove',e=>{if(pid!==e.pointerId)return;if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>10)mv=true;e.stopPropagation();},{passive:true});
+    btn.addEventListener('pointerup',e=>{if(pid!==e.pointerId)return;e.stopPropagation();const open=!mv;pid=null;mv=false;if(!open)return;e.preventDefault();if(!state.irrigationBought){if(state.level<IRRIGATION_UNLOCK)toast(`🔒 Disponible au niveau ${IRRIGATION_UNLOCK}`);else openShop('buildings');return;}if(window.FarmRushMap)FarmRushMap.list('irrigationPanel');});
+    btn.addEventListener('pointercancel',()=>{pid=null;mv=false;});btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();});
+    if(window.FarmRushMap)FarmRushMap.refresh();
+  }
+
+  // Sauvegarde avant fermeture + traitement immédiat au retour.
+  window.addEventListener('pagehide',()=>{try{processIrrigation(true);saveGame(true);}catch(e){}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){try{processIrrigation(true);saveGame(true);}catch(e){}}else{processIrrigation(false);try{renderFields();renderIrrigation();}catch(e){}}});
+
+  ensurePanel();addMapNode();processIrrigation(false);
+  try{renderBuildings();renderGoal();saveGame();if(window.FarmRushMap)FarmRushMap.refresh();}catch(e){console.error('V2.9.4 init irrigation',e);}
+})();
+</script>
+
 </body>
 </html>
