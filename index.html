@@ -13359,5 +13359,238 @@ window.FarmRushV311={fixed:true};
 })();
 </script>
 
+
+<!-- ======================================================
+ FARM RUSH V3.1.2 — CORRECTIF SAUVEGARDE + SHOP + ZONES
+====================================================== -->
+<style id="v312-fix-css">
+/* Retire totalement les crops rectangulaires qui débordaient sur la carte */
+#v3World .v311ZoneArt{display:none!important}
+
+/* Nouvelles zones propres, dessinées directement dans le jeu */
+#v3World .v312ZoneVisual{
+  position:absolute;inset:7%;z-index:2;pointer-events:none;
+  border:5px solid rgba(105,74,36,.48);
+  box-shadow:0 8px 15px rgba(48,74,33,.25),inset 0 0 0 2px rgba(255,255,255,.13);
+}
+#v3World .v312-fields{
+  border-radius:28px 36px 24px 34px;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 27px,rgba(89,55,25,.30) 28px 32px),
+    repeating-linear-gradient(0deg,#e3b83e 0 20px,#69a943 21px 41px,#ef8c37 42px 62px);
+}
+#v3World .v312-orchard{
+  border-radius:42% 35% 39% 31%;
+  background:
+    radial-gradient(circle at 18% 24%,#e64d37 0 5px,#2d793c 6px 17px,transparent 18px),
+    radial-gradient(circle at 50% 23%,#f05a3c 0 5px,#2f8241 6px 18px,transparent 19px),
+    radial-gradient(circle at 80% 26%,#e64d37 0 5px,#2d793c 6px 17px,transparent 18px),
+    radial-gradient(circle at 28% 66%,#f05a3c 0 5px,#347f40 6px 19px,transparent 20px),
+    radial-gradient(circle at 68% 68%,#e64d37 0 5px,#2e793b 6px 18px,transparent 19px),
+    #70b44b;
+}
+#v3World .v312-vineyard{
+  border-radius:31px 42px 30px 39px;
+  background:
+    repeating-linear-gradient(105deg,transparent 0 23px,rgba(84,48,30,.42) 24px 28px),
+    radial-gradient(circle,#7d3d9b 0 4px,#4e8539 5px 12px,transparent 13px);
+  background-size:auto,31px 31px;
+  background-color:#71ae45;
+}
+#v3World .v312-pond{
+  border-radius:48% 52% 44% 56%;
+  border-color:#7e8c5f;
+  background:
+    radial-gradient(circle at 22% 28%,rgba(255,255,255,.48) 0 3px,transparent 4px),
+    radial-gradient(circle at 73% 62%,#8dcf5d 0 7px,transparent 8px),
+    linear-gradient(145deg,#55c4df,#2592c7 55%,#176ca8);
+}
+#v3World .v312-mine{
+  border-radius:45% 47% 38% 42%;
+  background:
+    radial-gradient(circle at 50% 62%,#201d1b 0 23%,#554a3d 24% 34%,transparent 35%),
+    radial-gradient(circle at 25% 28%,#9a9481 0 9%,transparent 10%),
+    radial-gradient(circle at 75% 25%,#777160 0 11%,transparent 12%),
+    #706b5e;
+}
+#v3World .v312ZoneVisual:after{
+  content:"";position:absolute;left:8%;right:8%;bottom:-7px;height:14px;
+  border-radius:50%;background:rgba(70,52,27,.18);filter:blur(5px)
+}
+</style>
+
+<script id="v312-fix-js">
+(function(){
+'use strict';
+const world=document.getElementById('v3World');
+const shell=document.getElementById('v3MapShell');
+if(!world||!shell)return;
+
+document.title='Farm Rush V3.1.2 — Shop corrigé';
+const version=document.querySelector('.version');
+if(version)version.textContent='V3.1.2 — Shop corrigé';
+
+/* IMPORTANT :
+   "state" est un let global lexical dans Farm Rush.
+   Il n'existe donc PAS sous window.state.
+   Les V3.1 précédentes lisaient window.state => argent 0 et bâtiments "non possédés".
+*/
+function gameState(){
+  try { if(typeof state!=='undefined' && state) return state; } catch(e){}
+  return window.state||{};
+}
+function persistGame(){
+  try { if(typeof saveGame==='function') saveGame(); } catch(e){}
+}
+
+const rows=[
+  {key:'Poulailler',name:'Poulailler',lvl:5,price:1000,prop:'coopBought',buy:()=>buyBuilding('coop')},
+  {key:'Grange',name:'Étable',lvl:9,price:4000,prop:'barnBought',buy:()=>buyBuilding('barn')},
+  {key:'Moulin',name:'Moulin',lvl:12,price:10000,prop:'millBought',buy:()=>buyBuilding('mill')},
+  {key:'Boulangerie',name:'Boulangerie',lvl:13,price:15000,prop:'bakeryBought',buy:()=>buyBuilding('bakery')},
+  {key:'Laiterie',name:'Laiterie / Fromagerie',lvl:15,price:18000,prop:'dairyBought',buy:()=>buyBuilding('dairy')},
+  {key:'Usine',name:'Usine à pâtes',lvl:17,price:30000,prop:'pastaBought',buy:()=>buyBuilding('pasta')},
+  {key:'Cave',name:'Cave',lvl:26,price:150000,prop:'cellarBought',buy:()=>buyBuilding('cellar')},
+  {key:'Scierie',name:'Scierie',lvl:39,price:320000,prop:'sawmillBought',buy:()=>buyBuilding('sawmill')},
+  {key:'Fonderie',name:'Fonderie',lvl:43,price:650000,prop:'foundryBought',buy:()=>buyFoundry()},
+  {key:'Atelier industriel',name:'Atelier industriel',lvl:46,price:850000,prop:'industrialBought',buy:()=>buyIndustrial()},
+  {key:'Station irrigation',name:"Station d’irrigation",lvl:48,price:950000,prop:'irrigationBought',buy:()=>buyIrrigation()}
+];
+
+function hotspot(key){
+  return [...world.querySelectorAll('.v3Hotspot')].find(b=>(b.getAttribute('aria-label')||'')===key);
+}
+function syncOwned(){
+  const s=gameState();
+  rows.forEach(r=>{
+    const own=!!s[r.prop];
+    if(window.FarmRushV310?.layout?.owned)window.FarmRushV310.layout.owned[r.key]=own;
+    const b=hotspot(r.key);
+    if(b)b.classList.toggle('v310Hidden',!own);
+  });
+  // Fromagerie est le même bâtiment logique que Laiterie.
+  const fr=hotspot('Fromagerie');
+  if(fr)fr.classList.toggle('v310Hidden',!s.dairyBought);
+  // Zones naturelles possédées.
+  [['Mine','mineBought'],['Vignoble','vineyardBought'],['Verger','orchardBought'],['Étang','pondBought']]
+    .forEach(([k,p])=>{const b=hotspot(k);if(b)b.classList.toggle('v310Hidden',!s[p])});
+}
+
+/* Remplace les morceaux d'images rectangulaires par des zones propres. */
+const zoneKinds={Champs:'fields',Verger:'orchard',Vignoble:'vineyard','Étang':'pond',Mine:'mine'};
+for(const [name,kind] of Object.entries(zoneKinds)){
+  const b=hotspot(name); if(!b)continue;
+  b.querySelectorAll('.v311ZoneArt,.v312ZoneVisual').forEach(n=>n.remove());
+  const v=document.createElement('span');
+  v.className='v312ZoneVisual v312-'+kind;
+  b.prepend(v);
+}
+
+/* Reconstruit entièrement le SHOP V3.1 avec la vraie sauvegarde. */
+const shop=document.getElementById('v310Shop');
+if(shop){
+  function renderFixedShop(){
+    const s=gameState();
+    const grid=shop.querySelector('.v310Grid');
+    if(!grid)return;
+    grid.innerHTML='';
+    rows.forEach(r=>{
+      const owned=!!s[r.prop];
+      const unlocked=Number(s.level||1)>=r.lvl;
+      const card=document.createElement('article');
+      card.className='v310Card'+(!unlocked?' locked':'');
+      let status=owned?'✅ Déjà construit':(unlocked?'Disponible':'🔒 Niveau '+r.lvl+' requis');
+      card.innerHTML=
+        '<h3>'+r.name+'</h3>'+
+        '<p>'+status+'</p>'+
+        '<button '+(owned||!unlocked?'disabled':'')+'>'+
+        (owned?'✓ POSSÉDÉ':unlocked?r.price.toLocaleString('fr-FR')+' 🪙':'VERROUILLÉ')+
+        '</button>';
+      const btn=card.querySelector('button');
+      if(!owned&&unlocked)btn.onclick=()=>purchaseAndPlace(r);
+      grid.appendChild(card);
+    });
+  }
+
+  function purchaseAndPlace(r){
+    const s=gameState();
+    if(s[r.prop]){syncOwned();renderFixedShop();return;}
+    if(Number(s.level||1)<r.lvl)return;
+    // Laisse TOUJOURS la fonction officielle du jeu gérer prix/prérequis.
+    const beforeMoney=Number(s.money||0);
+    try{r.buy()}catch(e){console.error(e);return}
+    const after=gameState();
+    if(!after[r.prop]){
+      // La fonction officielle a refusé l'achat (prérequis ou argent).
+      return;
+    }
+    persistGame();
+    syncOwned();
+    shop.classList.remove('open');
+
+    // Après un achat réussi seulement : passage en placement.
+    const b=hotspot(r.key);
+    const panel=document.getElementById('v310Placement');
+    if(b&&panel){
+      b.classList.remove('v310Hidden');
+      b.classList.add('v310Ghost');
+      b.style.left='590px';b.style.top='900px';
+      // réutilise le placement V3.1 en simulant ses données par un mini gestionnaire local
+      window.__v312Placement={r,b};
+      panel.classList.add('on');
+    }
+    try{render()}catch(e){}
+  }
+
+  // Intercepte l'ouverture du shop pour mettre son contenu à jour.
+  document.querySelectorAll('nav button,#mainNav button').forEach(btn=>{
+    if((btn.textContent||'').toUpperCase().includes('SHOP')){
+      btn.addEventListener('click',()=>{
+        setTimeout(()=>{syncOwned();renderFixedShop()},0);
+      },true);
+    }
+  });
+  const oldOpen=window.FarmRushV310?.openShop;
+  if(window.FarmRushV310)window.FarmRushV310.openShop=function(){
+    syncOwned();renderFixedShop();shop.classList.add('open');
+  };
+  // Quand le shop est déjà ouvert au chargement/clic.
+  const observer=new MutationObserver(()=>{if(shop.classList.contains('open'))renderFixedShop()});
+  observer.observe(shop,{attributes:true,attributeFilter:['class']});
+}
+
+/* Placement local corrigé pour les achats V3.1.2 */
+const placementPanel=document.getElementById('v310Placement');
+if(placementPanel){
+  const ok=placementPanel.querySelector('#v310Ok');
+  const no=placementPanel.querySelector('#v310No');
+  if(ok)ok.addEventListener('click',()=>{
+    const p=window.__v312Placement;if(!p)return;
+    p.b.classList.remove('v310Ghost');
+    try{
+      const raw=JSON.parse(localStorage.getItem('farmRushV310Layout')||'{}');
+      raw.owned=raw.owned||{};raw.pos=raw.pos||{};
+      raw.owned[p.r.key]=true;
+      raw.pos[p.r.key]={x:p.b.style.left,y:p.b.style.top};
+      localStorage.setItem('farmRushV310Layout',JSON.stringify(raw));
+    }catch(e){}
+    window.__v312Placement=null;
+  },true);
+  if(no)no.addEventListener('click',()=>{
+    const p=window.__v312Placement;if(!p)return;
+    /* ANNULER annule uniquement le placement visuel, PAS l'achat déjà payé. */
+    p.b.classList.remove('v310Ghost');
+    window.__v312Placement=null;
+    syncOwned();
+  },true);
+}
+
+syncOwned();
+setTimeout(syncOwned,250);
+setTimeout(syncOwned,1200);
+window.FarmRushV312={syncOwned,gameState};
+})();
+</script>
+
 </body>
 </html>
