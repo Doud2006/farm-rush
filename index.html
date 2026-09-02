@@ -11786,6 +11786,146 @@ button:not(:disabled):active{transform:translateY(1px) scale(.985)}
 
 
 
+
+<style id="v293-industrial-css">
+/* V2.9.3 — Atelier industriel */
+.industrialPanel{background:linear-gradient(145deg,#e7edf0,#bbc8cc)!important;border-color:#66787d!important;overflow:hidden}
+.industrialHeader{display:flex;align-items:center;gap:11px;margin-bottom:9px}.industrialBigIcon{font-size:48px;filter:drop-shadow(0 3px 2px rgba(30,40,45,.2))}.industrialTitle{font-size:14px;font-weight:1000}.industrialSub{font-size:10px;color:#46575d;line-height:1.45}
+.industrialScene{position:relative;height:98px;margin:8px 0 12px;border-radius:17px;overflow:hidden;background:linear-gradient(180deg,#8fa4aa 0 48%,#6d7474 48% 100%);border:1px solid rgba(35,50,55,.25)}
+.industrialScene:before{content:"";position:absolute;left:17px;right:17px;bottom:15px;height:42px;border-radius:9px;background:repeating-linear-gradient(90deg,#56656a 0 34px,#68797e 34px 68px);border:3px solid #435157;box-shadow:inset 0 -8px #3d474a}
+.industrialScene:after{content:"⚙️  🔧  ⚙️";position:absolute;left:50%;bottom:24px;transform:translateX(-50%);font-size:27px;white-space:nowrap;animation:v293Machine 2.3s ease-in-out infinite;filter:drop-shadow(0 2px 2px #0003)}
+.industrialLamp{position:absolute;right:18px;top:10px;font-size:27px;animation:v293Lamp 1.2s ease-in-out infinite alternate}.industrialSmoke{position:absolute;left:24px;top:8px;font-size:24px;opacity:.55}
+@keyframes v293Machine{50%{transform:translateX(-50%) translateY(-2px) scale(1.03)}}@keyframes v293Lamp{to{filter:brightness(1.35);transform:scale(1.06)}}
+.industrialGrid{display:grid;grid-template-columns:1fr;gap:10px}.industrialRecipe{background:rgba(250,253,252,.94);border:1px solid rgba(65,82,88,.2);border-radius:16px;padding:11px;box-shadow:0 4px 11px rgba(35,45,48,.11)}
+.industrialRecipe.locked{opacity:.62;filter:saturate(.45)}.industrialTop{display:flex;align-items:center;gap:9px}.industrialIcon{font-size:30px}.industrialName{font-weight:1000;font-size:12px}.industrialMeta{font-size:9px;color:#526166;line-height:1.45}.industrialProgress{height:9px;border-radius:999px;background:#c8d0d2;overflow:hidden;margin:8px 0}.industrialProgress>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4d8ea4,#75c1d0)}
+.industrialActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.industrialReady{animation:v293Ready 1.4s ease-in-out infinite}@keyframes v293Ready{50%{transform:translateY(-1px);filter:brightness(1.08)}}
+.industrialStore{margin-top:10px;padding:10px;border-radius:13px;background:rgba(255,255,255,.7);border:1px solid rgba(65,82,88,.17);font-size:10px}.industrialQtyBox{padding:3px}.industrialQtyInput{width:100%;box-sizing:border-box;padding:13px 12px;border-radius:13px;border:2px solid #aabcc2;background:#fff;font-size:18px;font-weight:900;text-align:center;outline:none}.industrialQtyPreview{margin-top:10px;padding:10px;border-radius:12px;background:#f1f7f8;border:1px solid #b9cbd0;font-size:10px;line-height:1.65}
+@media(prefers-reduced-motion:reduce){.industrialScene:after,.industrialLamp,.industrialReady{animation:none!important}}
+</style>
+
+<script id="v293-industrial-js">
+(function(){
+  'use strict';
+  document.title='Farm Rush V2.9.3';
+  const ver=document.querySelector('.version');
+  if(ver)ver.textContent='V2.9.3 — Atelier industriel';
+
+  const INDUSTRIAL_UNLOCK=46;
+  const INDUSTRIAL_PRICE=850000;
+  const INDUSTRIAL_RECIPES={
+    mechanicalParts:{icon:'⚙️',name:'Pièces mécaniques',level:46,time:360,req:{ironIngot:1,copperIngot:1},sell:65000,cap:12},
+    toolKit:{icon:'🧰',name:"Kit d’outils",level:47,time:480,req:{mechanicalParts:2,ironIngot:1},sell:175000,cap:8},
+    machineCore:{icon:'🛠️',name:'Module de machine',level:48,time:720,req:{mechanicalParts:2,copperIngot:1,goldIngot:1},sell:285000,cap:5}
+  };
+
+  Object.entries(INDUSTRIAL_RECIPES).forEach(([k,r])=>{PRODUCTS[k]={icon:r.icon,name:r.name,sell:r.sell};});
+
+  function normalizeIndustrial(){
+    state.industrialBought=!!state.industrialBought;
+    state.industrialStorageLevel=Math.max(0,Math.min(5,Math.floor(Number(state.industrialStorageLevel)||0)));
+    Object.keys(INDUSTRIAL_RECIPES).forEach(k=>{
+      const q=k+'Queue',w=k+'Waiting',l=k+'LastProduction';
+      state[q]=Math.max(0,Math.floor(Number(state[q])||0));
+      state[w]=Math.max(0,Math.floor(Number(state[w])||0));
+      if(!Number.isFinite(Number(state[l])))state[l]=Date.now();
+    });
+  }
+  normalizeIndustrial();
+
+  function storageMul(){return 1+state.industrialStorageLevel*.5;}
+  function industrialCap(k){return Math.max(1,Math.round(INDUSTRIAL_RECIPES[k].cap*storageMul()));}
+  function storageCost(){return [70000,140000,280000,490000,770000][state.industrialStorageLevel]||0;}
+  function fmt(sec){sec=Math.max(0,Math.floor(sec));const m=Math.floor(sec/60),s=sec%60;return m?`${m}m ${String(s).padStart(2,'0')}s`:`${s}s`;}
+  function ingredientName(k){const p=PRODUCTS[k]||CROPS[k]||{};return `${p.icon||'📦'} ${p.name||k}`;}
+  function maxCraft(r){let max=Infinity;for(const [k,n] of Object.entries(r.req))max=Math.min(max,Math.floor((state.stock[k]||0)/n));return Number.isFinite(max)?Math.max(0,max):0;}
+
+  function processIndustrial(){
+    normalizeIndustrial();
+    if(!state.industrialBought)return false;
+    let changed=false,now=Date.now();
+    Object.entries(INDUSTRIAL_RECIPES).forEach(([k,r])=>{
+      const q=k+'Queue',w=k+'Waiting',l=k+'LastProduction',cap=industrialCap(k);
+      if(state[q]<=0||state[w]>=cap){state[l]=now;return;}
+      const ms=r.time*1000;
+      let can=Math.floor(Math.max(0,now-state[l])/ms);
+      if(can<=0)return;
+      can=Math.min(can,state[q],cap-state[w]);
+      if(can<=0)return;
+      state[q]-=can;state[w]+=can;state[l]+=can*ms;changed=true;
+      if(state[q]<=0||state[w]>=cap)state[l]=now;
+    });
+    if(changed){try{saveGame();}catch(e){}}
+    return changed;
+  }
+
+  function remaining(k){const r=INDUSTRIAL_RECIPES[k],q=state[k+'Queue'],w=state[k+'Waiting'];if(!q||w>=industrialCap(k))return 0;return Math.max(0,Math.ceil((r.time*1000-(Date.now()-state[k+'LastProduction']))/1000));}
+  function progress(k){const r=INDUSTRIAL_RECIPES[k],q=state[k+'Queue'],w=state[k+'Waiting'];if(!q||w>=industrialCap(k))return 0;return Math.max(0,Math.min(100,((Date.now()-state[k+'LastProduction'])/(r.time*1000))*100));}
+
+  function ensureIndustrialDom(){
+    const anchor=document.getElementById('foundryPanel')||document.getElementById('minePanel')||document.getElementById('sawmillPanel');
+    if(anchor&&!document.getElementById('industrialPanel')){const p=document.createElement('div');p.id='industrialPanel';p.className='panel buildingPanel industrialPanel';p.style.display='none';anchor.insertAdjacentElement('afterend',p);}
+  }
+
+  function recipeHtml(k){
+    const r=INDUSTRIAL_RECIPES[k],unlocked=state.level>=r.level,q=state[k+'Queue'],w=state[k+'Waiting'],cap=industrialCap(k),rem=remaining(k),pct=progress(k);
+    const req=Object.entries(r.req).map(([a,n])=>`${n} ${ingredientName(a)}`).join(' + ');
+    return `<div class="industrialRecipe ${unlocked?'':'locked'}"><div class="industrialTop"><div class="industrialIcon">${r.icon}</div><div><div class="industrialName">${r.name}</div><div class="industrialMeta">Niv. ${r.level} • ${req} → 1 ${r.icon}<br>⏱️ ${fmt(r.time)} • vente ${r.sell.toLocaleString('fr-FR')} 🪙</div></div></div>${q>0?`<div class="industrialProgress"><i style="width:${pct}%"></i></div><div class="industrialMeta">⏳ ${rem?fmt(rem):'traitement…'} • file ${q}</div>`:''}<div class="industrialStore">📦 Prêts : <b>${w}/${cap}</b> • File : <b>${q}</b></div><div class="industrialActions"><button class="btn dark" ${!unlocked?'disabled':''} onclick="openIndustrialQty('${k}')">🏭 PRODUIRE</button><button class="btn orange ${w?'industrialReady':''}" ${w?'':'disabled'} onclick="collectIndustrial('${k}')">📦 RÉCUPÉRER (${w})</button></div></div>`;
+  }
+
+  function renderIndustrial(){
+    ensureIndustrialDom();processIndustrial();
+    const p=document.getElementById('industrialPanel');if(!p)return;
+    p.style.display=state.industrialBought?'block':'none';if(!state.industrialBought)return;
+    const cost=storageCost();
+    p.innerHTML=`<div class="industrialHeader"><div class="industrialBigIcon">🏭</div><div><div class="industrialTitle">ATELIER INDUSTRIEL</div><div class="industrialSub">Assemble les lingots de la fonderie en pièces, outils et modules de machines.</div></div></div><div class="industrialScene"><span class="industrialLamp">💡</span><span class="industrialSmoke">☁️</span></div><div class="industrialGrid">${Object.keys(INDUSTRIAL_RECIPES).map(recipeHtml).join('')}</div><div class="industrialStore"><b>📦 Stockage atelier — niv. ${state.industrialStorageLevel}/5</b><br>Capacité de chaque recette : x${storageMul().toFixed(1).replace('.0','')}<br><button class="btn gold full" style="margin-top:8px" onclick="upgradeIndustrialStorage()" ${state.industrialStorageLevel>=5?'disabled':''}>${state.industrialStorageLevel>=5?'✅ STOCKAGE MAX':`⬆️ AMÉLIORER — ${cost.toLocaleString('fr-FR')} 🪙`}</button></div>`;
+  }
+
+  window.openIndustrialQty=function(k){
+    normalizeIndustrial();processIndustrial();const r=INDUSTRIAL_RECIPES[k];
+    if(!state.industrialBought)return toast("Achète d'abord l'atelier industriel.");
+    if(!r||state.level<r.level)return toast(`Débloqué au niveau ${r?r.level:'?'}.`);
+    const max=maxCraft(r),free=Math.max(0,industrialCap(k)-state[k+'Waiting']-state[k+'Queue']),allowed=Math.min(max,free);
+    const req=Object.entries(r.req).map(([a,n])=>`${n} ${ingredientName(a)}`).join(' + ');
+    openModal('🏭 '+r.name,`<div class="industrialQtyBox"><div class="industrialQtyPreview"><b>${req} → 1 ${r.icon} ${r.name}</b><br>Maximum avec ton stock : <b>${max}</b><br>Places disponibles : <b>${free}</b></div><input id="industrialQtyInput" class="industrialQtyInput" type="number" inputmode="numeric" min="1" max="${allowed}" value="${allowed>0?1:0}" oninput="updateIndustrialQtyPreview('${k}')"><div id="industrialQtyPreview" class="industrialQtyPreview"></div><button class="btn gold full" style="margin-top:10px" ${allowed<1?'disabled':''} onclick="confirmIndustrialQty('${k}')">🏭 LANCER LA PRODUCTION</button></div>`);
+    updateIndustrialQtyPreview(k);
+  };
+
+  window.updateIndustrialQtyPreview=function(k){const r=INDUSTRIAL_RECIPES[k],input=document.getElementById('industrialQtyInput'),box=document.getElementById('industrialQtyPreview');if(!r||!input||!box)return;let q=Math.max(0,Math.floor(Number(input.value)||0));box.innerHTML='<b>Pour '+q+' :</b><br>'+Object.entries(r.req).map(([a,n])=>`${ingredientName(a)} : <b>${n*q}</b> / ${state.stock[a]||0}`).join('<br>')+`<br>${r.icon} Production finale : <b>${q}</b>`;};
+
+  window.confirmIndustrialQty=function(k){
+    normalizeIndustrial();processIndustrial();const r=INDUSTRIAL_RECIPES[k],input=document.getElementById('industrialQtyInput');if(!r||!input)return;
+    let q=Math.max(0,Math.floor(Number(input.value)||0)),max=maxCraft(r),free=Math.max(0,industrialCap(k)-state[k+'Waiting']-state[k+'Queue']);q=Math.min(q,max,free);
+    if(q<1)return toast('Quantité impossible avec ton stock ou ton stockage.');
+    for(const [a,n] of Object.entries(r.req))state.stock[a]-=n*q;
+    if(state[k+'Queue']<=0)state[k+'LastProduction']=Date.now();
+    state[k+'Queue']+=q;closeModal();showFloatingText(`🏭 +${q} en production`);tone(610,.05);saveGame();renderStock();renderOrders();renderIndustrial();
+  };
+
+  window.collectIndustrial=function(k){processIndustrial();normalizeIndustrial();const r=INDUSTRIAL_RECIPES[k];if(!r)return;const w=k+'Waiting',q=state[w]||0;if(q<1)return toast('Rien à récupérer.');state.stock[k]=(state.stock[k]||0)+q;state[w]=0;showFloatingText(`${r.icon} +${q}`);tone(920,.05);saveGame();renderStock();renderOrders();renderGoal();renderIndustrial();if(window.FarmRushMap)FarmRushMap.refresh();};
+
+  window.upgradeIndustrialStorage=function(){normalizeIndustrial();if(!state.industrialBought)return;if(state.industrialStorageLevel>=5)return toast('Stockage déjà au maximum.');const c=storageCost();if(state.money<c)return toast("Pas assez d'argent.");state.money-=c;state.industrialStorageLevel++;showFloatingText('📦 ATELIER +50%');tone(980,.05);saveGame();render();};
+
+  window.buyIndustrial=function(){normalizeIndustrial();if(state.industrialBought)return;if(state.level<INDUSTRIAL_UNLOCK)return toast(`Atelier industriel débloqué au niveau ${INDUSTRIAL_UNLOCK}.`);if(!state.foundryBought)return toast("Il faut d'abord acheter la Fonderie.");if(state.money<INDUSTRIAL_PRICE)return toast("Pas assez d'argent.");state.money-=INDUSTRIAL_PRICE;state.industrialBought=true;Object.keys(INDUSTRIAL_RECIPES).forEach(k=>state[k+'LastProduction']=Date.now());showFloatingText('🏭 ATELIER INDUSTRIEL CONSTRUIT');tone(690,.08);saveGame();render();openShop('buildings');};
+
+  const prevRenderBuildings=window.renderBuildings;
+  window.renderBuildings=function(){const r=prevRenderBuildings.apply(this,arguments);renderIndustrial();return r;};
+  const prevUpdateProductions=window.updateProductions;
+  window.updateProductions=function(){const r=prevUpdateProductions.apply(this,arguments);const changed=processIndustrial();if(changed&&!v260UiBusy())renderIndustrial();return r;};
+  const prevShopBuildings=window.shopBuildings;
+  window.shopBuildings=function(){let html=prevShopBuildings.apply(this,arguments);html+=shopCard('🏭','Atelier industriel','Assemble les lingots en pièces mécaniques, outils et modules de machines.',INDUSTRIAL_PRICE,state.level>=INDUSTRIAL_UNLOCK&&state.foundryBought,'buyIndustrial()',state.industrialBought,`Niveau ${INDUSTRIAL_UNLOCK} + Fonderie`);return html;};
+  const prevAvailable=window.availableOrderProducts;
+  window.availableOrderProducts=function(){const list=prevAvailable.apply(this,arguments);if(state.industrialBought)Object.entries(INDUSTRIAL_RECIPES).forEach(([k,r])=>{if(state.level>=r.level)list.push({key:k,sell:r.sell});});return list;};
+  const prevGoal=window.renderGoal;
+  window.renderGoal=function(){const r=prevGoal.apply(this,arguments);if(state.level>=INDUSTRIAL_UNLOCK&&!state.industrialBought){const ic=document.getElementById('goalIcon'),ti=document.getElementById('goalTitle'),tx=document.getElementById('goalText'),fi=document.getElementById('goalFill');if(ic)ic.textContent='🏭';if(ti)ti.textContent='OBJECTIF : ATELIER INDUSTRIEL';if(tx)tx.textContent=`${Math.floor(state.money).toLocaleString('fr-FR')} / ${INDUSTRIAL_PRICE.toLocaleString('fr-FR')} 🪙`;if(fi)fi.style.width=Math.min(100,state.money/INDUSTRIAL_PRICE*100)+'%';}return r;};
+  const prevLevelReward=window.levelReward;
+  window.levelReward=function(level){const r=prevLevelReward.apply(this,arguments);const extra={46:'<br><b>🏭 Nouveau :</b> Atelier industriel + pièces mécaniques.',47:'<br><b>🧰 Nouveau :</b> Kits d’outils.',48:'<br><b>🛠️ Nouveau :</b> Modules de machines.'};if(extra[level]){const el=document.getElementById('levelUpReward');if(el)el.innerHTML=(el.innerHTML||'')+extra[level];}return r;};
+
+  window.FarmRushIndustrial={render:renderIndustrial,process:processIndustrial,waiting:function(){return Object.keys(INDUSTRIAL_RECIPES).reduce((n,k)=>n+(state[k+'Waiting']||0),0);}};
+  ensureIndustrialDom();normalizeIndustrial();processIndustrial();
+  try{renderBuildings();renderStock();renderGoal();saveGame();}catch(e){console.error('V2.9.3 init atelier industriel',e);}
+})();
+</script>
+
 <style id="v292-map-css">
 /* V2.9.2 — Carte de ferme portrait (prototype jouable) */
 :root{--mapGrass:#79bc58;--mapGrass2:#6cad4c;--mapRoad:#d8b878;--mapWater:#65bfe6;--mapRock:#8a8375}
@@ -11853,6 +11993,7 @@ shell.innerHTML=`<div id="farmMapViewport"><div id="farmMapWorld">
   <div class="mapLabel" style="left:105px;top:1015px">🌲 FORÊT</div>
   <div class="mapLabel" style="left:800px;top:972px">🎣 ÉTANG</div>
   <div class="mapLabel" style="left:755px;top:160px">⛰️ ZONE MINIÈRE</div>
+  <div class="mapLabel" style="left:930px;top:380px">🏭 INDUSTRIE</div>
   <button class="mapNode major" data-map-target="farmArea" style="left:340px;top:760px"><span class="ico">🌾</span><span class="nm">CHAMPS</span><span class="sub">Planter & récolter</span></button>
   <button class="mapNode major" data-map-zone="orchard" data-owned="orchardBought" data-level="14" style="left:150px;top:385px"><span class="ico">🍎</span><span class="nm">VERGER</span><span class="sub">Cultures spéciales</span></button>
   <button class="mapNode major" data-map-zone="vineyard" data-owned="vineyardBought" data-level="25" style="left:610px;top:445px"><span class="ico">🍇</span><span class="nm">VIGNOBLE</span><span class="sub">Raisin & vendanges</span></button>
@@ -11872,6 +12013,7 @@ shell.innerHTML=`<div id="farmMapViewport"><div id="farmMapWorld">
   <button class="mapNode" data-map-panel="sawmillPanel" data-owned="sawmillBought" data-level="39" style="left:330px;top:1280px"><span class="ico">🪚</span><span class="nm">SCIERIE</span></button>
   <button class="mapNode major" data-map-zone="mine" data-owned="mineBought" data-level="42" style="left:740px;top:205px"><span class="ico">⛏️</span><span class="nm">MINE</span><span class="sub">Minerais</span></button>
   <button class="mapNode" data-map-panel="foundryPanel" data-owned="foundryBought" data-level="43" style="left:900px;top:300px"><span class="ico">🔥</span><span class="nm">FONDERIE</span></button>
+  <button class="mapNode" data-map-panel="industrialPanel" data-owned="industrialBought" data-level="46" style="left:995px;top:405px"><span class="ico">🏭</span><span class="nm">ATELIER</span><span class="sub">Pièces & machines</span></button>
   <div class="mapDecoration" style="left:35px;top:650px">🌳</div><div class="mapDecoration" style="left:85px;top:720px">🌳</div><div class="mapDecoration" style="left:1030px;top:720px">🌳</div><div class="mapDecoration" style="left:1060px;top:840px">🌳</div><div class="mapDecoration" style="left:455px;top:1180px">🚜</div><div class="mapDecoration" style="left:500px;top:610px">🏡</div>
 </div></div>
 <div class="mapTopBar"><div class="mapPill">🗺️ CARTE DE TA FERME</div><button class="mapBtn" id="mapListBtn">📋 Vue classique</button></div>
@@ -11889,7 +12031,7 @@ function showMap(){document.body.classList.remove('farmListMode');game.classList
 function showList(target){game.classList.remove('farmMapMode');document.body.classList.add('farmListMode');try{render();}catch(e){};setTimeout(()=>{const el=document.getElementById(target);if(el){el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'start'});}},80);}
 function ownedFor(btn){const key=btn.dataset.owned;if(!key)return true;return !!state[key];}
 function refresh(){shell.querySelectorAll('.mapNode').forEach(btn=>{const lvl=Number(btn.dataset.level||1),owned=ownedFor(btn);btn.classList.toggle('locked',!owned);const sub=btn.querySelector('.sub');if(!owned&&sub)sub.textContent=state.level<lvl?`🔒 Niveau ${lvl}`:'🛒 À construire';const nm=btn.querySelector('.nm');if(!owned&&nm&&!nm.dataset.base){nm.dataset.base=nm.textContent;}if(nm&&nm.dataset.base)nm.textContent=(owned?'': '🔒 ')+nm.dataset.base;});
-  const ready={coopPanel:state.eggWaiting,barnPanel:(state.milkWaiting||0)+(state.baconWaiting||0),millPanel:state.flourWaiting,bakeryPanel:state.breadWaiting,dairyPanel:state.cheeseWaiting,pastaPanel:state.pastaWaiting,cellarPanel:(state.grapeJuiceWaiting||0)+(state.wineWaiting||0)+(state.premiumWineWaiting||0),sheepfoldPanel:state.woolWaiting,sawmillPanel:(state.plankWaiting||0)+(state.woodCrateWaiting||0)+(state.furnitureWaiting||0),foundryPanel:(state.ironIngotWaiting||0)+(state.copperIngotWaiting||0)+(state.goldIngotWaiting||0)};
+  const ready={coopPanel:state.eggWaiting,barnPanel:(state.milkWaiting||0)+(state.baconWaiting||0),millPanel:state.flourWaiting,bakeryPanel:state.breadWaiting,dairyPanel:state.cheeseWaiting,pastaPanel:state.pastaWaiting,cellarPanel:(state.grapeJuiceWaiting||0)+(state.wineWaiting||0)+(state.premiumWineWaiting||0),sheepfoldPanel:state.woolWaiting,sawmillPanel:(state.plankWaiting||0)+(state.woodCrateWaiting||0)+(state.furnitureWaiting||0),foundryPanel:(state.ironIngotWaiting||0)+(state.copperIngotWaiting||0)+(state.goldIngotWaiting||0),industrialPanel:(state.mechanicalPartsWaiting||0)+(state.toolKitWaiting||0)+(state.machineCoreWaiting||0)};
   shell.querySelectorAll('[data-map-panel]').forEach(b=>b.classList.toggle('readyMap',(ready[b.dataset.mapPanel]||0)>0));
 }
 function openNode(btn){if(moved)return;const lvl=Number(btn.dataset.level||1),owned=ownedFor(btn);if(!owned){if(state.level<lvl){showToast(`🔒 Disponible au niveau ${lvl}`);return;}const panel=btn.dataset.mapPanel,zone=btn.dataset.mapZone;if(zone&&['orchard','vineyard','pond','forest','mine'].includes(zone)){openShop('spaces');return;}openShop('buildings');return;}
