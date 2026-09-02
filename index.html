@@ -14347,5 +14347,119 @@ window.FarmRushV332={renderNextBuildings:render};
 })();
 </script>
 
+
+<!-- ======================================================
+ FARM RUSH V3.4.1 — iPHONE CLEANUP AFTER LIVE TEST
+====================================================== -->
+<style id="v341-iphone-cleanup-css">
+/* Écran d'accueil : aucun HUD de jeu ne doit apparaître avant JOUER. */
+body.v341Home #v332NextBar,
+body.v341Home #mainNav,
+body.v341Home #v330Tools,
+body.v341Home #v330Edit{display:none!important}
+
+/* Supprime les grands aplats translucides vus sur iPhone. */
+#v340Decor .v340Patch{display:none!important}
+
+/* Les anciennes images de zones ressemblaient à des vignettes collées sur la map. */
+#v3World .v330Zone{display:none!important}
+
+/* Objectif lisible : l'icône 📋 possède maintenant sa propre colonne. */
+#v3Quest{
+  left:12px!important;
+  right:auto!important;
+  top:78px!important;
+  width:min(335px,calc(100vw - 96px))!important;
+  max-width:none!important;
+  padding:12px 14px 12px 55px!important;
+  min-height:54px!important;
+  border-radius:20px!important;
+  overflow:hidden!important;
+}
+#v3Quest:before{left:13px!important;top:12px!important;font-size:27px!important}
+#v3Quest b{font-size:11px!important;line-height:1.18!important;white-space:normal!important}
+#v3Quest span{display:block!important;font-size:9px!important;line-height:1.25!important;margin-top:4px!important;white-space:normal!important}
+
+/* HUD compact pour qu'argent + diamants tiennent entièrement sur un iPhone. */
+#v3Hud{
+  left:10px!important;right:10px!important;top:10px!important;
+  display:flex!important;align-items:center!important;gap:7px!important;
+}
+.v3Avatar{flex:0 0 54px!important;width:54px!important;height:54px!important;font-size:31px!important}
+.v3LevelBox{position:relative!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important;height:48px!important}
+.v3Level{
+  position:relative!important;left:-13px!important;top:2px!important;
+  width:46px!important;height:46px!important;font-size:15px!important;
+}
+.v3Xp{display:none!important}
+.v3Money{margin-left:auto!important;min-width:96px!important;padding:9px 10px!important;font-size:11px!important}
+.v3Money .coin{font-size:18px!important}
+#v330Gems{min-width:60px!important;padding:8px 8px!important;font-size:10px!important;gap:3px!important}
+#v330Gems b{font-size:17px!important}
+
+/* Outils à droite plus serrés et moins envahissants. */
+#v330Tools{right:10px!important;top:126px!important;gap:7px!important}
+#v330Tools button{width:45px!important;height:45px!important;border-radius:13px!important;font-size:20px!important}
+#v330Edit{right:10px!important;top:328px!important;padding:9px 10px!important;font-size:9px!important}
+
+/* Barre de navigation : les 5 onglets restent réellement dans la largeur. */
+#mainNav{
+  position:fixed!important;left:8px!important;right:8px!important;width:auto!important;
+  bottom:max(8px,env(safe-area-inset-bottom))!important;
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:2px!important;z-index:170!important;
+}
+#mainNav button,
+#mainNav button:nth-child(n+4){display:block!important;min-width:0!important;width:auto!important;padding:5px 1px!important;font-size:7px!important}
+#mainNav button span{font-size:19px!important;line-height:1!important}
+
+/* Barre des prochains bâtiments : conserve le concept mais gagne un peu de place. */
+#v332NextBar{left:8px!important;right:8px!important;height:142px!important;bottom:calc(79px + env(safe-area-inset-bottom))!important}
+#v332NextScroll{height:101px!important}
+.v332BuildCard{height:94px!important;flex-basis:119px!important}
+.v332BuildIcon{font-size:25px!important}
+
+/* Décors V3.4 intégrés au terrain, moins "cartes posées". */
+.v340Field,.v340Vines{border-radius:16px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 2px 5px rgba(45,74,28,.14)!important}
+.v340Pond{box-shadow:inset 0 0 0 2px rgba(255,255,255,.32),0 3px 7px rgba(32,73,105,.18)!important}
+.v340Label{font-size:9px!important;padding:4px 8px!important;background:rgba(39,67,40,.72)!important}
+
+@media(max-width:390px){
+  #v3Quest{width:270px!important;padding-left:51px!important}
+  .v3Avatar{flex-basis:49px!important;width:49px!important;height:49px!important}
+  .v3LevelBox{flex-basis:32px!important;width:32px!important;min-width:32px!important}
+  .v3Level{width:42px!important;height:42px!important;left:-13px!important;font-size:14px!important}
+  .v3Money{min-width:88px!important;padding:8px 8px!important}
+  #v330Gems{min-width:53px!important;padding:7px 6px!important}
+  #mainNav button{font-size:6.5px!important}
+  #mainNav button span{font-size:18px!important}
+}
+</style>
+<script id="v341-iphone-cleanup-js">
+(function(){
+  'use strict';
+  const home=document.getElementById('home');
+  const body=document.body;
+  if(!home||!body)return;
+  function sync(){
+    const visible=getComputedStyle(home).display!=='none';
+    body.classList.toggle('v341Home',visible);
+  }
+  sync();
+  new MutationObserver(sync).observe(home,{attributes:true,attributeFilter:['style','class']});
+  const oldStart=window.startGame;
+  if(typeof oldStart==='function'){
+    window.startGame=function(){
+      const r=oldStart.apply(this,arguments);
+      body.classList.remove('v341Home');
+      requestAnimationFrame(()=>{try{window.FarmRushV3Map?.center?.()}catch(e){}});
+      return r;
+    };
+  }
+  document.title='Farm Rush V3.4.1 — iPhone cleanup';
+  const v=document.querySelector('.version');if(v)v.textContent='V3.4.1 — iPhone cleanup';
+})();
+</script>
+
 </body>
 </html>
