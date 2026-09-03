@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Infinity Rush V4.2.1 — Retour carte corrigé</title>
+<title>Infinity Rush V4.3 — Interface joueur</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -16457,6 +16457,350 @@ body.v304LayoutMode #v3World .v330Building{transform:translate(-50%,-58%) scale(
       try{window.FarmRushV3Map?.center?.();}catch(_){ }
     },120);
   });
+})();
+</script>
+
+<!-- =========================================================
+ INFINITY RUSH V4.3 — INTERFACE JOUEUR COMPACTE
+ Profil (pseudo, niveau, XP), ressources et commandes de carte
+ ========================================================= -->
+<style id="ir-v430-player-ui-css">
+  /* Le HUD devient une seule ligne compacte qui laisse respirer la carte. */
+  #v3Hud{
+    top:8px!important;
+    left:8px!important;
+    right:8px!important;
+    display:grid!important;
+    grid-template-columns:minmax(145px,1fr) auto auto!important;
+    align-items:start!important;
+    gap:5px!important;
+    z-index:95!important;
+  }
+
+  #irPlayerCard{
+    appearance:none;
+    -webkit-appearance:none;
+    min-width:0;
+    width:100%;
+    height:50px;
+    margin:0;
+    padding:4px 5px;
+    display:grid;
+    grid-template-columns:40px minmax(0,1fr) 31px;
+    align-items:center;
+    gap:5px;
+    color:#3e2d18;
+    text-align:left;
+    cursor:pointer;
+    border:2px solid #fff6d9;
+    border-radius:17px;
+    background:linear-gradient(180deg,#fff9e9 0%,#f2dfb6 100%);
+    box-shadow:0 3px 0 #b99358,0 6px 11px #0002;
+    pointer-events:auto;
+    overflow:hidden;
+    touch-action:manipulation;
+  }
+  #irPlayerCard:active{transform:translateY(2px);box-shadow:0 1px 0 #b99358,0 3px 7px #0002}
+  #irPlayerCard:focus-visible{outline:3px solid #4c9cff;outline-offset:2px}
+
+  #irPlayerCard .v3Avatar{
+    position:static!important;
+    flex:none!important;
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    margin:0!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    background:linear-gradient(#8fe1ff,#4da7e9)!important;
+    box-shadow:0 2px 0 #2774aa!important;
+    font-size:22px!important;
+    line-height:34px!important;
+  }
+  #irPlayerIdentity{min-width:0;display:flex;flex-direction:column;justify-content:center;line-height:1}
+  #irPlayerName{
+    display:block;
+    max-width:100%;
+    overflow:hidden;
+    color:#47331c;
+    font:900 10.5px/1.15 system-ui,-apple-system,sans-serif;
+    letter-spacing:.15px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  #irPlayerMeta{
+    display:block;
+    margin-top:2px;
+    color:#846237;
+    font:900 7.2px/1 system-ui,-apple-system,sans-serif;
+    letter-spacing:.55px;
+    white-space:nowrap;
+  }
+  #irPlayerIdentity .v3Xp{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    height:7px!important;
+    margin:4px 0 0!important;
+    overflow:hidden!important;
+    border:1px solid rgba(255,255,255,.95)!important;
+    border-radius:999px!important;
+    background:#70522e!important;
+    box-shadow:inset 0 1px 2px #0005!important;
+  }
+  #irPlayerIdentity .v3XpFill{
+    height:100%!important;
+    border-radius:999px!important;
+    background:linear-gradient(90deg,#41c8ff,#2479e4)!important;
+  }
+  #irPlayerIdentity .v3XpText{display:none!important}
+  #irPlayerCard .v3LevelBox{
+    position:relative!important;
+    display:block!important;
+    flex:none!important;
+    width:31px!important;
+    min-width:31px!important;
+    max-width:31px!important;
+    height:39px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:none!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+  #irPlayerCard .v3Level{
+    position:absolute!important;
+    inset:3px 0 auto!important;
+    width:31px!important;
+    height:31px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    color:#fff!important;
+    border:0!important;
+    border-radius:0!important;
+    background:linear-gradient(145deg,#4da7ff,#1761ca)!important;
+    box-shadow:0 2px 0 #174f9d,0 3px 5px #0002!important;
+    clip-path:polygon(50% 0,61% 33%,96% 35%,68% 56%,78% 91%,50% 70%,22% 91%,32% 56%,4% 35%,39% 33%)!important;
+    transform:none!important;
+    font:1000 10px/1 system-ui,-apple-system,sans-serif!important;
+  }
+
+  #v3Hud .v3Money,
+  #v3Hud #v330Gems{
+    box-sizing:border-box!important;
+    flex:none!important;
+    width:auto!important;
+    height:50px!important;
+    min-width:82px!important;
+    margin:0!important;
+    padding:7px 8px!important;
+    gap:4px!important;
+    border:2px solid #fff7df!important;
+    border-radius:17px!important;
+    background:linear-gradient(#fff9e8,#efddb5)!important;
+    box-shadow:0 3px 0 #b89354,0 6px 10px #0002!important;
+    color:#4a3823!important;
+    font-size:10.5px!important;
+    white-space:nowrap!important;
+  }
+  #v3Hud #v330Gems{min-width:61px!important;padding-inline:7px!important}
+  #v3Hud .v3Money .coin,#v3Hud #v330Gems b{font-size:16px!important}
+
+  /* Mission resserrée : même information, moins de carte masquée. */
+  #v3Quest{
+    top:66px!important;
+    left:9px!important;
+    width:210px!important;
+    min-height:56px!important;
+    padding:8px 10px 8px 40px!important;
+    border-radius:15px!important;
+    box-shadow:0 4px 0 #c19b5f,0 7px 12px #0002!important;
+  }
+  #v3Quest:before{left:8px!important;top:10px!important;width:23px!important;height:29px!important;font-size:17px!important}
+  #v3Quest b{font-size:9.5px!important;letter-spacing:.65px!important}
+  #v3Quest span{font-size:7.9px!important;line-height:1.25!important}
+
+  /* Outils plus fins et bouton Aménager nettement moins envahissant. */
+  #v330Tools{top:105px!important;right:8px!important;gap:6px!important}
+  #v330Tools button{width:42px!important;height:42px!important;border-radius:13px!important;font-size:18px!important}
+  #v330Edit{
+    top:352px!important;
+    right:8px!important;
+    width:101px!important;
+    min-width:101px!important;
+    height:42px!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:5px 8px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    border:2px solid #e7f5c8!important;
+    border-radius:13px!important;
+    background:linear-gradient(#25a74b,#137532)!important;
+    box-shadow:0 3px 0 #0c5b27,0 6px 10px #0002!important;
+    color:#fff!important;
+    font:1000 7.6px/1 system-ui,-apple-system,sans-serif!important;
+    letter-spacing:.55px!important;
+    white-space:nowrap!important;
+  }
+  #v330Edit .irEditIcon{font-size:14px;line-height:1}
+  #v330Edit[aria-pressed="true"]{background:linear-gradient(#f3b33d,#d67a13)!important;box-shadow:0 3px 0 #9b5710,0 6px 10px #0002!important}
+
+  /* Fenêtre de modification du pseudo. */
+  #irProfileDialog{
+    box-sizing:border-box;
+    width:min(324px,calc(100vw - 30px));
+    max-width:324px;
+    margin:auto;
+    padding:0;
+    overflow:hidden;
+    color:#44311d;
+    border:3px solid #fff5d4;
+    border-radius:22px;
+    background:linear-gradient(#fff9e8,#efd9ad);
+    box-shadow:0 18px 60px #0007;
+  }
+  #irProfileDialog::backdrop{background:#102719aa;backdrop-filter:blur(3px)}
+  #irProfileForm{padding:20px 18px 17px}
+  #irProfileForm h2{margin:0;color:#3d2c1a;font:1000 20px/1.1 system-ui,-apple-system,sans-serif}
+  #irProfileForm p{margin:7px 0 16px;color:#7b5b34;font:700 11px/1.35 system-ui,-apple-system,sans-serif}
+  #irProfileForm label{display:block;margin:0 0 6px;font:1000 10px/1 system-ui,-apple-system,sans-serif;letter-spacing:.8px;text-transform:uppercase}
+  #irPlayerNameInput{
+    box-sizing:border-box;
+    width:100%;
+    height:45px;
+    padding:0 12px;
+    color:#3f2d19;
+    border:2px solid #cfad71;
+    border-radius:12px;
+    outline:0;
+    background:#fffef8;
+    font:800 16px/1 system-ui,-apple-system,sans-serif;
+  }
+  #irPlayerNameInput:focus{border-color:#3186df;box-shadow:0 0 0 3px #3186df33}
+  .irProfileActions{display:grid;grid-template-columns:1fr 1.15fr;gap:8px;margin-top:15px}
+  .irProfileActions button{height:42px;border:0;border-radius:12px;font:900 11px/1 system-ui,-apple-system,sans-serif;cursor:pointer}
+  #irProfileCancel{color:#674a2c;background:#e5cfaa;box-shadow:0 3px 0 #b69660}
+  #irProfileSave{color:#fff;background:linear-gradient(#329aee,#1f68c0);box-shadow:0 3px 0 #174e91}
+
+  @media(max-width:390px){
+    #v3Hud{grid-template-columns:minmax(137px,1fr) auto auto!important}
+    #v3Hud .v3Money{min-width:78px!important;padding-inline:6px!important}
+    #v3Hud #v330Gems{min-width:57px!important;padding-inline:5px!important}
+    #irPlayerName{font-size:9.7px}
+    #irPlayerMeta{font-size:6.8px}
+    #v3Quest{width:198px!important}
+    #v330Edit{top:350px!important;width:94px!important;min-width:94px!important}
+  }
+</style>
+
+<script id="ir-v430-player-ui-js">
+(function(){
+  const hud=document.getElementById('v3Hud');
+  if(!hud || document.getElementById('irPlayerCard')) return;
+
+  document.title='Infinity Rush V4.3 — Interface joueur';
+  const version=document.querySelector('.v3Version');
+  if(version) version.textContent='V4.3 • INTERFACE JOUEUR';
+
+  const avatar=hud.querySelector('.v3Avatar');
+  const levelBox=hud.querySelector('.v3LevelBox');
+  const xp=levelBox?.querySelector('.v3Xp');
+
+  const card=document.createElement('button');
+  card.id='irPlayerCard';
+  card.type='button';
+  card.title='Modifier le pseudo';
+
+  const identity=document.createElement('span');
+  identity.id='irPlayerIdentity';
+  const playerName=document.createElement('strong');
+  playerName.id='irPlayerName';
+  const playerMeta=document.createElement('span');
+  playerMeta.id='irPlayerMeta';
+  identity.append(playerName,playerMeta);
+  if(xp) identity.appendChild(xp);
+  if(avatar) card.appendChild(avatar);
+  card.appendChild(identity);
+  if(levelBox) card.appendChild(levelBox);
+  hud.insertBefore(card,hud.firstChild);
+
+  const storageKey='infinityRushPlayerName';
+  function cleanName(value){
+    return String(value||'').replace(/\s+/g,' ').trim().slice(0,16);
+  }
+  function readName(){
+    try{return cleanName(localStorage.getItem(storageKey))||'Aventurier';}
+    catch(_){return 'Aventurier';}
+  }
+  function writeName(value){
+    const name=cleanName(value)||'Aventurier';
+    try{localStorage.setItem(storageKey,name);}catch(_){ }
+    playerName.textContent=name;
+    card.setAttribute('aria-label','Profil de '+name+', toucher pour modifier le pseudo');
+    return name;
+  }
+  function syncProfile(){
+    const level=cleanName(document.getElementById('v3Level')?.textContent)||'1';
+    playerMeta.textContent='NIVEAU '+level;
+  }
+  writeName(readName());
+  syncProfile();
+
+  const dialog=document.createElement('dialog');
+  dialog.id='irProfileDialog';
+  dialog.innerHTML='<form id="irProfileForm" method="dialog">'+
+    '<h2>Ton profil</h2>'+
+    '<p>Ce pseudo sera affiché dans ton interface de jeu.</p>'+
+    '<label for="irPlayerNameInput">Pseudo</label>'+
+    '<input id="irPlayerNameInput" name="playerName" maxlength="16" autocomplete="nickname" required>'+
+    '<div class="irProfileActions">'+
+      '<button id="irProfileCancel" type="button">Annuler</button>'+
+      '<button id="irProfileSave" type="submit">Enregistrer</button>'+
+    '</div>'+
+  '</form>';
+  document.body.appendChild(dialog);
+
+  const input=dialog.querySelector('#irPlayerNameInput');
+  const form=dialog.querySelector('#irProfileForm');
+  dialog.querySelector('#irProfileCancel').addEventListener('click',function(){dialog.close();});
+  form.addEventListener('submit',function(event){
+    event.preventDefault();
+    const name=cleanName(input.value);
+    if(!name){input.setCustomValidity('Entre un pseudo.');input.reportValidity();return;}
+    input.setCustomValidity('');
+    writeName(name);
+    dialog.close();
+  });
+  input.addEventListener('input',function(){input.setCustomValidity('');});
+  card.addEventListener('click',function(){
+    input.value=readName();
+    if(typeof dialog.showModal==='function'){
+      dialog.showModal();
+      requestAnimationFrame(function(){input.focus();input.select();});
+    }else{
+      const value=window.prompt('Choisis ton pseudo',input.value);
+      if(value!==null && cleanName(value)) writeName(value);
+    }
+  });
+
+  const edit=document.getElementById('v330Edit');
+  function syncEditButton(){
+    if(!edit) return;
+    const active=document.body.classList.contains('v304LayoutMode');
+    edit.setAttribute('aria-pressed',String(active));
+    edit.innerHTML='<span class="irEditIcon">'+(active?'✓':'✏️')+'</span><span>'+(active?'TERMINER':'AMÉNAGER')+'</span>';
+  }
+  if(edit){edit.addEventListener('click',function(){requestAnimationFrame(syncEditButton);});}
+  syncEditButton();
+
+  window.setInterval(syncProfile,1200);
 })();
 </script>
 
