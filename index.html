@@ -14753,5 +14753,171 @@ body.v343ShopOpen #mainNav{display:grid!important}
 })();
 </script>
 
+
+<!-- ======================================================
+ FARM RUSH V3.5.0 — MAP REDESIGN
+====================================================== -->
+<style id="v350-map-redesign-css">
+:root{--v350-path:#d9b37a;--v350-path-edge:#be955e;--v350-ui:#f4e2b8;--v350-ui2:#ecd39f;--v350-green:#4aa93d}
+#v3MapShell{background:linear-gradient(#8dd36c,#5ca847)!important}
+#v3Viewport{background:linear-gradient(#8ed6ff 0 17%,#76c55f 17% 100%)!important}
+#v3World{
+  width:1500px!important;height:2050px!important;overflow:hidden!important;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(125,201,255,.95) 0 70px, rgba(125,201,255,0) 71px),
+    radial-gradient(circle at 87% 10%, rgba(92,172,226,.9) 0 165px, rgba(92,172,226,0) 166px),
+    linear-gradient(#7bc965,#63b24b)!important;
+  background-color:#6ab84e!important;
+}
+#v350Decor{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.v350Forest,.v350Flower,.v350Bush,.v350Path,.v350Lake,.v350Waterfall,.v350Fence,
+.v350Field,.v350Vineyard,.v350Orchard,.v350Cloud,.v350Rock{position:absolute;pointer-events:none}
+.v350Forest{width:84px;height:70px}
+.v350Forest:before,.v350Forest:after,.v350Forest i{content:"";position:absolute;display:block;border-radius:50%;background:radial-gradient(circle at 35% 30%, #67cb58 0 32%, #2f9437 58%, #23692c 100%)}
+.v350Forest:before{width:36px;height:36px;left:4px;top:22px}
+.v350Forest:after{width:40px;height:40px;left:24px;top:10px}
+.v350Forest i{width:34px;height:34px;left:46px;top:24px}
+.v350Forest em{position:absolute;left:35px;bottom:4px;width:8px;height:16px;border-radius:5px;background:#7a5230}
+.v350Bush{width:58px;height:28px;border-radius:30px;background:radial-gradient(circle at 35% 30%, #6ccc5b 0 35%, #39943d 65%, #2b6e31 100%);box-shadow:0 3px 0 rgba(60,107,38,.2)}
+.v350Flower{width:48px;height:24px;background:radial-gradient(circle at 8px 10px,#ffec7b 0 2px,transparent 3px),radial-gradient(circle at 18px 5px,#ff8ac2 0 2px,transparent 3px),radial-gradient(circle at 29px 13px,#92ecff 0 2px,transparent 3px),radial-gradient(circle at 39px 8px,#ffd17e 0 2px,transparent 3px),radial-gradient(circle at 14px 17px,#ffffff 0 2px,transparent 3px),radial-gradient(circle at 25px 20px,#c4ff90 0 2px,transparent 3px)}
+.v350Path{height:64px;border-radius:999px;background:linear-gradient(#e6c58f,#d3a86e);box-shadow:inset 0 3px 0 rgba(255,255,255,.35), inset 0 -5px 0 rgba(184,138,84,.32), 0 4px 10px rgba(94,75,42,.16)}
+.v350Lake{border-radius:48% 52% 50% 50%/50% 44% 56% 50%;background:radial-gradient(circle at 35% 30%, #b8f0ff 0 12%, #5ec5ef 32%, #2e8ed5 70%, #26689d 100%);box-shadow:inset 0 0 0 4px rgba(255,255,255,.45),0 8px 16px rgba(47,102,145,.2)}
+.v350Waterfall{background:linear-gradient(180deg,#d8f7ff 0,#9ddfff 12%,#5fb4ed 45%,#3186c6 100%);border-radius:35px;filter:drop-shadow(0 8px 10px rgba(55,111,153,.22))}
+.v350Waterfall:after{content:"";position:absolute;left:-30px;right:-30px;bottom:-14px;height:26px;border-radius:50%;background:radial-gradient(circle at 50% 45%, rgba(255,255,255,.8) 0 24%, rgba(255,255,255,.1) 42%, transparent 58%)}
+.v350Fence{height:12px;background:repeating-linear-gradient(90deg,transparent 0 12px,#f9f0d8 12px 16px,transparent 16px 34px),linear-gradient(#f8edd2,#f1e0bc);border-radius:8px;box-shadow:0 2px 0 rgba(114,87,52,.15)}
+.v350Field{border-radius:18px;background:repeating-linear-gradient(90deg, rgba(167,120,53,.26) 0 4px, transparent 4px 28px),linear-gradient(#f0cf57,#cfa83a);box-shadow:inset 0 0 0 4px rgba(130,90,35,.22),0 4px 10px rgba(79,68,29,.15)}
+.v350Vineyard{border-radius:18px;background:repeating-linear-gradient(90deg, rgba(90,61,31,.22) 0 4px, transparent 4px 24px),radial-gradient(circle at 20px 16px,#7e285f 0 4px,transparent 5px),radial-gradient(circle at 52px 20px,#652a88 0 4px,transparent 5px),radial-gradient(circle at 84px 16px,#7e285f 0 4px,transparent 5px),repeating-linear-gradient(0deg,#63ab42 0 20px,#4d8f34 20px 40px);box-shadow:inset 0 0 0 4px rgba(255,255,255,.2),0 4px 10px rgba(79,68,29,.15)}
+.v350Orchard{border-radius:50px;background:radial-gradient(circle at 25% 30%, transparent 0 15px, rgba(255,255,255,0) 15px),transparent}
+.v350Orchard i{position:absolute;display:block;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #6fca58 0 35%, #2f9238 62%, #21692c 100%);box-shadow:0 4px 0 rgba(75,111,37,.18)}
+.v350Orchard i:after{content:"";position:absolute;left:27px;bottom:-10px;width:8px;height:14px;border-radius:5px;background:#7a5230}
+.v350Orchard i:before{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#e74633;left:18px;top:20px;box-shadow:18px -3px 0 #e74633,8px 12px 0 #e74633}
+.v350Cloud{width:120px;height:44px;border-radius:44px;background:rgba(255,255,255,.55);filter:blur(2px)}
+.v350Cloud:before,.v350Cloud:after{content:"";position:absolute;background:rgba(255,255,255,.7);border-radius:50%}
+.v350Cloud:before{width:44px;height:44px;left:14px;top:-16px}
+.v350Cloud:after{width:56px;height:56px;left:48px;top:-22px}
+.v350Rock{width:30px;height:20px;border-radius:55% 45% 52% 48%;background:linear-gradient(#aa9f92,#7f766d);box-shadow:0 3px 0 rgba(86,76,67,.2)}
+#v3World .v3Hotspot{z-index:25!important;border-radius:34px!important}
+#v3World .v3Hotspot .v305Asset{width:min(88%,188px)!important;max-height:165px!important;top:48%!important;filter:drop-shadow(0 10px 10px rgba(28,53,20,.28))!important}
+#v3World .v3Hotspot .v305AssetName{font-size:9px!important;padding:4px 10px!important;background:rgba(38,42,36,.9)!important}
+#v3Hud{top:10px!important;left:10px!important;right:10px!important;z-index:80!important}
+.v3Avatar{width:56px!important;height:56px!important;border:4px solid #fff4d8!important;box-shadow:0 4px 14px rgba(0,0,0,.18)!important}
+.v3LevelBox{background:linear-gradient(#2d70d8,#235bb6)!important;color:white!important;min-width:220px!important;border-radius:20px!important;box-shadow:0 5px 0 #19458f!important}
+.v3Level{background:#2d78e3!important;color:#fff!important;border:3px solid #ffea78!important}
+.v3Xp{background:rgba(255,255,255,.18)!important}
+.v3XpFill{background:linear-gradient(#a3d4ff,#d9f6ff)!important}
+.v3Money{background:linear-gradient(#fff5de,#f2ddb0)!important;border:2px solid #fef6e3!important;border-radius:20px!important;box-shadow:0 5px 0 #c1a369!important}
+#v3Quest{top:104px!important;left:12px!important;width:330px!important;min-height:92px!important;padding:12px 14px 12px 56px!important;border-radius:24px!important;background:linear-gradient(#fff6df,#f1deb7)!important;box-shadow:0 7px 0 #caa26a,0 14px 22px rgba(0,0,0,.1)!important;z-index:70!important}
+#v3Quest:before{content:"📋";position:absolute;left:14px;top:10px;width:34px;height:34px;border-radius:10px;background:#fff4d4;display:grid;place-items:center;font-size:22px;box-shadow:0 3px 0 rgba(177,135,74,.28)}
+#v3Quest b{font-size:12px!important;display:block;margin-bottom:3px}
+#v3Quest span{font-size:10px!important;line-height:1.25!important}
+#v330Tools{right:12px!important;top:184px!important;display:flex!important;flex-direction:column!important;gap:10px!important;z-index:82!important}
+#v330Tools button,#v330Edit button,#v3Center{border-radius:18px!important;background:linear-gradient(#fff6df,#f1ddb0)!important;box-shadow:0 5px 0 #c4a166,0 10px 18px rgba(0,0,0,.12)!important}
+#v330Edit{right:12px!important;bottom:270px!important;z-index:82!important}
+#v330Edit button{min-width:180px!important;height:74px!important;background:linear-gradient(#1e9b42,#107332)!important;color:#fffbe8!important;box-shadow:0 5px 0 #0d5d29,0 10px 18px rgba(0,0,0,.16)!important}
+#v3Center{right:14px!important;bottom:222px!important}
+#mainNav{left:8px!important;right:8px!important;bottom:max(6px,env(safe-area-inset-bottom))!important;padding:0!important;background:transparent!important;box-shadow:none!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;z-index:170!important}
+#mainNav button{height:78px!important;border-radius:20px 20px 0 0!important;border:2px solid #d7b98a!important;border-bottom:0!important;background:linear-gradient(#f7e9c8,#e7d2a6)!important;box-shadow:0 -1px 0 #fff inset!important;font-size:8.5px!important;font-weight:1000!important;color:#5b4025!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;padding:6px 2px 8px!important;transform:none!important}
+#mainNav button span{font-size:24px!important;line-height:1!important;margin-bottom:5px!important}
+#mainNav button.v3Active{background:linear-gradient(#5a98ef,#3f74d9)!important;color:#fff!important;border-color:#3c6bc4!important;box-shadow:0 -1px 0 rgba(255,255,255,.45) inset!important}
+#v343ShopMenu{bottom:calc(86px + env(safe-area-inset-bottom))!important}
+#v332NextBar{bottom:calc(86px + env(safe-area-inset-bottom))!important;height:170px!important;border-radius:24px!important;background:linear-gradient(#fff7e1,#f0dcae)!important;box-shadow:0 6px 0 #80613a,0 16px 28px rgba(0,0,0,.16)!important;z-index:175!important}
+#v332NextHead{font-size:12px!important;height:28px!important}
+#v332NextHead small{font-size:9px!important}
+#v332NextScroll{height:122px!important}
+.v332BuildCard{height:112px!important;flex-basis:136px!important;border-radius:16px!important;background:#fffdf7!important;box-shadow:inset 0 1px #fff,0 3px 8px rgba(0,0,0,.08)!important}
+.v332BuildBtn{border-radius:10px!important;font-size:9px!important}
+body.v341Home #mainNav,body.v341Home #v332NextBar,body.v341Home #v330Tools,body.v341Home #v330Edit{display:none!important}
+@media(max-width:420px){
+  .v3LevelBox{min-width:180px!important}
+  #v3Quest{width:292px!important;top:98px!important}
+  #v330Edit button{min-width:168px!important;height:68px!important}
+  #mainNav button{height:74px!important;font-size:7.8px!important}
+  #mainNav button span{font-size:22px!important}
+  #v332NextBar{height:160px!important}
+}
+</style>
+<script id="v350-map-redesign-js">
+(function(){
+  'use strict';
+  const world=document.getElementById('v3World');
+  if(!world) return;
+  document.title='Farm Rush V3.5 — Refonte map';
+  const version=document.querySelector('.version');
+  if(version) version.textContent='V3.5 — Refonte map';
+  // retire ancien décor custom si présent
+  document.getElementById('v340Decor')?.remove();
+  document.getElementById('v350Decor')?.remove();
+  const decor=document.createElement('div');
+  decor.id='v350Decor';
+  world.insertBefore(decor, world.firstChild);
+  const E=(cls,left,top,width,height,extra='')=>{const d=document.createElement('div');d.className=cls;d.style.left=left+'px';d.style.top=top+'px';if(width!=null)d.style.width=width+'px';if(height!=null)d.style.height=height+'px';if(extra)d.innerHTML=extra;decor.appendChild(d);return d;};
+  // nuages
+  E('v350Cloud',40,25,110,40);E('v350Cloud',1240,58,120,44);E('v350Cloud',1300,1760,120,44);
+  // eau & cascade
+  E('v350Lake',835,70,520,320);E('v350Waterfall',690,18,72,220);E('v350Waterfall',745,82,50,128);
+  // chemins principaux
+  const paths=[
+    [220,395,380,68,'rotate(30deg)'],[495,505,290,68,'rotate(-9deg)'],[740,430,320,68,'rotate(19deg)'],
+    [920,555,260,66,'rotate(-28deg)'],[190,610,360,68,'rotate(40deg)'],[390,760,420,70,'rotate(14deg)'],
+    [710,790,300,68,'rotate(-25deg)'],[930,730,300,68,'rotate(33deg)'],[260,1045,390,68,'rotate(18deg)'],
+    [530,1120,380,70,'rotate(-8deg)'],[825,1175,330,68,'rotate(-24deg)'],[1010,1025,280,68,'rotate(25deg)'],
+    [175,1410,440,72,'rotate(7deg)'],[455,1475,440,72,'rotate(-6deg)'],[810,1445,450,72,'rotate(12deg)'],
+    [980,1650,320,68,'rotate(34deg)'],[570,1700,320,66,'rotate(-31deg)'],[300,1770,350,70,'rotate(20deg)']
+  ];
+  paths.forEach(([l,t,w,h,tr])=>{const p=E('v350Path',l,t,w,h);p.style.transform=tr;});
+  // forêts / buissons / fleurs
+  const forests=[[95,310],[170,250],[290,255],[1170,265],[1290,245],[1370,315],[106,930],[88,1110],[1220,955],[1350,875],[1290,1080],[176,1580],[265,1640],[1160,1720],[1270,1620],[1360,1560],[85,1460],[74,665],[1330,650]];
+  forests.forEach(([l,t])=>E('v350Forest',l,t,84,70,'<i></i><em></em>'));
+  [[225,575],[340,585],[424,915],[1030,470],[1140,500],[1160,1260],[846,930],[680,1480],[948,1540]].forEach(([l,t])=>E('v350Bush',l,t,58,28));
+  [[602,270],[645,292],[861,280],[1180,400],[1380,455],[220,705],[118,1200],[940,1380],[682,1710],[1040,1710],[1240,1310]].forEach(([l,t])=>E('v350Flower',l,t,48,24));
+  // champs / vignoble / verger et clôtures
+  E('v350Field',150,1520,330,205);E('v350Field',485,1540,210,185);
+  E('v350Vineyard',1025,1340,280,190);
+  const orchard=E('v350Orchard',1010,1540,320,250);
+  [[20,24],[110,10],[196,26],[54,98],[150,106],[236,88],[92,166],[198,172],[20,180],[266,190]].forEach(([l,t])=>{const i=document.createElement('i');i.style.left=l+'px';i.style.top=t+'px';orchard.appendChild(i);});
+  // étang secondaire
+  E('v350Lake',1188,520,215,145);
+  // rochers
+  [[690,250],[795,314],[876,296],[1030,305],[1150,336],[390,1890],[458,1842],[1325,1825]].forEach(([l,t])=>E('v350Rock',l,t,30,20));
+  // clôtures décoratives
+  [[115,1470,390],[1000,1320,330],[980,1532,350],[160,1490,12],[470,1490,12],[1010,1310,12],[1330,1310,12]].forEach(args=>E('v350Fence',...args));
+  // Repositionnement inspiré de la référence.
+  function findHot(name){return [...world.querySelectorAll('.v3Hotspot')].find(el=>(el.getAttribute('aria-label')||'')===name);}  
+  const pos={
+    'Mine':[265,300,225,170],
+    'Scierie':[215,585,220,180],
+    'Moulin':[610,430,190,185],
+    'Grange':[920,470,225,190],
+    'Poulailler':[1010,760,195,165],
+    'Maison ferme':[610,775,220,200],
+    'Laiterie':[145,925,220,185],
+    'Atelier industriel':[180,1180,205,175],
+    'Fonderie':[430,1290,205,175],
+    'Station irrigation':[875,1320,225,185],
+    'Boulangerie':[1120,1020,205,180],
+    'Vignoble':[1030,1350,275,180],
+    'Verger':[1035,1540,295,220],
+    'Champs':[170,1510,560,235],
+    'Étang':[1165,265,245,205],
+    'Usine':[1180,1120,180,170],
+    'Cave':[855,1270,170,150],
+    'Fromagerie':[1090,915,185,170],
+    'Moulin':[595,440,185,180],
+    'Boulangerie':[1185,930,180,180]
+  };
+  Object.entries(pos).forEach(([name,p])=>{const el=findHot(name);if(!el)return;el.style.left=p[0]+'px';el.style.top=p[1]+'px';el.style.width=p[2]+'px';el.style.height=p[3]+'px';});
+  // Libellé mission plus game feel.
+  const q=document.getElementById('v3Quest');if(q){q.innerHTML='<b>MISSION</b><span>Agrandir le vignoble<br>12/18 pieds • 68 707 🪙</span>';}
+  // Navigation par défaut : onglet ferme actif s'il n'y a pas shop ouvert.
+  const nav=document.getElementById('mainNav');
+  if(nav && !document.body.classList.contains('v343ShopOpen')){
+    [...nav.querySelectorAll('button')].forEach(btn=>btn.classList.remove('v3Active'));
+    const farm=[...nav.querySelectorAll('button')].find(b=>(b.textContent||'').toUpperCase().includes('FERME'))||nav.querySelector('button');
+    farm?.classList.add('v3Active');
+  }
+  requestAnimationFrame(()=>{try{window.FarmRushV3Map?.center?.()}catch(e){}});
+})();
+</script>
+
 </body>
 </html>
