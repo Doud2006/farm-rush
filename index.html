@@ -15413,19 +15413,77 @@ body.v341Home #mainNav{display:none!important}
   #mainNav button span{font-size:26px!important}
 }
 </style>
+
+<style id="v362-ui-stability-css">
+/* V3.6.2 — one compact shop layer only */
+#v343ShopMenu{
+  left:50%!important;right:auto!important;width:min(360px,calc(100vw - 24px))!important;
+  bottom:calc(112px + env(safe-area-inset-bottom))!important;
+  transform:translateX(-50%)!important;
+  padding:12px!important;border-radius:22px!important;z-index:520!important;
+  max-height:310px!important;overflow:hidden!important;
+}
+#v343ShopMenu:not(.open){display:none!important}
+#v343ShopMenu.open{display:block!important}
+#v343ShopMenuHead{height:34px!important;margin-bottom:8px!important;font-size:12px!important}
+#v343ShopGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+.v343ShopCat{min-height:72px!important;padding:7px 3px!important;font-size:9px!important;border-radius:14px!important}
+.v343ShopCat span{font-size:25px!important;margin-bottom:4px!important}
+#v343ShopClose{width:32px!important;height:32px!important;border-radius:11px!important;font-size:18px!important}
+
+/* Buildings tray remains hidden unless the user explicitly chose BÂTIMENTS. */
+#v332NextBar{display:none!important}
+body.v343BuildingTray #v332NextBar{display:block!important}
+#v332NextBar{
+  left:10px!important;right:10px!important;bottom:calc(112px + env(safe-area-inset-bottom))!important;
+  height:156px!important;z-index:525!important;border-radius:22px!important;
+}
+#v332NextScroll{height:108px!important}
+.v332BuildCard{height:100px!important;flex-basis:126px!important}
+
+/* Bottom bar: fixed, compact and never covered by the Shop. */
+#mainNav{
+  height:92px!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;
+  padding:8px 9px 0!important;gap:6px!important;z-index:530!important;
+}
+#mainNav button{height:73px!important;font-size:9.5px!important;padding:7px 2px 8px!important}
+#mainNav button span{font-size:25px!important}
+#mainNav button.v3Active,#mainNav button[aria-current="page"]{transform:translateY(-7px)!important}
+#mainNav button.v3Active::before,#mainNav button[aria-current="page"]::before{top:-9px!important;height:14px!important}
+
+/* Keep the game map visible while the root Shop menu is open, without opening the historical shop screen. */
+body.v343ShopOpen #v3MapShell{display:block!important}
+body.v343ShopOpen #mainNav{display:grid!important}
+body.v341Home #v343ShopMenu,body.v341Home #v332NextBar,body.v341Home #mainNav{display:none!important}
+
+@media(max-width:390px){
+  #v343ShopMenu{width:calc(100vw - 20px)!important;bottom:calc(106px + env(safe-area-inset-bottom))!important}
+  .v343ShopCat{min-height:66px!important}
+  #mainNav{height:88px!important;left:5px!important;right:5px!important;gap:4px!important}
+  #mainNav button{height:70px!important;font-size:8.8px!important}
+  #mainNav button span{font-size:23px!important}
+}
+</style>
 <script id="v361-home-nav-js">
 (function(){
   'use strict';
-  document.title='Farm Rush V3.6.1 — Accueil + navigation';
+  document.title='Farm Rush V3.6.2 — UI stable';
   const ver=document.querySelector('.version');
-  if(ver) ver.textContent='V3.6.1 — Accueil + navigation';
+  if(ver) ver.textContent='V3.6.2 — UI stable';
 
   const home=document.getElementById('home');
   if(home && !home.querySelector('.v361-clouds')){
     const clouds=document.createElement('div');
     clouds.className='v361-clouds';
     clouds.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:0';
-    clouds.innerHTML='      <div style="position:absolute;left:6%;top:10%;width:96px;height:36px;border-radius:40px;background:rgba(255,255,255,.56);filter:blur(1px)"></div>      <div style="position:absolute;left:14%;top:7%;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.72)"></div>      <div style="position:absolute;left:46%;top:11%;width:120px;height:40px;border-radius:40px;background:rgba(255,255,255,.5);filter:blur(1px)"></div>      <div style="position:absolute;left:56%;top:7%;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.68)"></div>      <div style="position:absolute;right:10%;top:18%;width:86px;height:32px;border-radius:40px;background:rgba(255,255,255,.5);filter:blur(1px)"></div>      <div style="position:absolute;right:17%;top:14%;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.65)"></div>';
+    clouds.innerHTML=`
+      <div style="position:absolute;left:6%;top:10%;width:96px;height:36px;border-radius:40px;background:rgba(255,255,255,.56);filter:blur(1px)"></div>
+      <div style="position:absolute;left:14%;top:7%;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.72)"></div>
+      <div style="position:absolute;left:46%;top:11%;width:120px;height:40px;border-radius:40px;background:rgba(255,255,255,.5);filter:blur(1px)"></div>
+      <div style="position:absolute;left:56%;top:7%;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.68)"></div>
+      <div style="position:absolute;right:10%;top:18%;width:86px;height:32px;border-radius:40px;background:rgba(255,255,255,.5);filter:blur(1px)"></div>
+      <div style="position:absolute;right:17%;top:14%;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.65)"></div>
+    `;
     home.insertBefore(clouds, home.firstChild);
   }
 
@@ -15434,53 +15492,138 @@ body.v341Home #mainNav{display:none!important}
     const preview=document.createElement('div');
     preview.className='v361-home-preview';
     preview.style.cssText='display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 2px;pointer-events:none';
-    preview.innerHTML='      <div style="width:62px;height:62px;border-radius:18px;background:linear-gradient(#fff7e7,#f4e4bc);border:2px solid #edd4a0;box-shadow:0 4px 0 rgba(202,169,112,.45);display:flex;align-items:center;justify-content:center;font-size:31px">🚜</div>      <div style="width:112px;height:62px;border-radius:18px;background:linear-gradient(#83d665,#5cb845);border:2px solid rgba(255,255,255,.55);box-shadow:0 5px 0 rgba(39,133,47,.45);display:flex;align-items:center;justify-content:center;color:white;font-weight:1000;font-size:13px;letter-spacing:.4px">PLANTE • RÉCOLTE</div>      <div style="width:62px;height:62px;border-radius:18px;background:linear-gradient(#fff7e7,#f4e4bc);border:2px solid #edd4a0;box-shadow:0 4px 0 rgba(202,169,112,.45);display:flex;align-items:center;justify-content:center;font-size:31px">🏪</div>';
+    preview.innerHTML=`
+      <div style="width:62px;height:62px;border-radius:18px;background:linear-gradient(#fff7e7,#f4e4bc);border:2px solid #edd4a0;box-shadow:0 4px 0 rgba(202,169,112,.45);display:flex;align-items:center;justify-content:center;font-size:31px">🚜</div>
+      <div style="width:112px;height:62px;border-radius:18px;background:linear-gradient(#83d665,#5cb845);border:2px solid rgba(255,255,255,.55);box-shadow:0 5px 0 rgba(39,133,47,.45);display:flex;align-items:center;justify-content:center;color:white;font-weight:1000;font-size:13px;letter-spacing:.4px">PLANTE • RÉCOLTE</div>
+      <div style="width:62px;height:62px;border-radius:18px;background:linear-gradient(#fff7e7,#f4e4bc);border:2px solid #edd4a0;box-shadow:0 4px 0 rgba(202,169,112,.45);display:flex;align-items:center;justify-content:center;font-size:31px">🏪</div>
+    `;
     const features=card.querySelector('.homeFeatures');
     if(features) features.insertAdjacentElement('afterend', preview);
   }
 
-  // normalize bottom nav into 5 premium tabs.
   const nav=document.getElementById('mainNav');
-  if(nav){
-    const entries=[
-      {label:'FERME', icon:'🏠', key:'farm', action:()=>{document.querySelector('#mainNav button[data-key="farm"]')?.classList.add('v3Active'); window.FarmRushV3Map?.show?.();}},
-      {label:'STOCK', icon:'📦', key:'stock', badge:'', action:()=>{if(typeof window.openModal==='function' && document.getElementById('stock')){ const body=document.getElementById('stock').outerHTML; openModal('📦 Stock', body);} else if(typeof window.showMarket==='function'){ showMarket(); }}},
-      {label:'SHOP', icon:'🏪', key:'shop', badge:'', action:()=>{ if(typeof window.openShop==='function') openShop(); const menu=document.getElementById('v343ShopMenu'); if(menu) menu.style.display='flex'; }},
-      {label:'COMMANDES', icon:'📋', key:'orders', badge:'', action:()=>{ if(typeof window.openModal==='function' && document.getElementById('orders')){ const body='<div class="orders">'+document.getElementById('orders').innerHTML+'</div>'; openModal('📋 Commandes', body);} else if(typeof window.showProgress==='function'){ showProgress(); }}},
-      {label:'CARTE', icon:'🗺️', key:'map', badge:'', action:()=>{ window.FarmRushV3Map?.show?.(); }}
-    ];
-    const existing=[...nav.querySelectorAll('button')];
-    const shouldRebuild=existing.length!==5 || !existing.some(b => /COMMAND/i.test(b.textContent||''));
-    if(shouldRebuild){
-      nav.innerHTML='';
-      entries.forEach(entry=>{
-        const btn=document.createElement('button');
-        btn.type='button';
-        btn.dataset.key=entry.key;
-        btn.innerHTML=`<span>${entry.icon}</span>${entry.label}${entry.badge?`<i class="v361Badge">${entry.badge}</i>`:''}`;
-        btn.addEventListener('click',()=>{setActive(entry.key); entry.action();});
-        nav.appendChild(btn);
+  if(!nav) return;
+
+  function menu(){ return document.getElementById('v343ShopMenu'); }
+  function tray(){ return document.getElementById('v332NextBar'); }
+  function closeShopUI(){
+    document.body.classList.remove('v343ShopOpen','v343BuildingTray');
+    menu()?.classList.remove('open');
+    menu()?.removeAttribute('style');
+    tray()?.classList.add('hidden');
+  }
+  function setActive(key){
+    [...nav.querySelectorAll('button')].forEach(b=>{
+      b.classList.remove('v3Active','active');
+      b.removeAttribute('aria-current');
+    });
+    const target=nav.querySelector(`button[data-key="${key}"]`);
+    if(target){
+      target.classList.add('v3Active');
+      target.setAttribute('aria-current','page');
+    }
+  }
+  function showMap(){
+    closeShopUI();
+    try{ window.FarmRushV3Map?.show?.(); }catch(e){}
+  }
+  function showClassic(target){
+    closeShopUI();
+    try{
+      if(window.FarmRushV3Map?.classic) window.FarmRushV3Map.classic(target);
+      else if(target==='stock' && typeof showMarket==='function') showMarket();
+      else if(target==='orders' && typeof showProgress==='function') showProgress();
+    }catch(e){}
+  }
+  function openShopRoot(){
+    // IMPORTANT: do not call the historical openShop() here. It would open a second shop layer.
+    showMap();
+    document.body.classList.add('v343ShopOpen');
+    const m=menu();
+    if(m){
+      m.classList.add('open');
+      m.removeAttribute('style');
+    }
+  }
+
+  const entries=[
+    {key:'farm',label:'FERME',icon:'🏠',run:()=>showMap()},
+    {key:'stock',label:'STOCK',icon:'📦',run:()=>showClassic('stock')},
+    {key:'shop',label:'SHOP',icon:'🏪',run:()=>openShopRoot()},
+    {key:'orders',label:'COMMANDES',icon:'📋',run:()=>showClassic('orders')},
+    {key:'map',label:'CARTE',icon:'🗺️',run:()=>showMap()}
+  ];
+
+  // Replace all nav buttons by clean clones to remove legacy listeners accumulated by older versions.
+  nav.innerHTML='';
+  entries.forEach(entry=>{
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.dataset.key=entry.key;
+    btn.innerHTML=`<span>${entry.icon}</span>${entry.label}`;
+    btn.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      entry.run();
+      // Older map functions may change the active tab internally; force the intended tab last.
+      setActive(entry.key);
+    });
+    nav.appendChild(btn);
+  });
+
+  // Rebind the compact shop category panel without adding any second root-shop layer.
+  const m=menu();
+  if(m){
+    m.removeAttribute('style');
+    const close=m.querySelector('#v343ShopClose');
+    if(close){
+      const cleanClose=close.cloneNode(true);
+      close.replaceWith(cleanClose);
+      cleanClose.addEventListener('click',()=>{closeShopUI();setActive('farm');});
+    }
+    m.querySelectorAll('.v343ShopCat').forEach(old=>{
+      const btn=old.cloneNode(true);
+      old.replaceWith(btn);
+      btn.addEventListener('click',()=>{
+        const cat=btn.dataset.cat;
+        if(cat==='buildings'){
+          m.classList.remove('open');
+          document.body.classList.add('v343ShopOpen','v343BuildingTray');
+          tray()?.classList.remove('hidden');
+          try{window.FarmRushV332?.renderNextBuildings?.();}catch(e){}
+          return;
+        }
+        closeShopUI();
+        try{ if(typeof openShop==='function') openShop(cat); }catch(e){}
       });
-    } else {
-      existing.slice(0,5).forEach((btn,i)=>{
-        const entry=entries[i];
-        btn.dataset.key=entry.key;
-        btn.innerHTML=`<span>${entry.icon}</span>${entry.label}${entry.badge?`<i class="v361Badge">${entry.badge}</i>`:''}`;
-        btn.onclick=()=>{setActive(entry.key); entry.action();};
-      });
-    }
-    function setActive(key){
-      [...nav.querySelectorAll('button')].forEach(b=>{b.classList.remove('v3Active','active'); b.removeAttribute('aria-current');});
-      const target=nav.querySelector(`button[data-key="${key}"]`);
-      if(target){target.classList.add('v3Active'); target.setAttribute('aria-current','page');}
-    }
-    setActive('farm');
-    window.v361SetActiveNav=setActive;
-    const prevStart=window.startGame;
-    if(typeof prevStart==='function' && !window.__v361StartWrapped){
-      window.__v361StartWrapped=true;
-      window.startGame=function(){const r=prevStart.apply(this,arguments); setTimeout(()=>setActive('farm'),120); return r;};
-    }
+    });
+  }
+
+  // Clean building tray close button.
+  const trayClose=document.getElementById('v343TrayClose');
+  if(trayClose){
+    const clean=trayClose.cloneNode(true);
+    trayClose.replaceWith(clean);
+    clean.addEventListener('click',()=>{
+      document.body.classList.remove('v343BuildingTray');
+      tray()?.classList.add('hidden');
+      document.body.classList.add('v343ShopOpen');
+      menu()?.classList.add('open');
+    });
+  }
+
+  closeShopUI();
+  setActive('farm');
+  window.v361SetActiveNav=setActive;
+
+  const prevStart=window.startGame;
+  if(typeof prevStart==='function' && !window.__v362StartWrapped){
+    window.__v362StartWrapped=true;
+    window.startGame=function(){
+      const r=prevStart.apply(this,arguments);
+      setTimeout(()=>{closeShopUI();setActive('farm');},150);
+      return r;
+    };
   }
 })();
 </script>
