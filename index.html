@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Infinity Rush V4.3 — Interface joueur</title>
+<title>Infinity Rush V4.4.1 — Construction progressive</title>
+<meta name="infinity-rush-build" content="4.4.1-20260904">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -12728,6 +12729,15 @@ if(oldShow){
   window.FarmRushV3Map.center=()=>centerMap(.56);
   window.FarmRushV3Map.zoomIn=()=>zoomCenter(1.18);
   window.FarmRushV3Map.zoomOut=()=>zoomCenter(1/1.18);
+  window.FarmRushV3Map.focus=(worldX,worldY,newScale)=>{
+    const wx=Number(worldX),wy=Number(worldY);
+    if(!Number.isFinite(wx)||!Number.isFinite(wy))return centerMap(.56);
+    if(Number.isFinite(Number(newScale)))scale=Math.max(MIN_SCALE,Math.min(MAX_SCALE,Number(newScale)));
+    const r=viewport.getBoundingClientRect();
+    x=r.width/2-wx*scale;
+    y=r.height/2-wy*scale;
+    apply();
+  };
 }
 window.addEventListener('resize',apply);
 requestAnimationFrame(()=>centerMap(.56));
@@ -12989,7 +12999,7 @@ function snap(v){return Math.round(v/GRID)*GRID}
 function clampPos(btn,left,top){const w=n(btn.style.width||btn.offsetWidth),h=n(btn.style.height||btn.offsetHeight);return {left:Math.max(PADDING,Math.min(WORLD_LAYOUT_W-w-PADDING,left)),top:Math.max(PADDING,Math.min(WORLD_LAYOUT_H-h-PADDING,top))}}
 function rectAt(btn,left,top){const w=n(btn.style.width||btn.offsetWidth),h=n(btn.style.height||btn.offsetHeight);return {l:left-18,t:top-18,r:left+w+18,b:top+h+18}}
 function intersects(a,b){return !(a.r<=b.l||a.l>=b.r||a.b<=b.t||a.t>=b.b)}
-function validPlacement(btn,left,top){const r=rectAt(btn,left,top);for(const other of nodes){if(other===btn)continue;const op=pos(other),or=rectAt(other,op.left,op.top);if(intersects(r,or))return false}return true}
+function validPlacement(btn,left,top){const r=rectAt(btn,left,top);for(const other of nodes){if(other===btn||other.classList.contains('irV44Unowned'))continue;const op=pos(other),or=rectAt(other,op.left,op.top);if(intersects(r,or))return false}return true}
 function setPos(btn,left,top){const p=clampPos(btn,snap(left),snap(top));btn.style.left=p.left+'px';btn.style.top=p.top+'px';return p}
 function isCustom(btn){const k=keyFor(btn),d=defaults[k];if(!d)return false;const p=pos(btn);return Math.abs(p.left-d.left)>1||Math.abs(p.top-d.top)>1}
 function updateCustom(btn){btn.classList.toggle('v304CustomPlaced',isCustom(btn))}
@@ -16801,6 +16811,293 @@ body.v304LayoutMode #v3World .v330Building{transform:translate(-50%,-58%) scale(
   syncEditButton();
 
   window.setInterval(syncProfile,1200);
+})();
+</script>
+
+<!-- =========================================================
+ INFINITY RUSH V4.4 — CONSTRUCTION PROGRESSIVE
+ La carte ne montre que ce que le joueur possède réellement.
+ ========================================================= -->
+<style id="ir-v440-progressive-build-css">
+  /* Navigation tactile directe : aucun outil permanent ne masque la carte. */
+  #v330Tools,
+  #v3012ZoomControls,
+  #v3012ZoomLabel,
+  #v3Center,
+  #v310Placement{display:none!important}
+
+  /* Le bouton d'aménagement récupère la place libérée en restant discret. */
+  #v330Edit{
+    top:67px!important;
+    right:8px!important;
+    width:94px!important;
+    min-width:94px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:4px 7px!important;
+    border-radius:12px!important;
+    font-size:7.4px!important;
+  }
+
+  /* Un bâtiment non acheté n'existe pas encore sur la carte. */
+  #v3World .v3Hotspot.irV44Unowned{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  /* Pendant un achat, seul le nouveau bâtiment est manipulable. */
+  body.irV44PlacementActive #v3World .v3Hotspot.v304Movable:not(.irV44NewBuilding){
+    outline:0!important;
+    background:transparent!important;
+    pointer-events:none!important;
+  }
+  body.irV44PlacementActive #v3World .v3Hotspot.irV44NewBuilding{
+    display:block!important;
+    visibility:visible!important;
+    z-index:190!important;
+    outline:5px dashed rgba(255,255,255,.98)!important;
+    outline-offset:-5px!important;
+    border-radius:34px!important;
+    background:rgba(77,218,91,.17)!important;
+    box-shadow:0 0 0 8px rgba(74,210,91,.22),0 0 34px rgba(255,242,115,.85)!important;
+    animation:irV44PlacementPulse 1.15s ease-in-out infinite alternate;
+  }
+  body.irV44PlacementActive #v3World .v3Hotspot.irV44NewBuilding .irV41MapLabel{
+    background:linear-gradient(180deg,#2bac4f,#147431)!important;
+  }
+  @keyframes irV44PlacementPulse{
+    from{outline-color:rgba(255,255,255,.72);box-shadow:0 0 0 5px rgba(74,210,91,.13),0 0 18px rgba(255,242,115,.45)}
+    to{outline-color:#fff;box-shadow:0 0 0 11px rgba(74,210,91,.25),0 0 38px rgba(255,242,115,.92)}
+  }
+
+  #irV44PlacementHint{
+    position:absolute;
+    left:50%;
+    bottom:calc(88px + env(safe-area-inset-bottom));
+    z-index:560;
+    display:none;
+    width:max-content;
+    max-width:calc(100% - 24px);
+    padding:9px 13px;
+    transform:translateX(-50%);
+    border:2px solid rgba(255,255,255,.9);
+    border-radius:999px;
+    background:rgba(28,71,40,.94);
+    box-shadow:0 5px 14px #0004;
+    color:#fff;
+    font:900 10px/1.2 system-ui,-apple-system,sans-serif;
+    text-align:center;
+    pointer-events:none;
+  }
+  body.irV44PlacementActive #irV44PlacementHint{display:block}
+
+  @media(max-width:390px){
+    #v330Edit{top:66px!important;width:90px!important;min-width:90px!important}
+    #irV44PlacementHint{bottom:calc(82px + env(safe-area-inset-bottom));font-size:9px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    body.irV44PlacementActive #v3World .v3Hotspot.irV44NewBuilding{animation:none}
+  }
+</style>
+
+<script id="ir-v440-progressive-build-js">
+(function(){
+  'use strict';
+  const world=document.getElementById('v3World');
+  const shell=document.getElementById('v3MapShell');
+  if(!world||!shell||world.dataset.irV440==='1')return;
+  world.dataset.irV440='1';
+
+  document.title='Infinity Rush V4.4 — Construction progressive';
+  document.querySelectorAll('.version,.v3Version').forEach(function(node){
+    node.textContent='V4.4 • CONSTRUCTION PROGRESSIVE';
+  });
+
+  /* Supprime réellement les cinq commandes devenues inutiles. */
+  ['v330Tools','v3012ZoomControls','v3012ZoomLabel','v3Center'].forEach(function(id){
+    document.getElementById(id)?.remove();
+  });
+
+  let hint=document.getElementById('irV44PlacementHint');
+  if(!hint){
+    hint=document.createElement('div');
+    hint.id='irV44PlacementHint';
+    hint.setAttribute('role','status');
+    shell.appendChild(hint);
+  }
+
+  const ownedButtons=Array.from(world.querySelectorAll('.v3Hotspot[data-owned]'));
+  const ownedFlags=Array.from(new Set(ownedButtons.map(function(button){return button.dataset.owned;}).filter(Boolean)));
+  const knownKey='infinityRushKnownBuildingsV44';
+  let placingNodes=[];
+
+  function stateNow(){
+    try{if(typeof state!=='undefined'&&state)return state;}catch(_){ }
+    return window.state||{};
+  }
+  function labelFor(button){
+    const raw=button.getAttribute('aria-label')||'Bâtiment';
+    return ({'Grange':'Étable','Maison — Stock':'Maison','Atelier industriel':'Atelier industriel','Station irrigation':'Station d’irrigation'})[raw]||raw;
+  }
+  function syncMapVisibility(snapshot){
+    const current=snapshot||stateNow();
+    ownedButtons.forEach(function(button){
+      const owned=Boolean(current[button.dataset.owned]);
+      button.classList.toggle('irV44Unowned',!owned);
+      button.classList.toggle('v310Hidden',!owned);
+      button.setAttribute('aria-hidden',String(!owned));
+      if(owned){
+        button.removeAttribute('tabindex');
+        if(!button.classList.contains('irV44NewBuilding'))button.classList.remove('v310Ghost');
+      }else{
+        button.tabIndex=-1;
+        button.classList.remove('irV44NewBuilding','v310Ghost');
+      }
+    });
+  }
+  function closeShopLayers(){
+    document.body.classList.remove('v343ShopOpen','v343BuildingTray');
+    document.getElementById('v343ShopMenu')?.classList.remove('open');
+    document.getElementById('v332NextBar')?.classList.add('hidden');
+    document.getElementById('v310Shop')?.classList.remove('open');
+    document.getElementById('v310Placement')?.classList.remove('on');
+    try{if(typeof closeModal==='function')closeModal();}catch(_){ }
+    window.__v312Placement=null;
+  }
+  function editButtonState(active){
+    const edit=document.getElementById('v330Edit');
+    if(!edit)return;
+    edit.setAttribute('aria-pressed',String(active));
+    edit.innerHTML='<span class="irEditIcon">'+(active?'✓':'✏️')+'</span><span>'+(active?'TERMINER':'AMÉNAGER')+'</span>';
+  }
+  function finishPlacementVisuals(){
+    document.body.classList.remove('irV44PlacementActive');
+    placingNodes.forEach(function(button){button.classList.remove('irV44NewBuilding','v310Ghost');});
+    placingNodes=[];
+    hint.textContent='';
+    editButtonState(document.body.classList.contains('v304LayoutMode'));
+    try{window.FarmRushV304Layout?.save?.();}catch(_){ }
+  }
+  function focusOn(button){
+    if(!button)return;
+    const left=parseFloat(button.style.left)||0;
+    const top=parseFloat(button.style.top)||0;
+    const width=parseFloat(button.style.width)||button.offsetWidth||0;
+    const height=parseFloat(button.style.height)||button.offsetHeight||0;
+    try{
+      if(window.FarmRushV3Map?.focus)window.FarmRushV3Map.focus(left+width/2,top+height/2,.64);
+      else window.FarmRushV3Map?.center?.();
+    }catch(_){ }
+  }
+  function beginPlacement(flags){
+    const affected=ownedButtons.filter(function(button){return flags.includes(button.dataset.owned);});
+    if(!affected.length)return;
+
+    syncMapVisibility();
+    closeShopLayers();
+    try{window.FarmRushV3Map?.show?.();}catch(_){ }
+    try{window.v361SetActiveNav?.('farm');}catch(_){ }
+
+    const movable=affected.filter(function(button){return button.classList.contains('v304Movable');});
+    const target=movable[0]||affected[0];
+    window.setTimeout(function(){focusOn(target);},260);
+
+    /* Les espaces naturels se révèlent simplement ; les vrais bâtiments se placent au doigt. */
+    if(!movable.length){
+      const names=affected.map(labelFor).filter(function(name,index,array){return array.indexOf(name)===index;});
+      try{showFloatingText('🗺️ '+names.join(' + ')+' AJOUTÉ');}catch(_){ }
+      return;
+    }
+
+    placingNodes=movable;
+    movable.forEach(function(button){
+      button.classList.remove('v310Hidden','irV44Unowned');
+      button.classList.add('irV44NewBuilding');
+    });
+    const names=movable.map(labelFor).filter(function(name,index,array){return array.indexOf(name)===index;});
+    hint.textContent='🏗️ Glisse '+names.join(' et ')+' • puis touche TERMINER';
+    document.body.classList.add('irV44PlacementActive');
+    try{window.FarmRushV304Layout?.enable?.();}catch(_){ }
+    editButtonState(true);
+  }
+
+  let known={};
+  let hadKnown=false;
+  try{
+    const raw=localStorage.getItem(knownKey);
+    if(raw){known=JSON.parse(raw)||{};hadKnown=true;}
+  }catch(_){known={};}
+
+  const initial=stateNow();
+  if(!hadKnown){
+    ownedFlags.forEach(function(flag){known[flag]=Boolean(initial[flag]);});
+    try{localStorage.setItem(knownKey,JSON.stringify(known));}catch(_){ }
+  }else{
+    /* Autorise une nouvelle construction après une éventuelle remise à zéro de la partie. */
+    ownedFlags.forEach(function(flag){if(!initial[flag])known[flag]=false;});
+  }
+
+  let checking=false;
+  function checkAcquisitions(){
+    if(checking)return;
+    checking=true;
+    const snapshot=stateNow();
+    syncMapVisibility(snapshot);
+    const gained=[];
+    let changed=false;
+    ownedFlags.forEach(function(flag){
+      const owned=Boolean(snapshot[flag]);
+      if(owned&&!known[flag])gained.push(flag);
+      if(Boolean(known[flag])!==owned){known[flag]=owned;changed=true;}
+    });
+    if(changed){
+      try{localStorage.setItem(knownKey,JSON.stringify(known));}catch(_){ }
+    }
+    checking=false;
+    if(gained.length)beginPlacement(gained);
+  }
+
+  /* Détection immédiate après un achat, avec le contrôle périodique comme sécurité. */
+  document.addEventListener('click',function(event){
+    if(event.target.closest('.v332BuildBtn,.shopCard button,#modal button'))window.setTimeout(checkAcquisitions,0);
+  },true);
+  window.setInterval(checkAcquisitions,350);
+
+  const classObserver=new MutationObserver(function(){
+    if(document.body.classList.contains('irV44PlacementActive')&&!document.body.classList.contains('v304LayoutMode')){
+      finishPlacementVisuals();
+    }
+  });
+  classObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+
+  syncMapVisibility(initial);
+  window.InfinityRushBuildings={
+    refresh:syncMapVisibility,
+    placeNew:beginPlacement
+  };
+})();
+</script>
+
+<!-- INFINITY RUSH BUILD 4.4.1 — FORCE DEPLOY 2026-09-04 -->
+<style id="ir-build-441-css">
+#irBuild441{
+  position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));
+  z-index:100000;transform:translate(-50%,18px);opacity:0;
+  padding:9px 14px;border:2px solid #d7b767;border-radius:999px;
+  background:linear-gradient(#fff9e8,#f2dfaa);color:#3e321d;
+  box-shadow:0 6px 18px #0005;font:900 12px/1 Arial,sans-serif;
+  white-space:nowrap;pointer-events:none;transition:opacity .22s ease,transform .22s ease;
+}
+#irBuild441.irBuild441On{opacity:1;transform:translate(-50%,0)}
+</style>
+<div id="irBuild441" role="status" aria-live="polite">✓ Version 4.4.1 chargée</div>
+<script id="ir-build-441-js">
+(()=>{
+  const badge=document.getElementById('irBuild441');
+  if(!badge)return;
+  requestAnimationFrame(()=>badge.classList.add('irBuild441On'));
+  setTimeout(()=>badge.classList.remove('irBuild441On'),3200);
 })();
 </script>
 
