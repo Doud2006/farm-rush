@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#315e30">
-<title>Infinity Rush V4.4.1 — Construction progressive</title>
-<meta name="infinity-rush-build" content="4.4.1-20260904">
+<title>Infinity Rush V4.5.1 — Fiches bâtiments compactes</title>
+<meta name="infinity-rush-build" content="4.5.1-20260904">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,sans-serif;background:#dff0c9;color:#26351e;overscroll-behavior:none}button,select{font:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:linear-gradient(#9ed875,#eef6dc);padding-bottom:90px}
 #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:radial-gradient(circle at 70% 15%,#fff6a8 0 6%,transparent 7%),linear-gradient(#92dbff 0 42%,#8ed167 42%);position:relative;overflow:hidden}.homeHill{position:absolute;left:-10%;right:-10%;bottom:-18%;height:48%;background:#6eb553;border-radius:50% 50% 0 0}.homeDecor{position:absolute;font-size:64px;filter:drop-shadow(0 8px 4px #0003)}.hHouse{left:8%;bottom:18%}.hTractor{right:8%;bottom:13%;font-size:58px}.hTree{right:20%;top:20%;font-size:72px}.homeCard{position:relative;z-index:2;background:#ffffffd9;border:3px solid #6c9e4f;border-radius:26px;padding:24px 22px;box-shadow:0 12px 30px #315e3040;backdrop-filter:blur(5px)}.homeLogo{font-size:74px}.homeTitle{font-weight:1000;font-size:48px;color:#315e30;text-shadow:0 3px white}.homeSubtitle{color:#496e42;line-height:1.5;margin:10px 0 24px}.playButton{width:100%;max-width:340px;border:0;border-radius:18px;padding:18px;background:linear-gradient(#7bd153,#55a939);color:white;font-weight:1000;font-size:20px;box-shadow:0 6px #438026}.version{font-size:11px;color:#4e6b48;margin-top:16px}.homeActions{display:flex;gap:8px;justify-content:center;margin-top:10px}.roundBtn{width:44px;height:44px;border-radius:50%;border:0;background:#315e30;color:#fff;font-size:20px}
@@ -12430,7 +12430,10 @@ function openCandidate(btn){
     if(window.FarmRushV3Map&&typeof window.FarmRushV3Map.classic==='function')window.FarmRushV3Map.classic(ids[z]||'farmArea');
     return;
   }
-  if(window.FarmRushV3Map&&typeof window.FarmRushV3Map.classic==='function')window.FarmRushV3Map.classic(btn.dataset.panel||btn.dataset.target||'farmArea');
+  const target=btn.dataset.panel||btn.dataset.target||'farmArea';
+  const label=btn.getAttribute('aria-label')||'Bâtiment';
+  if(window.FarmRushV3Solo&&typeof window.FarmRushV3Solo.open==='function')window.FarmRushV3Solo.open(target,label);
+  else if(window.FarmRushV3Map&&typeof window.FarmRushV3Map.classic==='function')window.FarmRushV3Map.classic(target);
 }
 
 viewport.addEventListener('pointerdown',function(e){
@@ -17079,7 +17082,7 @@ body.v304LayoutMode #v3World .v330Building{transform:translate(-50%,-58%) scale(
 })();
 </script>
 
-<!-- INFINITY RUSH BUILD 4.4.1 — FORCE DEPLOY 2026-09-04 -->
+<!-- INFINITY RUSH BUILD 4.5.1 — FICHES BÂTIMENTS COMPACTES 2026-09-04 -->
 <style id="ir-build-441-css">
 #irBuild441{
   position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));
@@ -17091,13 +17094,294 @@ body.v304LayoutMode #v3World .v330Building{transform:translate(-50%,-58%) scale(
 }
 #irBuild441.irBuild441On{opacity:1;transform:translate(-50%,0)}
 </style>
-<div id="irBuild441" role="status" aria-live="polite">✓ Version 4.4.1 chargée</div>
+<div id="irBuild441" role="status" aria-live="polite">✓ Version 4.5.1 chargée</div>
 <script id="ir-build-441-js">
 (()=>{
   const badge=document.getElementById('irBuild441');
   if(!badge)return;
   requestAnimationFrame(()=>badge.classList.add('irBuild441On'));
   setTimeout(()=>badge.classList.remove('irBuild441On'),3200);
+})();
+</script>
+
+<!-- =========================================================
+ INFINITY RUSH V4.5 — FICHE BÂTIMENT SUR LA CARTE
+ Le panneau reste compact et la ferme demeure visible en fond.
+ ========================================================= -->
+<style id="ir-v450-building-card-css">
+#irBuildingOverlay{
+  position:fixed;
+  inset:0 0 calc(92px + env(safe-area-inset-bottom)) 0;
+  z-index:7000;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:12px;
+  background:rgba(20,43,23,.18);
+  touch-action:none;
+}
+body.irBuildingCardOpen #irBuildingOverlay{display:flex}
+#irBuildingCard{
+  width:min(430px,calc(100vw - 24px));
+  max-height:min(48dvh,520px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:3px solid rgba(255,250,224,.98);
+  border-radius:24px;
+  background:linear-gradient(180deg,#fff9e8,#f4e4ba);
+  box-shadow:0 8px 0 #ad8952,0 20px 42px rgba(31,51,29,.38);
+  touch-action:auto;
+  animation:irV450CardIn .2s ease-out both;
+}
+@keyframes irV450CardIn{
+  from{opacity:0;transform:translateY(18px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+#irBuildingHandle{
+  flex:0 0 auto;
+  width:42px;
+  height:5px;
+  margin:7px auto 2px;
+  border-radius:999px;
+  background:#bda77c;
+}
+#irBuildingHead{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr) 40px;
+  align-items:center;
+  gap:8px;
+  min-height:52px;
+  padding:2px 9px 8px 12px;
+  border-bottom:1px solid rgba(142,105,57,.24);
+}
+#irBuildingIcon{
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  background:#fff4cf;
+  box-shadow:inset 0 0 0 2px #e3c887;
+  font-size:23px;
+}
+#irBuildingTitle{
+  min-width:0;
+  color:#563b24;
+  font-size:14px;
+  font-weight:1000;
+  line-height:1.15;
+  text-transform:uppercase;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#irBuildingClose{
+  width:38px;
+  height:38px;
+  padding:0;
+  border:0;
+  border-radius:13px;
+  background:#6a4a2d;
+  color:#fff;
+  box-shadow:0 3px 0 #432d1c;
+  font-size:25px;
+  font-weight:900;
+  line-height:1;
+  touch-action:manipulation;
+}
+#irBuildingClose:active{transform:translateY(2px);box-shadow:0 1px 0 #432d1c}
+#irBuildingSlot{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding:9px;
+  touch-action:pan-y;
+}
+#irBuildingSlot>.irBuildingPanelActive{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  box-shadow:none!important;
+}
+body.irBuildingCardOpen{overflow:hidden}
+body.irBuildingCardOpen #v302SoloTop,
+body.irBuildingCardOpen #v3Back{display:none!important}
+body.irBuildingCardOpen .modal.show,
+body.irBuildingCardOpen .levelUp.show{z-index:9300!important}
+body.irBuildingCardOpen .toast,
+body.irBuildingCardOpen .floatText{z-index:9400!important}
+@media(max-width:430px){
+  #irBuildingOverlay{padding:8px;inset:0 0 calc(88px + env(safe-area-inset-bottom)) 0}
+  #irBuildingCard{width:calc(100vw - 16px);max-height:46dvh;border-radius:21px}
+  #irBuildingHead{min-height:48px;grid-template-columns:36px minmax(0,1fr) 36px;padding:1px 7px 7px 9px}
+  #irBuildingIcon,#irBuildingClose{width:34px;height:34px;border-radius:11px}
+  #irBuildingTitle{font-size:12px}
+  #irBuildingSlot{padding:7px}
+}
+@media(max-height:650px){
+  #irBuildingCard{max-height:52dvh}
+}
+@media(prefers-reduced-motion:reduce){#irBuildingCard{animation:none}}
+</style>
+<div id="irBuildingOverlay" aria-hidden="true">
+  <section id="irBuildingCard" role="dialog" aria-modal="true" aria-labelledby="irBuildingTitle">
+    <div id="irBuildingHandle" aria-hidden="true"></div>
+    <header id="irBuildingHead">
+      <div id="irBuildingIcon" aria-hidden="true">🏡</div>
+      <div id="irBuildingTitle">BÂTIMENT</div>
+      <button id="irBuildingClose" type="button" aria-label="Fermer la fiche">×</button>
+    </header>
+    <div id="irBuildingSlot"></div>
+  </section>
+</div>
+<script id="ir-v450-building-card-js">
+(()=>{
+  'use strict';
+  const overlay=document.getElementById('irBuildingOverlay');
+  const card=document.getElementById('irBuildingCard');
+  const slot=document.getElementById('irBuildingSlot');
+  const title=document.getElementById('irBuildingTitle');
+  const icon=document.getElementById('irBuildingIcon');
+  const closeButton=document.getElementById('irBuildingClose');
+  const game=document.getElementById('game');
+  const solo=window.FarmRushV3Solo;
+  if(!overlay||!card||!slot||!title||!icon||!closeButton||!game||!solo)return;
+
+  document.title='Infinity Rush V4.5.1 — Fiches bâtiments compactes';
+  const version=document.querySelector('.version');
+  if(version)version.textContent='V4.5.1 — Fiches bâtiments compactes';
+
+  const icons={
+    coopPanel:'🐔',barnPanel:'🐄',millPanel:'⚙️',bakeryPanel:'🥖',dairyPanel:'🥛',
+    pastaPanel:'🏭',meatPanel:'🥩',restaurantPanel:'🍽️',cellarPanel:'🍷',
+    sheepfoldPanel:'🐑',textilePanel:'🧵',pondPanel:'🎣',sawmillPanel:'🪚',
+    minePanel:'⛏️',foundryPanel:'🔥',industrialPanel:'🏭',irrigationPanel:'💦',
+    stockPanel:'🏡'
+  };
+  const legacyOpen=solo.open.bind(solo);
+  const legacyClose=solo.close.bind(solo);
+  const mapApi=window.FarmRushV3Map;
+  const legacyClassic=mapApi&&typeof mapApi.classic==='function'?mapApi.classic.bind(mapApi):null;
+  let current=null;
+
+  function isBuildingPanel(id){return typeof id==='string'&&/Panel$/.test(id)}
+  function cleanLabel(value,element){
+    const fallback=element?.querySelector('.buildingName,.industrialTitle,.panelTitle,.animalTitle')?.textContent;
+    return String(value||fallback||'Bâtiment').trim().replace(/\s+/g,' ');
+  }
+  function restoreCurrent(){
+    if(!current)return;
+    const {element,parent,next,inlineDisplay}=current;
+    element.classList.remove('irBuildingPanelActive','v302SoloActive');
+    element.style.display=inlineDisplay;
+    if(parent){
+      if(next&&next.parentNode===parent)parent.insertBefore(element,next);
+      else parent.appendChild(element);
+    }
+    current=null;
+  }
+  function closeCard(options={}){
+    if(!current)return false;
+    restoreCurrent();
+    document.body.classList.remove('irBuildingCardOpen','v302SoloMode');
+    overlay.setAttribute('aria-hidden','true');
+    title.textContent='BÂTIMENT';
+    icon.textContent='🏡';
+    if(!options.keepMap){
+      try{window.FarmRushV3Map?.refresh?.()}catch(_){ }
+    }
+    return true;
+  }
+  function renderTarget(id){
+    try{if(typeof render==='function')render()}catch(_){ }
+    try{if(typeof renderBuildings==='function')renderBuildings()}catch(_){ }
+    try{if(id==='stockPanel'&&typeof renderStock==='function')renderStock()}catch(_){ }
+  }
+  function openCard(id,label){
+    if(current?.id===id){
+      overlay.setAttribute('aria-hidden','false');
+      document.body.classList.add('irBuildingCardOpen');
+      return true;
+    }
+    if(current)closeCard({keepMap:true});
+    try{window.FarmRushV304Layout?.save?.()}catch(_){ }
+    try{window.FarmRushV3Map?.show?.()}catch(_){ }
+    renderTarget(id);
+    const element=document.getElementById(id);
+    if(!element){
+      try{toast('Ce bâtiment n’est pas encore disponible.')}catch(_){ }
+      return false;
+    }
+    current={
+      id,
+      element,
+      parent:element.parentNode,
+      next:element.nextSibling,
+      inlineDisplay:element.style.display
+    };
+    document.body.classList.remove('v302SoloMode','farmListMode','v3ClassicMode');
+    game.classList.remove('farmMapMode');
+    game.classList.add('v3MapMode');
+    element.classList.remove('v302SoloActive');
+    element.classList.add('irBuildingPanelActive');
+    slot.replaceChildren(element);
+    title.textContent=cleanLabel(label,element);
+    icon.textContent=icons[id]||'🏡';
+    overlay.setAttribute('aria-hidden','false');
+    document.body.classList.add('irBuildingCardOpen');
+    slot.scrollTop=0;
+    requestAnimationFrame(()=>closeButton.focus({preventScroll:true}));
+    return true;
+  }
+
+  solo.open=function(id,label,options){
+    if(isBuildingPanel(id))return openCard(id,label,options);
+    closeCard({keepMap:true});
+    return legacyOpen(id,label,options);
+  };
+  solo.close=function(){
+    if(closeCard())return;
+    return legacyClose();
+  };
+  if(mapApi&&legacyClassic){
+    mapApi.classic=function(target){
+      if(isBuildingPanel(target)){
+        const hotspot=document.querySelector(`#v3World .v3Hotspot[data-panel="${target}"],#v3World .v3Hotspot[data-target="${target}"]`);
+        return openCard(target,hotspot?.getAttribute('aria-label')||undefined);
+      }
+      closeCard({keepMap:true});
+      return legacyClassic(target);
+    };
+  }
+
+  closeButton.addEventListener('click',event=>{
+    event.preventDefault();
+    event.stopPropagation();
+    closeCard();
+  });
+  overlay.addEventListener('click',event=>{
+    if(event.target===overlay)closeCard();
+  });
+  card.addEventListener('click',event=>event.stopPropagation());
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&current)closeCard();
+  });
+  document.getElementById('mainNav')?.addEventListener('click',()=>{
+    if(current)closeCard({keepMap:true});
+  },true);
+
+  window.InfinityRushBuildingCard={
+    open:openCard,
+    close:closeCard,
+    get current(){return current?.id||null}
+  };
 })();
 </script>
 
